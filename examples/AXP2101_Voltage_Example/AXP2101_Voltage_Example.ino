@@ -23,6 +23,14 @@ SOFTWARE.
 */
 
 
+/*
+! WARN:
+Please do not run the example without knowing the external load voltage of the PMU,
+it may burn your external load, please check the voltage setting before running the example,
+if there is any loss, please bear it by yourself
+*/
+#error "Running this example is known to not damage the device! Please go and uncomment this!"
+
 // Defined using AXP2102
 #define XPOWERS_CHIP_AXP2102
 
@@ -51,17 +59,6 @@ void setup()
     Serial.println("AXP2101 Power Output Test.");
 
 
-#if 0
-    // DC1 has allocated esp32, stop testing
-    // DC1 IMAX=2A
-    // 1500~3400mV,100mV/step,20steps
-    vol = 1500;
-    for (int i = 0; i < 20; ++i) {
-        PMU.setDC1Voltage(vol);
-        vol += 100;
-        Serial.printf("DC1  :%s   Voltage:%u mV \n",  PMU.isEnableDC1()  ? "ENABLE" : "DISABLE", PMU.getDC1Voltage());
-    }
-#endif
 
     PMU.disableDC2();
     PMU.disableDC3();
@@ -76,6 +73,16 @@ void setup()
     PMU.disableCPUSLDO();
     PMU.disableDLDO1();
     PMU.disableDLDO2();
+
+
+    // DC1 IMAX=2A
+    // 1500~3400mV,100mV/step,20steps
+    vol = 1500;
+    for (int i = 0; i < 20; ++i) {
+        PMU.setDC1Voltage(vol);
+        vol += 100;
+        Serial.printf("DC1  :%s   Voltage:%u mV \n",  PMU.isEnableDC1()  ? "ENABLE" : "DISABLE", PMU.getDC1Voltage());
+    }
 
 
     // DC2 IMAX=2A
@@ -293,6 +300,36 @@ void setup()
         if (targetVol != vol)Serial.println(">>> FAILED!");
         vol += 100;
     }
+
+
+    /*
+    ! WARN:
+    Please do not run the example without knowing the external load voltage of the PMU,
+    it may burn your external load, please check the voltage setting before running the example,
+    if there is any loss, please bear it by yourself
+    */
+
+    // PMU.enableDC1();
+    // PMU.enableDC2();
+    // PMU.enableDC3();
+    // PMU.enableDC4();
+    // PMU.enableDC5();
+
+    // PMU.enableALDO1();
+    // PMU.enableALDO2();
+    // PMU.enableALDO3();
+    // PMU.enableALDO4();
+
+
+    // PMU.enableBLDO1();
+    // PMU.enableBLDO2();
+
+    // PMU.enableCPUSLDO();
+
+    // PMU.enableDLDO1();
+    // PMU.enableDLDO2();
+
+
 }
 
 void loop()
