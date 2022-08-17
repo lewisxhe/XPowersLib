@@ -28,7 +28,10 @@
  *
  */
 
+#if defined(ARDUINO)
 #include <Arduino.h>
+#endif /*ARDUINO*/
+
 #include "XPowersCommon.tpp"
 #include "REG/AXP2101Constants.h"
 
