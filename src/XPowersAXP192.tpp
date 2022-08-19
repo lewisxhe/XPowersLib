@@ -1,5 +1,4 @@
 /**
-/**
  *
  * @license MIT License
  *
@@ -28,8 +27,11 @@
  * @date      2022-05-07
  *
  */
-
+#if defined(ARDUINO)
 #include <Arduino.h>
+#else
+#include <math.h>
+#endif /*ARDUINO*/
 #include "XPowersCommon.tpp"
 #include "REG/AXP192Constants.h"
 
