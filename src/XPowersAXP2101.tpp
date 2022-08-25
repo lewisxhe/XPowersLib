@@ -757,7 +757,7 @@ public:
 
     xpower_power_off_source_t getPowerOffSource()
     {
-        int val = readRegister(XPOWERS_PWRON_STATUS);
+        int val = readRegister(XPOWERS_PWROFF_STATUS);
         if (val == -1) return XPOWER_POWEROFF_SRC_UNKONW;
         return (xpower_power_off_source_t)val;
     }
