@@ -661,6 +661,7 @@ public:
     {
         int val = readRegister(XPOWERS_LDO23OUT_VOL);
         if (val == -1)return 0;
+        val &= 0x0F;
         return (val * XPOWERS_LDO3_VOL_STEPS) + XPOWERS_LDO3_VOL_MIN;
     }
 
