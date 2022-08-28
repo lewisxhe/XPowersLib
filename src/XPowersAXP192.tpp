@@ -266,7 +266,7 @@ public:
     {
         __wire = &w;
         __sda = sda;
-        __sda = scl;
+        __scl = scl;
         __addr = addr;
     }
 
@@ -274,7 +274,7 @@ public:
     {
         __wire = &Wire;
         __sda = SDA;
-        __sda = SCL;
+        __scl = SCL;
         __addr = AXP192_SLAVE_ADDRESS;
     }
 #endif
