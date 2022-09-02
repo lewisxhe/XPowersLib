@@ -124,12 +124,12 @@ esp_err_t pmu_init()
     // Set the precharge charging current
     PMU.setPrechargeCurr(XPOWERS_AXP2101_PRECHARGE_50MA);
     // Set constant current charge current limit
-    PMU.setChargerConstantCurr(XPOWERS_AXP2101_ICC_CHG_200MA);
+    PMU.setChargerConstantCurr(XPOWERS_AXP2101_CHG_CUR_200MA);
     // Set stop charging termination current
     PMU.setChargerTerminationCurr(XPOWERS_AXP2101_CHG_ITERM_25MA);
 
     // Set charge cut-off voltage
-    PMU.setChargerVoltageLimit(XPOWERS_AXP2101_CHG_VOL_4V1);
+    PMU.setChargeTargetVoltage(XPOWERS_AXP2101_CHG_VOL_4V1);
 
     // Set the watchdog trigger event type
     // PMU.setWatchdogConfig(XPOWERS_AXP2101_WDT_IRQ_TO_PIN);

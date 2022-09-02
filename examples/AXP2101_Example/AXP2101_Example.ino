@@ -63,10 +63,6 @@ void setup()
 
     Serial.printf("getID:0x%x\n", PMU.getChipID());
 
-    // Set the minimum system operating voltage inside the PMU,
-    // below this value will shut down the PMU
-    PMU.setMinSystemVoltage(XPOWERS_AXP2101_VSYS_VOL_4V5);
-
     // Set the minimum common working voltage of the PMU VBUS input,
     // below this value will turn off the PMU
     PMU.setVbusVoltageLimit(XPOWERS_AXP2101_VBUS_VOL_LIM_4V36);
@@ -77,14 +73,14 @@ void setup()
 
 
     // Get the VSYS shutdown voltage
-    uint16_t vol = PMU.getVsysPowerOffThreshold();
-    Serial.printf("->  getVsysPowerOffThreshold:%u\n", vol);
+    uint16_t vol = PMU.getSysPowerDownVoltage();
+    Serial.printf("->  getSysPowerDownVoltage:%u\n", vol);
 
     // Set VSY off voltage as 2600mV , Adjustment range 2600mV ~ 3300mV
-    PMU.setVsysPowerOffThreshold(2600);
+    PMU.setSysPowerDownVoltage(2600);
 
-    vol = PMU.getVsysPowerOffThreshold();
-    Serial.printf("->  getVsysPowerOffThreshold:%u\n", vol);
+    vol = PMU.getSysPowerDownVoltage();
+    Serial.printf("->  getSysPowerDownVoltage:%u\n", vol);
 
 
     // DC1 IMAX=2A
@@ -192,33 +188,33 @@ void setup()
     Serial.println("===========================================================================");
 
     // Set the time of pressing the button to turn off
-    PMU.setPowerKeyPressOffTime(XPOWERS_AXP2101_POWEROFF_4S);
+    PMU.setPowerKeyPressOffTime(XPOWERS_POWEROFF_4S);
     uint8_t opt = PMU.getPowerKeyPressOffTime();
     Serial.print("PowerKeyPressOffTime:");
     switch (opt) {
-    case XPOWERS_AXP2101_POWEROFF_4S: Serial.println("4 Second");
+    case XPOWERS_POWEROFF_4S: Serial.println("4 Second");
         break;
-    case XPOWERS_AXP2101_POWEROFF_6S: Serial.println("6 Second");
+    case XPOWERS_POWEROFF_6S: Serial.println("6 Second");
         break;
-    case XPOWERS_AXP2101_POWEROFF_8S: Serial.println("8 Second");
+    case XPOWERS_POWEROFF_8S: Serial.println("8 Second");
         break;
-    case XPOWERS_AXP2101_POWEROFF_10S: Serial.println("10 Second");
+    case XPOWERS_POWEROFF_10S: Serial.println("10 Second");
         break;
     default:
         break;
     }
     // Set the button power-on press time
-    PMU.setPowerKeyPressOnTime(XPOWERS_AXP2101_POWERON_128MS);
+    PMU.setPowerKeyPressOnTime(XPOWERS_POWERON_128MS);
     opt = PMU.getPowerKeyPressOnTime();
     Serial.print("PowerKeyPressOnTime:");
     switch (opt) {
-    case XPOWERS_AXP2101_POWERON_128MS: Serial.println("128 Ms");
+    case XPOWERS_POWERON_128MS: Serial.println("128 Ms");
         break;
-    case XPOWERS_AXP2101_POWERON_512MS: Serial.println("512 Ms");
+    case XPOWERS_POWERON_512MS: Serial.println("512 Ms");
         break;
-    case XPOWERS_AXP2101_POWERON_1S: Serial.println("1 Second");
+    case XPOWERS_POWERON_1S: Serial.println("1 Second");
         break;
-    case XPOWERS_AXP2101_POWERON_2S: Serial.println("2 Second");
+    case XPOWERS_POWERON_2S: Serial.println("2 Second");
         break;
     default:
         break;
@@ -306,12 +302,12 @@ void setup()
     // Set the precharge charging current
     PMU.setPrechargeCurr(XPOWERS_AXP2101_PRECHARGE_50MA);
     // Set constant current charge current limit
-    PMU.setChargerConstantCurr(XPOWERS_AXP2101_ICC_CHG_200MA);
+    PMU.setChargerConstantCurr(XPOWERS_AXP2101_CHG_CUR_200MA);
     // Set stop charging termination current
     PMU.setChargerTerminationCurr(XPOWERS_AXP2101_CHG_ITERM_25MA);
 
     // Set charge cut-off voltage
-    PMU.setChargerVoltageLimit(XPOWERS_AXP2101_CHG_VOL_4V1);
+    PMU.setChargeTargetVoltage(XPOWERS_AXP2101_CHG_VOL_4V1);
 
     // Set the watchdog trigger event type
     PMU.setWatchdogConfig(XPOWERS_AXP2101_WDT_IRQ_TO_PIN);

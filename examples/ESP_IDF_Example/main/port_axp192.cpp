@@ -30,7 +30,7 @@ esp_err_t pmu_init()
     // Set the minimum system operating voltage inside the PMU,
     // below this value will shut down the PMU
     // Range: 2600~3300mV
-    PMU.setMinSystemVoltage(2700);
+    PMU.setSysPowerDownVoltage(2700);
 
     // Set the minimum common working voltage of the PMU VBUS input,
     // below this value will turn off the PMU
@@ -81,33 +81,33 @@ esp_err_t pmu_init()
     ESP_LOGI(TAG, "BLDO=======================================================================");
 
     // Set the time of pressing the button to turn off
-    PMU.setPowerKeyPressOffTime(XPOWERS_AXP192_POWEROFF_4S);
+    PMU.setPowerKeyPressOffTime(XPOWERS_POWEROFF_4S);
     uint8_t opt = PMU.getPowerKeyPressOffTime();
     ESP_LOGI(TAG, "PowerKeyPressOffTime:");
     switch (opt) {
-    case XPOWERS_AXP192_POWEROFF_4S: ESP_LOGI(TAG, "4 Second");
+    case XPOWERS_POWEROFF_4S: ESP_LOGI(TAG, "4 Second");
         break;
-    case XPOWERS_AXP192_POWEROFF_65: ESP_LOGI(TAG, "6 Second");
+    case XPOWERS_POWEROFF_6S: ESP_LOGI(TAG, "6 Second");
         break;
-    case XPOWERS_AXP192_POWEROFF_8S: ESP_LOGI(TAG, "8 Second");
+    case XPOWERS_POWEROFF_8S: ESP_LOGI(TAG, "8 Second");
         break;
-    case XPOWERS_AXP192_POWEROFF_16S: ESP_LOGI(TAG, "10 Second");
+    case XPOWERS_POWEROFF_10S: ESP_LOGI(TAG, "10 Second");
         break;
     default:
         break;
     }
     // Set the button power-on press time
-    PMU.setPowerKeyPressOnTime(XPOWERS_AXP192_POWERON_128MS);
+    PMU.setPowerKeyPressOnTime(XPOWERS_POWERON_128MS);
     opt = PMU.getPowerKeyPressOnTime();
     ESP_LOGI(TAG, "PowerKeyPressOnTime:");
     switch (opt) {
-    case XPOWERS_AXP192_POWERON_128MS: ESP_LOGI(TAG, "128 Ms");
+    case XPOWERS_POWERON_128MS: ESP_LOGI(TAG, "128 Ms");
         break;
-    case XPOWERS_AXP192_POWERON_512MS: ESP_LOGI(TAG, "512 Ms");
+    case XPOWERS_POWERON_512MS: ESP_LOGI(TAG, "512 Ms");
         break;
-    case XPOWERS_AXP192_POWERON_1S: ESP_LOGI(TAG, "1 Second");
+    case XPOWERS_POWERON_1S: ESP_LOGI(TAG, "1 Second");
         break;
-    case XPOWERS_AXP192_POWERON_2S: ESP_LOGI(TAG, "2 Second");
+    case XPOWERS_POWERON_2S: ESP_LOGI(TAG, "2 Second");
         break;
     default:
         break;
@@ -150,12 +150,12 @@ esp_err_t pmu_init()
     );
 
     // Set constant current charge current limit
-    PMU.setChargerConstantCurr(XPOWERS_AXP192_ICC_CHG_280MA);
+    PMU.setChargerConstantCurr(XPOWERS_AXP192_CHG_CUR_280MA);
     // Set stop charging termination current
     PMU.setChargerTerminationCurr(XPOWERS_AXP192_CHG_ITERM_LESS_10_PERCENT);
 
     // Set charge cut-off voltage
-    PMU.setChargerVoltageLimit(XPOWERS_AXP192_CHG_VOL_4V2);
+    PMU.setChargeTargetVoltage(XPOWERS_AXP192_CHG_VOL_4V2);
 
     // Cache writes and reads, as long as the PMU remains powered, the data will always be stored inside the PMU
     ESP_LOGI(TAG, "Write pmu data buffer .");

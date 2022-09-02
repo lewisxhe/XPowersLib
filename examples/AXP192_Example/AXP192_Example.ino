@@ -66,7 +66,7 @@ void setup()
     // Set the minimum system operating voltage inside the PMU,
     // below this value will shut down the PMU
     // Range: 2600~3300mV
-    PMU.setMinSystemVoltage(2700);
+    PMU.setSysPowerDownVoltage(2700);
 
     // Set the minimum common working voltage of the PMU VBUS input,
     // below this value will turn off the PMU
@@ -127,23 +127,23 @@ void setup()
         break;
     case XPOWERS_AXP192_POWEROFF_8S: Serial.println("8 Second");
         break;
-    case XPOWERS_AXP192_POWEROFF_16S: Serial.println("10 Second");
+    case XPOWERS_AXP192_POWEROFF_10S: Serial.println("10 Second");
         break;
     default:
         break;
     }
     // Set the button power-on press time
-    PMU.setPowerKeyPressOnTime(XPOWERS_AXP192_POWERON_128MS);
+    PMU.setPowerKeyPressOnTime(XPOWERS_POWERON_128MS);
     opt = PMU.getPowerKeyPressOnTime();
     Serial.print("PowerKeyPressOnTime:");
     switch (opt) {
-    case XPOWERS_AXP192_POWERON_128MS: Serial.println("128 Ms");
+    case XPOWERS_POWERON_128MS: Serial.println("128 Ms");
         break;
-    case XPOWERS_AXP192_POWERON_512MS: Serial.println("512 Ms");
+    case XPOWERS_POWERON_512MS: Serial.println("512 Ms");
         break;
-    case XPOWERS_AXP192_POWERON_1S: Serial.println("1 Second");
+    case XPOWERS_POWERON_1S: Serial.println("1 Second");
         break;
-    case XPOWERS_AXP192_POWERON_2S: Serial.println("2 Second");
+    case XPOWERS_POWERON_2S: Serial.println("2 Second");
         break;
     default:
         break;
@@ -190,12 +190,12 @@ void setup()
     );
 
     // Set constant current charge current limit
-    PMU.setChargerConstantCurr(XPOWERS_AXP192_ICC_CHG_280MA);
+    PMU.setChargerConstantCurr(XPOWERS_AXP192_CHG_CUR_280MA);
     // Set stop charging termination current
     PMU.setChargerTerminationCurr(XPOWERS_AXP192_CHG_ITERM_LESS_10_PERCENT);
 
     // Set charge cut-off voltage
-    PMU.setChargerVoltageLimit(XPOWERS_AXP192_CHG_VOL_4V2);
+    PMU.setChargeTargetVoltage(XPOWERS_AXP192_CHG_VOL_4V2);
 
     // Cache writes and reads, as long as the PMU remains powered, the data will always be stored inside the PMU
     Serial.println("Write pmu data buffer .");
