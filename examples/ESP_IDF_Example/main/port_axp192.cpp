@@ -37,7 +37,7 @@ esp_err_t pmu_init()
     PMU.setVbusVoltageLimit(XPOWERS_AXP192_VBUS_VOL_LIM_4V5);
 
     // Turn off USB input current limit
-    PMU.disableVbusCurrLimit();
+    PMU.setVbusCurrentLimit(XPOWERS_AXP192_VBUS_CUR_LIM_OFF);
 
     // DC1 700~3500mV, IMAX=1.2A
     PMU.setDC1Voltage(3300);

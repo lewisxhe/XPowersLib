@@ -122,10 +122,7 @@ typedef enum {
     XPOWERS_AXP192_VBUS_VOL_LIM_4V7,
 } xpowers_axp192_vbus_vol_limit_t;
 
-typedef enum {
-    XPOWERS_AXP192_VBUS_CUR_LIM_500MA,
-    XPOWERS_AXP192_VBUS_CUR_LIM_100MA,
-} xpowers_axp192_vbus_cur_limit_t;
+
 
 typedef enum {
     XPOWER_CHGLED_CTRL_CHGER,        //Controlled by PMU internal charger
@@ -271,31 +268,48 @@ public:
         writeRegister(XPOWERS_AXP192_IPS_SET, val | (opt << 3));
     }
 
-    void enableVbusCurrLimit()
-    {
-        setRegisterBit(XPOWERS_AXP192_IPS_SET, 1);
-    }
-
-    void disableVbusCurrLimit()
-    {
-        clrRegisterBit(XPOWERS_AXP192_IPS_SET, 1);
-    }
-
-    void setVbusCurrentLimit(xpowers_axp192_vbus_cur_limit_t opt)
+    /**
+    * @brief  Set VBUS Current Input Limit.
+    * @param  opt: View the related chip type xpowers_axp192_vbus_cur_limit_t enumeration
+    *              parameters in "XPowersParams.hpp"
+    * @retval true valid false invalid
+    */
+    bool setVbusCurrentLimit(uint8_t opt)
     {
         int val = readRegister(XPOWERS_AXP192_IPS_SET);
-        if (val == -1)return;
+        if (val == -1)return false;
         switch (opt) {
         case XPOWERS_AXP192_VBUS_CUR_LIM_500MA:
-            clrRegisterBit(XPOWERS_AXP192_IPS_SET, 0);
-            break;
+            setRegisterBit(XPOWERS_AXP192_IPS_SET, 1);
+            return clrRegisterBit(XPOWERS_AXP192_IPS_SET, 0);
         case XPOWERS_AXP192_VBUS_CUR_LIM_100MA:
-            setRegisterBit(XPOWERS_AXP192_IPS_SET, 0);
-            break;
+            setRegisterBit(XPOWERS_AXP192_IPS_SET, 1);
+            return setRegisterBit(XPOWERS_AXP192_IPS_SET, 0);
+        case XPOWERS_AXP192_VBUS_CUR_LIM_OFF:
+            return clrRegisterBit(XPOWERS_AXP192_IPS_SET, 1);
         default:
             break;
         }
+        return false;
     }
+
+
+    /**
+    * @brief  Get VBUS Current Input Limit.
+    * @retval View the related chip type xpowers_axp192_vbus_cur_limit_t enumeration
+    *              parameters in "XPowersParams.hpp"
+    */
+    uint8_t getVbusCurrentLimit(void)
+    {
+        if (getRegisterBit(XPOWERS_AXP192_IPS_SET, 1) == 0) {
+            return XPOWERS_AXP192_VBUS_CUR_LIM_OFF;
+        }
+        if (getRegisterBit(XPOWERS_AXP192_IPS_SET, 0)) {
+            return XPOWERS_AXP192_VBUS_CUR_LIM_100MA;
+        }
+        return XPOWERS_AXP192_VBUS_CUR_LIM_500MA;
+    }
+
 
     // Set the minimum system operating voltage inside the PMU,
     // below this value will shut down the PMU,Adjustment range 2600mV ~ 3300mV
@@ -329,7 +343,11 @@ public:
     }
 
 
-
+    /**
+     * @brief  Set shutdown, calling shutdown will turn off all power channels,
+     *         only VRTC belongs to normal power supply
+     * @retval None
+     */
     void shutdown()
     {
         setRegisterBit(XPOWERS_AXP192_OFF_CTL, 7);

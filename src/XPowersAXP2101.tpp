@@ -166,15 +166,6 @@ typedef enum {
 } xpower_vbus_vol_limit_t;
 
 typedef enum {
-    XPOWERS_AXP2101_VBUS_CUR_LIM_100MA,
-    XPOWERS_AXP2101_VBUS_CUR_LIM_500MA,
-    XPOWERS_AXP2101_VBUS_CUR_LIM_900MA,
-    XPOWERS_AXP2101_VBUS_CUR_LIM_1000MA,
-    XPOWERS_AXP2101_VBUS_CUR_LIM_1500MA,
-    XPOWERS_AXP2101_VBUS_CUR_LIM_2000MA,
-} xpowers_axp2101_vbus_cur_limit_t;
-
-typedef enum {
     XPOWERS_AXP2101_VSYS_VOL_4V1,
     XPOWERS_AXP2101_VSYS_VOL_4V2,
     XPOWERS_AXP2101_VSYS_VOL_4V3,
@@ -389,12 +380,22 @@ public:
         clrRegisterBit(XPOWERS_AXP2101_COMMON_CONFIG, 2);
     }
 
-    void resetPmuSocSystem(void)
+
+    /**
+     * @brief  Restart the SoC System, POWOFF/POWON and reset the related registers
+     * @retval None
+     */
+    void reset(void)
     {
         setRegisterBit(XPOWERS_AXP2101_COMMON_CONFIG, 1);
     }
 
-    void softPowerOff(void)
+    /**
+     * @brief  Set shutdown, calling shutdown will turn off all power channels,
+     *         only VRTC belongs to normal power supply
+     * @retval None
+     */
+    void shutdown(void)
     {
         setRegisterBit(XPOWERS_AXP2101_COMMON_CONFIG, 0);
     }
@@ -486,17 +487,26 @@ public:
         return (readRegister(XPOWERS_AXP2101_INPUT_VOL_LIMIT_CTRL) & 0x0F);
     }
 
-    // Set the maximum current of the PMU VBUS input,
-    // higher than this value will turn off the PMU
-    void setVbusCurrentLimit(xpowers_axp2101_vbus_cur_limit_t opt)
+    /**
+    * @brief  Set VBUS Current Input Limit.
+    * @param  opt: View the related chip type xpowers_axp2101_vbus_cur_limit_t enumeration
+    *              parameters in "XPowersParams.hpp"
+    * @retval true valid false invalid
+    */
+    bool setVbusCurrentLimit(uint8_t opt)
     {
         int val = readRegister(XPOWERS_AXP2101_INPUT_CUR_LIMIT_CTRL);
-        if (val == -1)return;
+        if (val == -1)return false;
         val &= 0xF8;
-        writeRegister(XPOWERS_AXP2101_INPUT_CUR_LIMIT_CTRL, val | (opt & 0x07));
+        return 0 == writeRegister(XPOWERS_AXP2101_INPUT_CUR_LIMIT_CTRL, val | (opt & 0x07));
     }
 
-    uint8_t getVinCurrentLimit(void)
+    /**
+    * @brief  Get VBUS Current Input Limit.
+    * @retval View the related chip type xpowers_axp2101_vbus_cur_limit_t enumeration
+    *              parameters in "XPowersParams.hpp"
+    */
+    uint8_t getVbusCurrentLimit(void)
     {
         return (readRegister(XPOWERS_AXP2101_INPUT_CUR_LIMIT_CTRL) & 0x07);
     }
@@ -965,24 +975,24 @@ public:
         writeRegister(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, val | opt);
     }
 
-    void enableWakeup(void)
+    bool enableWakeup(void)
     {
-        setRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 1);
+        return setRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 1);
     }
 
-    void disableWakeup(void)
+    bool disableWakeup(void)
     {
-        clrRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 1);
+        return clrRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 1);
     }
 
-    void enableSleep(void)
+    bool enableSleep(void)
     {
-        setRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 0);
+        return setRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 0);
     }
 
-    void disableSleep(void)
+    bool disableSleep(void)
     {
-        clrRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 0);
+        return clrRegisterBit(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, 0);
     }
 
 

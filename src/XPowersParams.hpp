@@ -127,6 +127,29 @@ typedef enum __xpowers_axp192_chg_curr {
 
 
 
+
+/**
+ * @brief axp2101 vbus currnet limit parameters.
+ */
+typedef enum {
+    XPOWERS_AXP2101_VBUS_CUR_LIM_100MA,
+    XPOWERS_AXP2101_VBUS_CUR_LIM_500MA,
+    XPOWERS_AXP2101_VBUS_CUR_LIM_900MA,
+    XPOWERS_AXP2101_VBUS_CUR_LIM_1000MA,
+    XPOWERS_AXP2101_VBUS_CUR_LIM_1500MA,
+    XPOWERS_AXP2101_VBUS_CUR_LIM_2000MA,
+} xpowers_axp2101_vbus_cur_limit_t;
+
+/**
+ * @brief axp192 vbus currnet limit parameters.
+ */
+typedef enum {
+    XPOWERS_AXP192_VBUS_CUR_LIM_500MA,
+    XPOWERS_AXP192_VBUS_CUR_LIM_100MA,
+    XPOWERS_AXP192_VBUS_CUR_LIM_OFF,
+} xpowers_axp192_vbus_cur_limit_t;
+
+
 /**
  * @brief axp192 interrupt control mask parameters.
  */

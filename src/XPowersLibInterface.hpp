@@ -128,6 +128,25 @@ public:
      */
     virtual void deinit() = 0;
 
+
+    /**
+     * @brief  Set the PMU sleep flag,
+     *         need to manually close the power channel after setting
+     * @retval true success false failed
+     */
+    virtual bool enableSleep() = 0;
+
+
+    /**
+     * @brief  Set shutdown, calling shutdown will turn off all power channels,
+     *         only VRTC belongs to normal power supply
+     * @retval None
+     */
+    virtual void shutdown() = 0;
+
+
+
+
     /**
      * @brief Query chip ID
      * @retval  Chip ID
@@ -239,6 +258,22 @@ public:
     virtual uint16_t getVbusVoltage();
 
 
+    /**
+     * @brief  Set VBUS Current Input Limit.
+     * @param  opt: View the related chip type xpowers_axpxxx_vbus_cur_limit_t enumeration
+     *              parameters in "XPowersParams.hpp"
+     * @retval true valid false invalid
+     */
+    virtual bool setVbusCurrentLimit(uint8_t opt) = 0;
+
+    /**
+    * @brief  Get VBUS Current Input Limit.
+    * @retval View the related chip type xpowers_axpxxx_vbus_cur_limit_t enumeration
+    *              parameters in "XPowersParams.hpp"
+    */
+    virtual uint8_t getVbusCurrentLimit(void) = 0;
+
+
     // SYS
     /**
     * @brief  Get PMU SYS main Voltage
@@ -249,7 +284,7 @@ public:
     /**
      * @brief  Set PMU Low Voltage Shutdown Threshold
      * @param  millivolt: 2600mV ~ 3300mV
-     * @retval
+     * @retval true valid false invalid
      */
     virtual bool setSysPowerDownVoltage(uint16_t millivolt) = 0;
 
@@ -263,7 +298,7 @@ public:
      * @brief  Set charge target voltage.
      * @param  opt: View the related chip type xpowers_axpxxx_chg_vol_t enumeration
      *              parameters in "XPowersParams.hpp"
-     * @retval
+     * @retval true valid false invalid
      */
     virtual bool setChargeTargetVoltage(uint8_t opt) = 0;
 
@@ -279,7 +314,7 @@ public:
      * @brief  Set charge current.
      * @param  opt: View the related chip type xpowers_axpxxx_chg_curr_t enumeration
      *              parameters in "XPowersParams.hpp"
-     * @retval
+     * @retval true valid false invalid
      */
     virtual bool setChargerConstantCurr(uint8_t opt);
 
@@ -332,7 +367,7 @@ public:
      * @brief  Eanble PMU interrupt control mask .
      * @param  opt: View the related chip type xpowers_axpxxx_irq_t enumeration
      *              parameters in "XPowersParams.hpp"
-     * @retval
+     * @retval true valid false invalid
      */
     virtual bool enableIRQ(uint64_t opt) = 0;
 
