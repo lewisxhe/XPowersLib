@@ -274,11 +274,18 @@ public:
     virtual void setProtectedChannel(uint8_t channel);
 
     /**
-     * @brief  Get whether a channel power supply has been protected
+     * @brief  Unprotect the channel, call this to unprotect the channel lock
+     * @param  channel: Parameters See XPowersPowerChannel_t enumeration
+     */
+    virtual void setUnprotectChannel(uint8_t channel);
+
+    /**
+     * * @brief  Get whether a channel power supply has been protected
      * @param  channel: Parameters See XPowersPowerChannel_t enumeration
      * @retval true is set,false is not set
      */
     virtual bool getProtectedChannel(uint8_t channel);
+
 
     /**
      * @brief  Query whether the PMU input parameter channel is valid

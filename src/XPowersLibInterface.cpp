@@ -91,6 +91,11 @@ void XPowersLibInterface::setProtectedChannel(uint8_t channel)
     __protectedMask |= _BV(channel);
 }
 
+void XPowersLibInterface::setUnprotectChannel(uint8_t channel)
+{
+    __protectedMask &= (~_BV(channel));
+}
+
 bool XPowersLibInterface::getProtectedChannel(uint8_t channel)
 {
     return __protectedMask & _BV(channel);
