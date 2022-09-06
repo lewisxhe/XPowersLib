@@ -124,10 +124,7 @@ typedef enum {
 
 
 
-typedef enum {
-    XPOWER_CHGLED_CTRL_CHGER,        //Controlled by PMU internal charger
-    XPOWER_CHGLED_CTRL_MANUAL,       //Controlled by setChargingLedFreq
-} xpowers_axp192_chgled_func_t;
+
 
 
 typedef enum {
@@ -1278,40 +1275,43 @@ public:
      * Charge led functions
      */
 
-    void enableChargingLed(void)
+    /**
+    * @brief Set charging led mode.
+    * @retval See xpowers_chg_led_mode_t enum for details.
+    */
+    void setChargingLedMode(uint8_t mode)
     {
-        setChargerLedFunction(XPOWER_CHGLED_CTRL_CHGER);
-    }
-
-    void disableChargingLed(void)
-    {
-        setChargerLedFunction(XPOWER_CHGLED_CTRL_MANUAL);
-        setChargingLedFreq(XPOWERS_AXP192_CHG_LED_DISABLE);
-    }
-
-
-    void setChargerLedFunction(xpowers_axp192_chgled_func_t opt)
-    {
-        switch (opt) {
-        case XPOWER_CHGLED_CTRL_CHGER:
-            clrRegisterBit(XPOWERS_AXP192_OFF_CTL, 3);
+        int val;
+        switch (mode) {
+        case XPOWERS_CHG_LED_OFF:
+        case XPOWERS_CHG_LED_BLINK_1HZ:
+        case XPOWERS_CHG_LED_BLINK_4HZ:
+        case XPOWERS_CHG_LED_ON:
+            val = readRegister(XPOWERS_AXP192_OFF_CTL);
+            if (val == -1)return;
+            val &= 0xC7;
+            val |= 0x08;      //use manual ctrl
+            val |= (mode << 4);
+            writeRegister(XPOWERS_AXP192_OFF_CTL, val);
             break;
-        case XPOWER_CHGLED_CTRL_MANUAL:
-            setRegisterBit(XPOWERS_AXP192_OFF_CTL, 3);
+        case XPOWERS_CHG_LED_CTRL_CHG:
+            clrRegisterBit(XPOWERS_AXP192_OFF_CTL, 3);
             break;
         default:
             break;
         }
     }
 
-    void setChargingLedFreq(xpowers_chgled_t mode)
+    uint8_t getChargingLedMode()
     {
+        if (!getRegisterBit(XPOWERS_AXP192_OFF_CTL, 3)) {
+            return XPOWERS_CHG_LED_CTRL_CHG;
+        }
         int val = readRegister(XPOWERS_AXP192_OFF_CTL);
-        if (val == -1)return;
-        writeRegister(XPOWERS_AXP192_OFF_CTL, (val & 0xCF) | (mode << 4));
+        if (val == -1)return XPOWERS_CHG_LED_OFF;
+        val &= 0x30;
+        return val >> 4;
     }
-
-
 
     /*
      * Coulomb counter control

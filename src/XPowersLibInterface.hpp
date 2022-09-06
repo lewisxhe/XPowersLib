@@ -38,7 +38,7 @@
 | DC1        | 0.7V-3.5V /1.2A   | 0.7V-3.5V  /1.2A  | X                 | 1.5-3.4V                        /2A    |
 | DC2        | 0.7-2.275V/0.6A   | 0.7-2.275V /1.6A  | 0.7-2.275V /1.6A  | 0.5-1.2V,1.22-1.54V             /2A    |
 | DC3        | X                 | 0.7-3.5V   /0.7A  | 0.7-3.5V   /1.2A  | 0.5-1.2V,1.22-1.54V,1.6-3.4V    /2A    |
-| DC4        | X                 | x                 | x                 | 0.5-1.2V,1.22-1.84V            /1.5A   |
+| DC4        | X                 | x                 | x                 | 0.5-1.2V,1.22-1.84V             /1.5A   |
 | DC5        | X                 | x                 | x                 | 1.2V,1.4-3.7V                   /1A    |
 | LDO1(VRTC) | 3.3V       /30mA  | 3.3V       /30mA  | 3.3V       /30mA  | 1.8V                            /30mA  |
 | LDO2       | 1.8V-3.3V  /200mA | 1.8V-3.3V  /200mA | 1.8V-3.3V  /200mA | x                                      |
@@ -104,13 +104,64 @@ typedef enum __XPowersChipModel {
 } XPowersChipModel_t;
 
 
+/**
+ * @brief  Compatible with subclasses of the Meshtastic-devic project
+ */
+class HasBatteryLevel
+{
+public:
+    /**
+    * @brief  Get battery percentage
+    * @retval 0~100% , -1 no battery is connected
+    */
+    virtual int getBatteryPercent()
+    {
+        return -1;
+    }
+
+    /**
+    * @brief  Get battery Voltage
+    * @retval Voltage unit: millivolt , 0 is no battery is connected
+    */
+    virtual uint16_t getBattVoltage()
+    {
+        return 0;
+    }
+
+    /**
+     * @brief Query whether the current battery is connected
+     * @retval true to access,false to not access
+     */
+    virtual bool isBatteryConnect()
+    {
+        return false;
+    }
+
+    /**
+     * @brief Query whether the current USB is connected
+     * @retval true to access,false to not access
+     */
+    virtual bool isVbusIn()
+    {
+        return false;
+    }
+
+    /**
+    * @brief Query whether it is currently in charging state
+    * @retval true to charge,false to not charge
+    */
+    virtual bool isCharging()
+    {
+        return false;
+    }
+};
 
 // @brief Power resource interface class
-class XPowersLibInterface
+class XPowersLibInterface : public HasBatteryLevel
 {
 public:
 
-    XPowersLibInterface() : __chipModel(XPOWERS_UNDEFINED) {};
+    XPowersLibInterface() : __chipModel(XPOWERS_UNDEFINED), __protectedMask(0) {};
 
     virtual ~XPowersLibInterface() {}
 
@@ -158,19 +209,19 @@ public:
     * @brief Query whether it is currently in charging state
     * @retval true to charge,false to not charge
     */
-    virtual bool isCharging() = 0;
+    // virtual bool isCharging() = 0;
 
     /**
      * @brief Query whether the current USB is connected
      * @retval true to access,false to not access
      */
-    virtual bool isVbusIn() = 0;
+    // virtual bool isVbusIn() = 0;
 
     /**
      * @brief Query whether the current battery is connected
      * @retval true to access,false to not access
      */
-    virtual bool isBatteryConnect() = 0;
+    // virtual bool isBatteryConnect() = 0;
 
     /**
      * @brief Query whether the current is in the discharge state
@@ -242,13 +293,13 @@ public:
     * @brief  Get battery Voltage
     * @retval Voltage unit: millivolt , 0 is no battery is connected
     */
-    virtual uint16_t getBattVoltage() = 0;
+    // virtual uint16_t getBattVoltage() = 0;
 
     /**
     * @brief  Get battery percentage
     * @retval 0~100% , -1 no battery is connected
     */
-    virtual int getBatteryPercent(void);
+    // virtual int getBatteryPercent(void);
 
     // Vbus
     /**
@@ -503,16 +554,13 @@ public:
     virtual bool disableTSPinMeasure(void);
 
     // Charge indicator function
-
     /**
-     * @brief  Enable charging indicator
-     */
-    virtual void enableChargingLed();
+    * @brief  Set charging led mode
+    * @param  opt: View the related chip type xpowers_chg_led_mode_t enumeration
+    *              parameters in "XPowersParams.hpp"
+    */
+    virtual void setChargingLedMode(uint8_t mode) = 0;
 
-    /**
-     * @brief  Disable charging indicator
-     */
-    virtual void disableChargingLed();
 
 
     // PMU PEKEY settings
@@ -527,7 +575,8 @@ public:
     /**
      * @brief Get PEKEY press power on time
      * @retval View the related chip type xpowers_press_on_time_t enumeration
-     *              parameters in "XPowersParams.hpp"     */
+     *              parameters in "XPowersParams.hpp"
+     */
     virtual uint8_t getPowerKeyPressOnTime();
 
     /**

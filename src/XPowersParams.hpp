@@ -60,6 +60,17 @@ typedef enum __xpowers_press_on_time {
 
 
 /**
+ * @brief Charging led mode parameters.
+ */
+typedef enum __xpowers_chg_led_mode {
+    XPOWERS_CHG_LED_OFF,
+    XPOWERS_CHG_LED_BLINK_1HZ,
+    XPOWERS_CHG_LED_BLINK_4HZ,
+    XPOWERS_CHG_LED_ON,
+    XPOWERS_CHG_LED_CTRL_CHG,    // The charging indicator is controlled by the charger
+} xpowers_chg_led_mode_t;
+
+/**
  * @brief axp2101 charge target voltage parameters.
  */
 typedef enum __xpowers_axp2101_chg_vol {

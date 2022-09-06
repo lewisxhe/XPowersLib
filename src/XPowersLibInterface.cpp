@@ -96,20 +96,6 @@ bool XPowersLibInterface::getProtectedChannel(uint8_t channel)
     return __protectedMask & _BV(channel);
 }
 
-bool XPowersLibInterface::isBatteryConnect()
-{
-    return false;
-}
-
-bool XPowersLibInterface::isCharging()
-{
-    return false;
-}
-
-bool XPowersLibInterface::isVbusIn()
-{
-    return false;
-}
 
 uint16_t XPowersLibInterface::getVbusVoltage()
 {

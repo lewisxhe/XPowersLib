@@ -77,15 +77,15 @@ void setup()
 
     // DC1 700~3500mV, IMAX=1.2A
     PMU.setDC1Voltage(3300);
-    Serial.printf("DC1  :%s   Voltage:%u mV \n",  PMU.isEnableDC1()  ? "ENABLE" : "DISABLE", PMU.getDC1Voltage());
+    Serial.printf("DC1  :%s   Voltage:%u mV \n",  PMU.isEnableDC1()  ? "+" : "-", PMU.getDC1Voltage());
 
     // DC2 700~2750mV, IMAX=1.6A;
     PMU.setDC2Voltage(700);
-    Serial.printf("DC2  :%s   Voltage:%u mV \n",  PMU.isEnableDC2()  ? "ENABLE" : "DISABLE", PMU.getDC2Voltage());
+    Serial.printf("DC2  :%s   Voltage:%u mV \n",  PMU.isEnableDC2()  ? "+" : "-", PMU.getDC2Voltage());
 
     // DC3 700~3500mV,IMAX=0.7A;
     PMU.setDC3Voltage(3300);
-    Serial.printf("DC3  :%s   Voltage:%u mV \n",  PMU.isEnableDC3()  ? "ENABLE" : "DISABLE", PMU.getDC3Voltage());
+    Serial.printf("DC3  :%s   Voltage:%u mV \n",  PMU.isEnableDC3()  ? "+" : "-", PMU.getDC3Voltage());
 
 
     //LDO2 1800~3300V, 100mV/step, IMAX=200mA
@@ -111,10 +111,10 @@ void setup()
     Serial.printf("DC2  :%s   Voltage:%u mV \n",  PMU.isEnableDC2()  ? "ENABLE" : "DISABLE", PMU.getDC2Voltage());
     Serial.printf("DC3  :%s   Voltage:%u mV \n",  PMU.isEnableDC3()  ? "ENABLE" : "DISABLE", PMU.getDC3Voltage());
     Serial.println("LDO=======================================================================");
-    Serial.printf("LDO2:%s   Voltage:%u mV\n",  PMU.isEnableLDO2()  ? "ENABLE" : "DISABLE", PMU.getLDO2Voltage());
-    Serial.printf("LDO3:%s   Voltage:%u mV\n",  PMU.isEnableLDO3()  ? "ENABLE" : "DISABLE", PMU.getLDO3Voltage());
-    Serial.printf("LDOio:%s   Voltage:%u mV\n",  PMU.isEnableLDOio()  ? "ENABLE" : "DISABLE", PMU.getLDOioVoltage());
-    Serial.println("BLDO=======================================================================");
+    Serial.printf("LDO2: %s   Voltage:%u mV\n",  PMU.isEnableLDO2()  ? "ENABLE" : "DISABLE", PMU.getLDO2Voltage());
+    Serial.printf("LDO3: %s   Voltage:%u mV\n",  PMU.isEnableLDO3()  ? "ENABLE" : "DISABLE", PMU.getLDO3Voltage());
+    Serial.printf("LDOio: %s   Voltage:%u mV\n",  PMU.isEnableLDOio()  ? "ENABLE" : "DISABLE", PMU.getLDOioVoltage());
+    Serial.println("==========================================================================");
 
     // Set the time of pressing the button to turn off
     PMU.setPowerKeyPressOffTime(XPOWERS_AXP192_POWEROFF_4S);
@@ -164,12 +164,15 @@ void setup()
     PMU.enableBattVoltageMeasure();
     PMU.enableSystemVoltageMeasure();
 
-    // Manual control CHGLED
-    // PMU.setChargerLedFunction(XPOWER_CHGLED_CTRL_MANUAL);
-    // PMU.setChargingLedFreq(XPOWERS_AXP192_CHG_LED_FRE_4HZ);
-
-    // The default setting is CHGLED is automatically controlled by the PMU.
-    PMU.setChargerLedFunction(XPOWER_CHGLED_CTRL_CHGER);
+    /*
+      The default setting is CHGLED is automatically controlled by the PMU.
+    - XPOWERS_CHG_LED_OFF,
+    - XPOWERS_CHG_LED_BLINK_1HZ,
+    - XPOWERS_CHG_LED_BLINK_4HZ,
+    - XPOWERS_CHG_LED_ON,
+    - XPOWERS_CHG_LED_CTRL_CHG,
+    * */
+    PMU.setChargingLedMode(XPOWERS_CHG_LED_OFF);
 
 
     pinMode(pmu_irq_pin, INPUT);
@@ -324,7 +327,17 @@ void loop()
         }
         if (PMU.isPekeyShortPressIrq()) {
             Serial.println("isPekeyShortPress");
+
             // enterPmuSleep();
+
+            //CHG LED mode test
+            uint8_t m =  PMU.getChargingLedMode();
+            Serial.print("getChargingLedMode:");
+            Serial.println(m++);
+            m %= XPOWERS_CHG_LED_CTRL_CHG;
+            Serial.printf("setChargingLedMode:%u", m);
+            PMU.setChargingLedMode(m);
+
         }
         if (PMU.isPekeyLongPressIrq()) {
             Serial.println("isPekeyLongPress");

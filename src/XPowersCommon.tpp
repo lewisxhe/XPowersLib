@@ -85,8 +85,7 @@ public:
         if (__has_init)return thisChip().initImpl();
         __has_init = true;
         __wire = &w;
-        __wire->setPins(sda, scl);
-        __wire->begin();
+        __wire->begin(sda, scl);
         __addr = addr;
         return thisChip().initImpl();
     }
@@ -247,9 +246,8 @@ protected:
         if (__has_init) return thisChip().initImpl();
         __has_init = true;
         log_i("SDA:%d SCL:%d", __sda, __scl);
-        __wire->setPins(__sda, __scl);
-        __wire->begin();
-#endif
+        __wire->begin(__sda, __scl);
+#endif  /*ARDUINO*/
         return thisChip().initImpl();
     }
 
@@ -257,9 +255,13 @@ protected:
     {
 #if defined(ARDUINO)
         if (__wire) {
+#if defined(ESP_IDF_VERSION)
+#if ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4,4,0)
             __wire->end();
+#endif  /*ESP_IDF_VERSION*/
+#endif  /*ESP_IDF_VERSION*/
         }
-#endif
+#endif /*ARDUINO*/
     }
 
 

@@ -43,12 +43,7 @@ typedef enum {
     XPOWERS_AXP2101_PRESSOFF_2S5,
 } xpowers_irq_time_t;
 
-typedef enum {
-    XPOWERS_AXP2101_CHG_LED_FRE_0HZ,
-    XPOWERS_AXP2101_CHG_LED_FRE_1HZ,
-    XPOWERS_AXP2101_CHG_LED_FRE_4HZ,
-    XPOWERS_AXP2101_CHG_LED_DISABLE,
-} xpowers_axp2101_chgled_t;
+
 
 typedef enum {
     XPOWERS_AXP2101_PRECHARGE_0MA,
@@ -140,11 +135,7 @@ typedef enum {
     XPOWERS_AXP2101_WDT_TIMEOUT_128S,
 } xpowers_wdt_timeout_t;
 
-typedef enum {
-    XPOWER_CHGLED_TYPEA,        //See datasheet 6.7.5 page 27, Table 6-4 CHGLED Function Control
-    XPOWER_CHGLED_TYPEB,        //See datasheet 6.7.5 page 27, Table 6-4 CHGLED Function Control
-    XPOWER_CHGLED_MANUAL,       //The charging indicator is controlled by setChargingLedFreq to control the output frequency
-} xpowers_axp2101_chgled_func_t;
+
 
 typedef enum {
     XPOWERS_AXP2101_VBUS_VOL_LIM_3V88,
@@ -2224,40 +2215,60 @@ public:
     /*
     * CHG LED setting and control
     */
-    void enableChargingLed(void)
+    // void enableChargingLed(void)
+    // {
+    //     setRegisterBit(XPOWERS_AXP2101_CHGLED_SET_CTRL, 0);
+    // }
+
+    // void disableChargingLed(void)
+    // {
+    //     clrRegisterBit(XPOWERS_AXP2101_CHGLED_SET_CTRL, 0);
+    // }
+
+    /**
+    * @brief Set charging led mode.
+    * @retval See xpowers_chg_led_mode_t enum for details.
+    */
+    void setChargingLedMode(uint8_t mode)
     {
-        setRegisterBit(XPOWERS_AXP2101_CHGLED_SET_CTRL, 0);
+        int val;
+        switch (mode) {
+        case XPOWERS_CHG_LED_OFF:
+        // clrRegisterBit(XPOWERS_AXP2101_CHGLED_SET_CTRL, 0);
+        // break;
+        case XPOWERS_CHG_LED_BLINK_1HZ:
+        case XPOWERS_CHG_LED_BLINK_4HZ:
+        case XPOWERS_CHG_LED_ON:
+            val = readRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL);
+            if (val == -1)return;
+            val &= 0xC8;
+            val |= 0x05;    //use manual ctrl
+            val |= (mode << 4);
+            writeRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL, val);
+            break;
+        case XPOWERS_CHG_LED_CTRL_CHG:
+            val = readRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL);
+            if (val == -1)return;
+            val &= 0xF9;
+            writeRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL, val | 0x01); // use type A mode
+            // writeRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL, val | 0x02); // use type B mode
+            break;
+        default:
+            break;
+        }
     }
 
-    void disableChargingLed(void)
-    {
-        clrRegisterBit(XPOWERS_AXP2101_CHGLED_SET_CTRL, 0);
-    }
-
-    void setChargingLedFreq(xpowers_axp2101_chgled_t opt)
+    uint8_t getChargingLedMode()
     {
         int val = readRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL);
-        if (val == -1)return;
-        val &= 0xCF;
-        val |= (opt << 4);
-        writeRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL, val);
+        if (val == -1)return XPOWERS_CHG_LED_OFF;
+        val >>= 1;
+        if ((val & 0x02) == 0x02) {
+            val >>= 4;
+            return val & 0x03;
+        }
+        return XPOWERS_CHG_LED_CTRL_CHG;
     }
-
-    xpowers_axp2101_chgled_t getChargingLedFreq(void)
-    {
-        return (xpowers_axp2101_chgled_t)((readRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL) & 0x30) >> 4);
-    }
-
-    void setChargerLedFunction(xpowers_axp2101_chgled_func_t opt)
-    {
-        int val = readRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL);
-        if (val == -1)return;
-        val &= 0xF9;
-        writeRegister(XPOWERS_AXP2101_CHGLED_SET_CTRL, val | (opt << 1));
-    }
-
-
-
 
     /**
      * @brief 预充电充电电流限制
