@@ -1285,6 +1285,56 @@ public:
         return getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 5);
     }
 
+    // DCDCS force PWM control
+    void setDcUVPDebounceTime(uint8_t opt)
+    {
+        int val = readRegister(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL);
+        val &= 0xFC;
+        writeRegister(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, val | opt);
+    }
+
+    void settDC1WorkModeToPwm(uint8_t enable)
+    {
+        enable ?
+        setRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 2)
+        : clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 2);
+    }
+
+    void settDC2WorkModeToPwm(uint8_t enable)
+    {
+        enable ? setRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 3)
+        : clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 3);
+    }
+
+    void settDC3WorkModeToPwm(uint8_t enable)
+    {
+        enable ?
+        setRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 4)
+        : clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 4);
+    }
+
+    void settDC4WorkModeToPwm( uint8_t enable)
+    {
+        enable ?
+        setRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 5)
+        :  clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 5);
+    }
+
+    //1 = 100khz 0=50khz
+    void setDCFreqSpreadRange(uint8_t opt)
+    {
+        opt ?
+        setRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 6)
+        :  clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 6);
+    }
+
+    void setDCFreqSpreadRangeEn(bool en)
+    {
+        en ?
+        setRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 7)
+        :  clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 7);
+    }
+
     /*
      * Power control DCDC1 functions
      */
@@ -1324,11 +1374,7 @@ public:
         return (readRegister(XPOWERS_AXP2101_DC_VOL0_CTRL) & 0x1F) * XPOWERS_AXP2101_DCDC1_VOL_STEPS + XPOWERS_AXP2101_DCDC1_VOL_MIN;
     }
 
-    uint8_t getDC1WorkMode(void)
-    {
-        // return (readRegister(XPOWERS_AXP2101_DCDC_MODESET) & _BV(0))  == _BV(0);
-        return 0;
-    }
+
 
     // DCDC1 85% low voltage turn off PMIC function
     void setDC1LowVoltagePowerDowm(bool en)
