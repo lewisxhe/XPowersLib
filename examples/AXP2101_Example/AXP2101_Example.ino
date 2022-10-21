@@ -280,7 +280,8 @@ void setup()
     PMU.setChargingLedMode(XPOWERS_CHG_LED_OFF);
 
 
-    pinMode(pmu_irq_pin, INPUT);
+    // Force add pull-up
+    pinMode(pmu_irq_pin, INPUT_PULLUP);
     attachInterrupt(pmu_irq_pin, setFlag, FALLING);
 
 
