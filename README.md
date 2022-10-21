@@ -8,7 +8,6 @@
   / . \     | |  | (_) \ V  V /  __/ |  \__ \ |____| | |_) |
  /_/ \_\    |_|   \___/ \_/\_/ \___|_|  |___/______|_|_.__/
 
-
 ```
 
 # ❗️❗️❗️  WARN:
@@ -19,8 +18,9 @@ it may burn your external load,please check the voltage setting before running t
 if there is any loss,please bear it by yourself
 ```
 
-- Arduino library for x-powers power management series
-- Through esp32 verification,other platforms have not been tested. Due to the many functions of the chip,it cannot be verified one by one. Only the functions used in the examples are tested.
+✨ Library specially written for XPowers, supporting **CircuitPython**, **Micropython**, **Arduino**, **ESP-IDF**
+✨ Through esp32,esp32s3 verification,other platforms have not been tested. Due to the many functions of the chip,it cannot be verified one by one.
+✨ At present, other XPowers models except AXP2101 have been discontinued and are not supported for the time being
 
 # Chip Resource List
 
