@@ -38,41 +38,41 @@ class AXP2101(I2CInterface):
         self.intRegister = [0] * XPOWERS_AXP2101_INTSTS_CNT
         
     #  PMU status functions
-    def isVbusGood(self):
+    def isVbusGood(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS1, 5))
 
-    def getBatfetState(self):
+    def getBatfetState(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS1, 4))
 
     # getBatPresentState
-    def isBatteryConnect(self):
+    def isBatteryConnect(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS1, 3))
 
-    def isBatInActiveModeState(self):
+    def isBatInActiveModeState(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS1, 3))
 
-    def getThermalRegulationStatus(self):
+    def getThermalRegulationStatus(self) ->bool:
         return super().getRegisterBit(XPOWERS_AXP2101_STATUS1, 2)
 
-    def getCurrnetLimitStatus(self):
+    def getCurrnetLimitStatus(self) ->bool:
         return super().getRegisterBit(XPOWERS_AXP2101_STATUS1, 1)
 
-    def isCharging(self):
+    def isCharging(self) ->bool:
         return (super().readRegister(XPOWERS_AXP2101_STATUS2) >> 5) == 0x01
 
-    def isDischarge(self):
+    def isDischarge(self) ->bool:
         return (super().readRegister(XPOWERS_AXP2101_STATUS2) >> 5) == 0x02
 
-    def isStandby(self):
+    def isStandby(self) ->bool:
         return (super().readRegister(XPOWERS_AXP2101_STATUS2) >> 5) == 0x00
 
-    def isPowerOn(self):
+    def isPowerOn(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS2, 4))
 
-    def isPowerOff(self):
+    def isPowerOff(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS2, 4))
 
-    def isVbusIn(self):
+    def isVbusIn(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS2, 3) == 0)
 
     def getChargerStatus(self):
@@ -127,7 +127,7 @@ class AXP2101(I2CInterface):
     # @brief  BATFET control / REG 12H
     # @note   DIE Over Temperature Protection Level1 Configuration
     # @param   opt: 0:115 , 1:125 , 2:135
-    def setBatfetDieOverTempLevel1(self, opt):
+    def setBatfetDieOverTempLevel1(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_BATFET_CTRL)
         val &= 0xF9
         super().writeRegister(XPOWERS_AXP2101_BATFET_CTRL, val | (opt << 1))
@@ -142,7 +142,7 @@ class AXP2101(I2CInterface):
         super().setRegisterBit(XPOWERS_AXP2101_BATFET_CTRL, 0)
 
     # @param   opt: 0:115 , 1:125 , 2:135
-    def setDieOverTempLevel1(self, opt):
+    def setDieOverTempLevel1(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_DIE_TEMP_CTRL)
         val &= 0xF9
         super().writeRegister(XPOWERS_AXP2101_DIE_TEMP_CTRL, val | (opt << 1))
@@ -157,7 +157,7 @@ class AXP2101(I2CInterface):
         super().setRegisterBit(XPOWERS_AXP2101_DIE_TEMP_CTRL, 0)
 
     # Linear Charger Vsys voltage dpm
-    def setLinearChargerVsysDpm(self, opt):
+    def setLinearChargerVsysDpm(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_MIN_SYS_VOL_CTRL)
         val &= 0x8F
         super().writeRegister(XPOWERS_AXP2101_MIN_SYS_VOL_CTRL, val | (opt << 4))
@@ -169,7 +169,7 @@ class AXP2101(I2CInterface):
 
     # Set the minimum common working voltage of the PMU VBUS input,
     # below this value will turn off the PMU
-    def setVbusVoltageLimit(self, opt):
+    def setVbusVoltageLimit(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_INPUT_VOL_LIMIT_CTRL)
         val &= 0xF0
         super().writeRegister(XPOWERS_AXP2101_INPUT_VOL_LIMIT_CTRL, val | (opt & 0x0F))
@@ -179,7 +179,7 @@ class AXP2101(I2CInterface):
 
     # @brief  Set VBUS Current Input Limit.
     # @param   opt: View the related chip type xpowers_axp2101_vbus_cur_limit_t enumeration parameters in "XPowersParams.hpp"
-    def setVbusCurrentLimit(self, opt):
+    def setVbusCurrentLimit(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_INPUT_CUR_LIMIT_CTRL)
         val &= 0xF8
         super().writeRegister(XPOWERS_AXP2101_INPUT_CUR_LIMIT_CTRL, val | (opt & 0x07))
@@ -211,11 +211,11 @@ class AXP2101(I2CInterface):
     def disableButtonBatteryCharge(self):
         super().clrRegisterBit(XPOWERS_AXP2101_CHARGE_GAUGE_WDT_CTRL, 2)
 
-    def isEanbleButtonBatteryCharge(self):
+    def isEanbleButtonBatteryCharge(self)->bool:
         return super().getRegisterBit(XPOWERS_AXP2101_CHARGE_GAUGE_WDT_CTRL, 2)
 
     # Button battery charge termination voltage setting
-    def setButtonBatteryChargeVoltage(self, millivolt):
+    def setButtonBatteryChargeVoltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_BTN_VOL_STEPS):
             print("Mistake ! Button battery charging step voltage is %u mV" %
                   XPOWERS_AXP2101_BTN_VOL_STEPS)
@@ -233,6 +233,7 @@ class AXP2101(I2CInterface):
         val |= (int)(millivolt - XPOWERS_AXP2101_BTN_VOL_MIN) / \
             XPOWERS_AXP2101_BTN_VOL_STEPS
         super().writeRegister(XPOWERS_AXP2101_BTN_BAT_CHG_VOL_SET, val)
+        return True
 
     def getButtonBatteryVoltage(self):
         val = super().readRegister(XPOWERS_AXP2101_BTN_BAT_CHG_VOL_SET)
@@ -256,7 +257,7 @@ class AXP2101(I2CInterface):
 
     # @brief Watchdog Config
     # @param   opt: 0: IRQ Only 1: IRQ and System reset  2: IRQ, System Reset and Pull down PWROK 1s  3: IRQ, System Reset, DCDC/LDO PWROFF & PWRON
-    def setWatchdogConfig(self, opt):
+    def setWatchdogConfig(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_WDT_CTRL)
         val &= 0xCF
         super().writeRegister(XPOWERS_AXP2101_WDT_CTRL, val | (opt << 4))
@@ -267,7 +268,7 @@ class AXP2101(I2CInterface):
     def clrWatchdog(self):
         super().setRegisterBit(XPOWERS_AXP2101_WDT_CTRL, 3)
 
-    def setWatchdogTimeout(self, opt):
+    def setWatchdogTimeout(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_WDT_CTRL)
         val &= 0xF8
         super().writeRegister(XPOWERS_AXP2101_WDT_CTRL, val | opt)
@@ -276,7 +277,7 @@ class AXP2101(I2CInterface):
         return super().readRegister(XPOWERS_AXP2101_WDT_CTRL) & 0x07
 
     # @brief Low battery warning threshold 5-20%, 1% per step
-    def setLowBatWarnThreshold(self, opt):
+    def setLowBatWarnThreshold(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_LOW_BAT_WARN_SET)
         val &= 0x0F
         super().writeRegister(XPOWERS_AXP2101_LOW_BAT_WARN_SET, val | (opt << 4))
@@ -285,7 +286,7 @@ class AXP2101(I2CInterface):
         return (super().readRegister(XPOWERS_AXP2101_LOW_BAT_WARN_SET) & 0xF0) >> 4
 
     # @brief Low battery shutdown threshold 0-15%, 1% per step
-    def setLowBatShutdownThreshold(self, opt):
+    def setLowBatShutdownThreshold(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_LOW_BAT_WARN_SET)
         val &= 0xF0
         super().writeRegister(XPOWERS_AXP2101_LOW_BAT_WARN_SET, val | opt)
@@ -295,27 +296,27 @@ class AXP2101(I2CInterface):
 
     #!  PWRON statu  20
     # POWERON always high when EN Mode as POWERON Source
-    def isPoweronAlwaysHighSource(self):
+    def isPoweronAlwaysHighSource(self)->bool:
         return super().getRegisterBit(XPOWERS_AXP2101_PWRON_STATUS, 5)
 
     # Battery Insert and Good as POWERON Source
-    def isBattInsertOnSource(self):
+    def isBattInsertOnSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWRON_STATUS, 4))
 
     # Battery Voltage > 3.3V when Charged as Source
-    def isBattNormalOnSource(self):
+    def isBattNormalOnSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWRON_STATUS, 3))
 
     # Vbus Insert and Good as POWERON Source
-    def isVbusInsertOnSource(self):
+    def isVbusInsertOnSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWRON_STATUS, 2))
 
     # IRQ PIN Pull-down as POWERON Source
-    def isIrqLowOnSource(self):
+    def isIrqLowOnSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWRON_STATUS, 1))
 
     # POWERON low for on level when POWERON Mode as POWERON Source
-    def isPwronLowOnSource(self):
+    def isPwronLowOnSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWRON_STATUS, 0))
 
     def getPowerOnSource(self):
@@ -323,35 +324,35 @@ class AXP2101(I2CInterface):
 
     #!  PWROFF status  21
     # Die Over Temperature as POWEROFF Source
-    def isOverTemperatureOffSource(self):
+    def isOverTemperatureOffSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 7))
 
     # DCDC Over Voltage as POWEROFF Source
-    def isDcOverVoltageOffSource(self):
+    def isDcOverVoltageOffSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 6))
 
     # DCDC Under Voltage as POWEROFF Source
-    def isDcUnderVoltageOffSource(self):
+    def isDcUnderVoltageOffSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 5))
 
     # VBUS Over Voltage as POWEROFF Source
-    def isVbusOverVoltageOffSource(self):
+    def isVbusOverVoltageOffSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 4))
 
     # Vsys Under Voltage as POWEROFF Source
-    def isVsysUnderVoltageOffSource(self):
+    def isVsysUnderVoltageOffSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 3))
 
     # POWERON always low when EN Mode as POWEROFF Source
-    def isPwronAlwaysLowOffSource(self):
+    def isPwronAlwaysLowOffSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 2))
 
     # Software configuration as POWEROFF Source
-    def isSwConfigOffSource(self):
+    def isSwConfigOffSource(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 1))
 
     # POWERON Pull down for off level when POWERON Mode as POWEROFF Source
-    def isPwrSourcePullDown(self):
+    def isPwrSourcePullDown(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_PWROFF_STATUS, 0))
 
     def getPowerOffSource(self):
@@ -421,7 +422,7 @@ class AXP2101(I2CInterface):
 
     # Set the minimum system operating voltage inside the PMU,
     # below this value will shut down the PMU,Adjustment range 2600mV~3300mV
-    def setSysPowerDownVoltage(self, millivolt):
+    def setSysPowerDownVoltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_VSYS_VOL_THRESHOLD_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_VSYS_VOL_THRESHOLD_STEPS)
@@ -438,7 +439,6 @@ class AXP2101(I2CInterface):
 
         val = super().readRegister(XPOWERS_AXP2101_VOFF_SET)
         val &= 0xF8
-
         super().writeRegister(XPOWERS_AXP2101_VOFF_SET, val | (int)((millivolt -
                                                                      XPOWERS_AXP2101_VSYS_VOL_THRESHOLD_MIN) / XPOWERS_AXP2101_VSYS_VOL_THRESHOLD_STEPS))
         return True
@@ -472,7 +472,7 @@ class AXP2101(I2CInterface):
         super().clrRegisterBit(XPOWERS_AXP2101_PWROK_SEQU_CTRL, 2)
 
     # Delay of PWROK after all power output good
-    def setPwrOkDelay(self, opt):
+    def setPwrOkDelay(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_PWROK_SEQU_CTRL)
         val &= 0xFC
         super().writeRegister(XPOWERS_AXP2101_PWROK_SEQU_CTRL, val | opt)
@@ -504,81 +504,81 @@ class AXP2101(I2CInterface):
     #  RQLEVEL/OFFLEVEL/ONLEVEL setting 27
     # @brief  IRQLEVEL configur
     # @param   opt: 0:1s  1:1.5s  2:2s 3:2.5s
-    def setIrqLevel(self, opt):
+    def setIrqLevel(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL)
         val &= 0xFC
         super().writeRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL, val | (opt << 4))
 
     # @brief  OFFLEVEL configuration
     # @param   opt:  0:4s 1:6s 2:8s 3:10s
-    def setOffLevel(self, opt):
+    def setOffLevel(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL)
         super().writeRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL, val | (opt << 2))
 
     # @brief  ONLEVEL configuration
     # @param   opt: 0:128ms 1:512ms 2:1s  3:2s
-    def setOnLevel(self, opt):
+    def setOnLevel(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL)
         super().writeRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL, val | opt)
 
     # Fast pwron setting 0  28
     # Fast Power On Start Sequence
-    def setDc4FastStartSequence(self, opt):
+    def setDc4FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET0)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET0, val | ((opt & 0x3) << 6))
 
-    def setDc3FastStartSequence(self,  opt):
+    def setDc3FastStartSequence(self,  opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET0)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET0, val | ((opt & 0x3) << 4))
 
-    def setDc2FastStartSequence(self,  opt):
+    def setDc2FastStartSequence(self,  opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET0)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET0, val | ((opt & 0x3) << 2))
 
-    def setDc1FastStartSequence(self,  opt):
+    def setDc1FastStartSequence(self,  opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET0)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET0, val | (opt & 0x3))
 
     #  Fast pwron setting 1  29
-    def setAldo3FastStartSequence(self, opt):
+    def setAldo3FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET1)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET1, val | ((opt & 0x3) << 6))
 
-    def setAldo2FastStartSequence(self, opt):
+    def setAldo2FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET1)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET1, val | ((opt & 0x3) << 4))
 
-    def setAldo1FastStartSequence(self, opt):
+    def setAldo1FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET1)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET1, val | ((opt & 0x3) << 2))
 
-    def setDc5FastStartSequence(self, opt):
+    def setDc5FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET1)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET1, val | (opt & 0x3))
 
     #  Fast pwron setting 2  2A
-    def setCpuldoFastStartSequence(self, opt):
+    def setCpuldoFastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET2)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET2, val | ((opt & 0x3) << 6))
 
-    def setBldo2FastStartSequence(self, opt):
+    def setBldo2FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET2)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET2, val | ((opt & 0x3) << 4))
 
-    def setBldo1FastStartSequence(self, opt):
+    def setBldo1FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET2)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET2, val | ((opt & 0x3) << 2))
 
-    def setAldo4FastStartSequence(self, opt):
+    def setAldo4FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET2)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_SET2, val | (opt & 0x3))
 
     #  Fast pwron setting 3  2B
-    def setDldo2FastStartSequence(self, opt):
+    def setDldo2FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_CTRL)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_CTRL, val | ((opt & 0x3) << 2))
 
-    def setDldo1FastStartSequence(self, opt):
+    def setDldo1FastStartSequence(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_CTRL)
         super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_CTRL, val | (opt & 0x3))
 
@@ -628,7 +628,7 @@ class AXP2101(I2CInterface):
             val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_CTRL)
             super().writeRegister(XPOWERS_AXP2101_FAST_PWRON_CTRL, val | (seq_level << 2))
 
-    def disableFastPowerOn(self, opt):
+    def disableFastPowerOn(self, opt:int):
         val = 0
         if opt == XPOWERS_AXP2101_FAST_DCDC1:
             val = super().readRegister(XPOWERS_AXP2101_FAST_PWRON_SET0)
@@ -696,7 +696,7 @@ class AXP2101(I2CInterface):
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 5))
 
     # DCDCS force PWM control
-    def setDcUVPDebounceTime(self,opt):
+    def setDcUVPDebounceTime(self,opt:int):
         val = super().readRegister(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL)
         val &= 0xFC
         super().writeRegister(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL,val|opt)
@@ -726,7 +726,7 @@ class AXP2101(I2CInterface):
             super().clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 5)
 
     #1 = 100khz 0=50khz
-    def setDCFreqSpreadRange(self, opt):
+    def setDCFreqSpreadRange(self, opt:int):
         if opt:
             super().setRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 6)
         else:  
@@ -739,7 +739,7 @@ class AXP2101(I2CInterface):
             super().clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 7)
 
     # Power control DCDC1 functions
-    def isEnableDC1(self):
+    def isEnableDC1(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 0))
 
     def enableDC1(self):
@@ -748,7 +748,7 @@ class AXP2101(I2CInterface):
     def disableDC1(self):
         super().clrRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 0)
 
-    def setDC1Voltage(self, millivolt):
+    def setDC1Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_DCDC1_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_DCDC1_VOL_STEPS)
@@ -763,6 +763,7 @@ class AXP2101(I2CInterface):
             return False
         super().writeRegister(XPOWERS_AXP2101_DC_VOL0_CTRL, (int)((millivolt -
                                                                   XPOWERS_AXP2101_DCDC1_VOL_MIN) / XPOWERS_AXP2101_DCDC1_VOL_STEPS))
+        return True
 
     def getDC1Voltage(self):
         return (super().readRegister(XPOWERS_AXP2101_DC_VOL0_CTRL) & 0x1F) * XPOWERS_AXP2101_DCDC1_VOL_STEPS + XPOWERS_AXP2101_DCDC1_VOL_MIN
@@ -778,7 +779,7 @@ class AXP2101(I2CInterface):
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 0))
 
     # Power control DCDC2 functions
-    def isEnableDC2(self):
+    def isEnableDC2(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 1))
 
     def enableDC2(self):
@@ -787,7 +788,7 @@ class AXP2101(I2CInterface):
     def disableDC2(self):
         super().clrRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 1)
 
-    def setDC2Voltage(self, millivolt):
+    def setDC2Voltage(self, millivolt:int)->bool:
         val = super().readRegister(XPOWERS_AXP2101_DC_VOL1_CTRL)
         val &= 0x80
         if (millivolt >= XPOWERS_AXP2101_DCDC2_VOL1_MIN and millivolt <= XPOWERS_AXP2101_DCDC2_VOL1_MAX):
@@ -830,7 +831,7 @@ class AXP2101(I2CInterface):
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 1))
 
     # Power control DCDC3 functions
-    def isEnableDC3(self):
+    def isEnableDC3(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 2))
 
     def enableDC3(self):
@@ -842,7 +843,7 @@ class AXP2101(I2CInterface):
     # 0.5~1.2V,10mV/step,71steps
     # 1.22~1.54V,20mV/step,17steps
     # 1.6~3.4V,100mV/step,19steps
-    def setDC3Voltage(self, millivolt):
+    def setDC3Voltage(self, millivolt:int)->bool:
         val = super().readRegister(XPOWERS_AXP2101_DC_VOL2_CTRL)
         val &= 0x80
         if (millivolt >= XPOWERS_AXP2101_DCDC3_VOL1_MIN and millivolt <= XPOWERS_AXP2101_DCDC3_VOL1_MAX):
@@ -900,7 +901,7 @@ class AXP2101(I2CInterface):
     # Power control DCDC4 functions
     # 0.5~1.2V,10mV/step,71steps
     # 1.22~1.84V,20mV/step,32steps
-    def isEnableDC4(self):
+    def isEnableDC4(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 3))
 
     def enableDC4(self):
@@ -909,7 +910,7 @@ class AXP2101(I2CInterface):
     def disableDC4(self):
         super().clrRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 3)
 
-    def setDC4Voltage(self, millivolt):
+    def setDC4Voltage(self, millivolt:int)->bool:
         val = super().readRegister(XPOWERS_AXP2101_DC_VOL3_CTRL)
         val &= 0x80
         if (millivolt >= XPOWERS_AXP2101_DCDC4_VOL1_MIN and millivolt <= XPOWERS_AXP2101_DCDC4_VOL1_MAX):
@@ -949,7 +950,7 @@ class AXP2101(I2CInterface):
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 3))
 
     # Power control DCDC5 functions,Output to gpio pin
-    def isEnableDC5(self):
+    def isEnableDC5(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 4))
 
     def enableDC5(self):
@@ -958,7 +959,7 @@ class AXP2101(I2CInterface):
     def disableDC5(self):
         super().clrRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 4)
 
-    def setDC5Voltage(self, millivolt):
+    def setDC5Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_DCDC5_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_DCDC5_VOL_STEPS)
@@ -972,6 +973,7 @@ class AXP2101(I2CInterface):
             print("Mistake ! DC5 maximum voltage is %umV" %
                   XPOWERS_AXP2101_DCDC5_VOL_MAX)
             return False
+        return True
 
         val = super().readRegister(XPOWERS_AXP2101_DC_VOL4_CTRL)
         val &= 0xE0
@@ -989,7 +991,7 @@ class AXP2101(I2CInterface):
             return XPOWERS_AXP2101_DCDC5_VOL_1200MV
         return (val * XPOWERS_AXP2101_DCDC5_VOL_STEPS) + XPOWERS_AXP2101_DCDC5_VOL_MIN
 
-    def isDC5FreqCompensationEn(self):
+    def isDC5FreqCompensationEn(self)->bool:
         return super().getRegisterBit(XPOWERS_AXP2101_DC_VOL4_CTRL, 5)
 
     def enableDC5FreqCompensation(self):
@@ -1010,7 +1012,7 @@ class AXP2101(I2CInterface):
 
 
     # Power control ALDO1 functions
-    def isEnableALDO1(self):
+    def isEnableALDO1(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 0))
 
     def enableALDO1(self):
@@ -1021,7 +1023,7 @@ class AXP2101(I2CInterface):
 
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 0)
 
-    def setALDO1Voltage(self, millivolt):
+    def setALDO1Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_ALDO1_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_ALDO1_VOL_STEPS)
@@ -1039,13 +1041,14 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_ALDO1_VOL_MIN) /
                      XPOWERS_AXP2101_ALDO1_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL0_CTRL, val)
+        return True
 
     def getALDO1Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL0_CTRL) & 0x1F
         return val * XPOWERS_AXP2101_ALDO1_VOL_STEPS + XPOWERS_AXP2101_ALDO1_VOL_MIN
 
     # Power control ALDO2 functions
-    def isEnableALDO2(self):
+    def isEnableALDO2(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 1))
 
     def enableALDO2(self):
@@ -1054,7 +1057,7 @@ class AXP2101(I2CInterface):
     def disableALDO2(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 1)
 
-    def setALDO2Voltage(self, millivolt):
+    def setALDO2Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_ALDO2_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_ALDO2_VOL_STEPS)
@@ -1073,13 +1076,14 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_ALDO2_VOL_MIN) /
                      XPOWERS_AXP2101_ALDO2_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL1_CTRL, val)
+        return True
 
     def getALDO2Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL1_CTRL) & 0x1F
         return val * XPOWERS_AXP2101_ALDO2_VOL_STEPS + XPOWERS_AXP2101_ALDO2_VOL_MIN
 
     # Power control ALDO3 functions
-    def isEnableALDO3(self):
+    def isEnableALDO3(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 2))
 
     def enableALDO3(self):
@@ -1088,7 +1092,7 @@ class AXP2101(I2CInterface):
     def disableALDO3(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 2)
 
-    def setALDO3Voltage(self, millivolt):
+    def setALDO3Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_ALDO3_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_ALDO3_VOL_STEPS)
@@ -1107,13 +1111,14 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_ALDO3_VOL_MIN) /
                      XPOWERS_AXP2101_ALDO3_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL2_CTRL, val)
+        return True
 
     def getALDO3Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL2_CTRL) & 0x1F
         return val * XPOWERS_AXP2101_ALDO3_VOL_STEPS + XPOWERS_AXP2101_ALDO3_VOL_MIN
 
     # Power control ALDO4 functions
-    def isEnableALDO4(self):
+    def isEnableALDO4(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 3))
 
     def enableALDO4(self):
@@ -1122,7 +1127,7 @@ class AXP2101(I2CInterface):
     def disableALDO4(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 3)
 
-    def setALDO4Voltage(self, millivolt):
+    def setALDO4Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_ALDO4_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_ALDO4_VOL_STEPS)
@@ -1139,13 +1144,14 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_ALDO4_VOL_MIN) /
                      XPOWERS_AXP2101_ALDO4_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL3_CTRL, val)
+        return True
 
     def getALDO4Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL3_CTRL) & 0x1F
         return val * XPOWERS_AXP2101_ALDO4_VOL_STEPS + XPOWERS_AXP2101_ALDO4_VOL_MIN
 
     # Power control BLDO1 functions
-    def isEnableBLDO1(self):
+    def isEnableBLDO1(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 4))
 
     def enableBLDO1(self):
@@ -1154,7 +1160,7 @@ class AXP2101(I2CInterface):
     def disableBLDO1(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 4)
 
-    def setBLDO1Voltage(self, millivolt):
+    def setBLDO1Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_BLDO1_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_BLDO1_VOL_STEPS)
@@ -1172,6 +1178,7 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_BLDO1_VOL_MIN) /
                      XPOWERS_AXP2101_BLDO1_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL4_CTRL, val)
+        return True
 
     def getBLDO1Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL4_CTRL)
@@ -1179,7 +1186,7 @@ class AXP2101(I2CInterface):
         return val * XPOWERS_AXP2101_BLDO1_VOL_STEPS + XPOWERS_AXP2101_BLDO1_VOL_MIN
 
     # Power control BLDO2 functions
-    def isEnableBLDO2(self):
+    def isEnableBLDO2(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 5))
 
     def enableBLDO2(self):
@@ -1188,7 +1195,7 @@ class AXP2101(I2CInterface):
     def disableBLDO2(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 5)
 
-    def setBLDO2Voltage(self, millivolt):
+    def setBLDO2Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_BLDO2_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_BLDO2_VOL_STEPS)
@@ -1205,6 +1212,7 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_BLDO2_VOL_MIN) /
                      XPOWERS_AXP2101_BLDO2_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL5_CTRL, val)
+        return True
 
     def getBLDO2Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL5_CTRL)
@@ -1212,7 +1220,7 @@ class AXP2101(I2CInterface):
         return val * XPOWERS_AXP2101_BLDO2_VOL_STEPS + XPOWERS_AXP2101_BLDO2_VOL_MIN
 
     # Power control CPUSLDO functions
-    def isEnableCPUSLDO(self):
+    def isEnableCPUSLDO(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 6))
 
     def enableCPUSLDO(self):
@@ -1221,7 +1229,7 @@ class AXP2101(I2CInterface):
     def disableCPUSLDO(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 6)
 
-    def setCPUSLDOVoltage(self, millivolt):
+    def setCPUSLDOVoltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_CPUSLDO_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_CPUSLDO_VOL_STEPS)
@@ -1239,6 +1247,7 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_CPUSLDO_VOL_MIN) /
                      XPOWERS_AXP2101_CPUSLDO_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL6_CTRL, val)
+        return True
 
     def getCPUSLDOVoltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL6_CTRL)
@@ -1246,7 +1255,7 @@ class AXP2101(I2CInterface):
         return val * XPOWERS_AXP2101_CPUSLDO_VOL_STEPS + XPOWERS_AXP2101_CPUSLDO_VOL_MIN
 
     # Power control DLDO1 functions
-    def isEnableDLDO1(self):
+    def isEnableDLDO1(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 7))
 
     def enableDLDO1(self):
@@ -1255,7 +1264,7 @@ class AXP2101(I2CInterface):
     def disableDLDO1(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL0, 7)
 
-    def setDLDO1Voltage(self, millivolt):
+    def setDLDO1Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_DLDO1_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_DLDO1_VOL_STEPS)
@@ -1272,6 +1281,7 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_DLDO1_VOL_MIN) /
                      XPOWERS_AXP2101_DLDO1_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL7_CTRL, val)
+        return True
 
     def getDLDO1Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL7_CTRL)
@@ -1279,7 +1289,7 @@ class AXP2101(I2CInterface):
         return val * XPOWERS_AXP2101_DLDO1_VOL_STEPS + XPOWERS_AXP2101_DLDO1_VOL_MIN
 
     # Power control DLDO2 functions
-    def isEnableDLDO2(self):
+    def isEnableDLDO2(self)->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL1, 0))
 
     def enableDLDO2(self):
@@ -1288,7 +1298,7 @@ class AXP2101(I2CInterface):
     def disableDLDO2(self):
         super().clrRegisterBit(XPOWERS_AXP2101_LDO_ONOFF_CTRL1, 0)
 
-    def setDLDO2Voltage(self, millivolt):
+    def setDLDO2Voltage(self, millivolt:int)->bool:
         if (millivolt % XPOWERS_AXP2101_DLDO2_VOL_STEPS):
             print("Mistake ! The steps is must %u mV" %
                   XPOWERS_AXP2101_DLDO2_VOL_STEPS)
@@ -1305,6 +1315,7 @@ class AXP2101(I2CInterface):
         val |= (int)((millivolt - XPOWERS_AXP2101_DLDO2_VOL_MIN) /
                      XPOWERS_AXP2101_DLDO2_VOL_STEPS)
         super().writeRegister(XPOWERS_AXP2101_LDO_VOL8_CTRL, val)
+        return True
 
     def getDLDO2Voltage(self):
         val = super().readRegister(XPOWERS_AXP2101_LDO_VOL8_CTRL)
@@ -1312,7 +1323,7 @@ class AXP2101(I2CInterface):
         return val * XPOWERS_AXP2101_DLDO2_VOL_STEPS + XPOWERS_AXP2101_DLDO2_VOL_MIN
 
     #  Power ON OFF IRQ TIMMING Control method
-    def setIrqLevelTime(self, opt):
+    def setIrqLevelTime(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL)
         val &= 0xCF
         super().writeRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL, val | (opt << 4))
@@ -1322,7 +1333,7 @@ class AXP2101(I2CInterface):
 
     # @brief Set the PEKEY power-on long press time.
     # @param  opt: See xpowers_press_on_time_t enum for details.
-    def setPowerKeyPressOnTime(self, opt):
+    def setPowerKeyPressOnTime(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL)
         val &= 0xFC
         super().writeRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL, val | opt)
@@ -1336,7 +1347,7 @@ class AXP2101(I2CInterface):
     # @brief Set the PEKEY power-off long press time.
     # @param  opt: See xpowers_press_off_time_t enum for details.
     # @retval
-    def setPowerKeyPressOffTime(self, opt):
+    def setPowerKeyPressOffTime(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL)
         val &= 0xF3
         super().writeRegister(XPOWERS_AXP2101_IRQ_OFF_ON_LEVEL_CTRL, val | (opt << 2))
@@ -1431,7 +1442,7 @@ class AXP2101(I2CInterface):
      # @brief Set charging led mode.
      # @retval See xpowers_chg_led_mode_t enum for details.
 
-    def setChargingLedMode(self, mode):
+    def setChargingLedMode(self, mode:int):
         range = [XPOWERS_CHG_LED_OFF, XPOWERS_CHG_LED_BLINK_1HZ,
                  XPOWERS_CHG_LED_BLINK_4HZ, XPOWERS_CHG_LED_ON]
         val = 0
@@ -1458,7 +1469,7 @@ class AXP2101(I2CInterface):
     # @note  Precharge current limit 25N mA
     # @param   opt: 25  opt
     # # @retval None
-    def setPrechargeCurr(self, opt):
+    def setPrechargeCurr(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_IPRECHG_SET)
         val &= 0xFC
         super().writeRegister(XPOWERS_AXP2101_IPRECHG_SET, val | opt)
@@ -1469,7 +1480,7 @@ class AXP2101(I2CInterface):
      # @brief Set charge current.
      # @param   opt: See xpowers_axp2101_chg_curr_t enum for details.
      # @retval
-    def setChargerConstantCurr(self, opt):
+    def setChargerConstantCurr(self, opt:int):
         if (opt > XPOWERS_AXP2101_CHG_CUR_1000MA):
             return False
         val = super().readRegister(XPOWERS_AXP2101_ICC_CHG_SET)
@@ -1485,7 +1496,7 @@ class AXP2101(I2CInterface):
     # @brief  充电终止电流限制
     # @note   Charging termination of current limit
 
-    def setChargerTerminationCurr(self, opt):
+    def setChargerTerminationCurr(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_ITERM_CHG_SET_CTRL)
         val &= 0xF0
         super().writeRegister(XPOWERS_AXP2101_ICC_CHG_SET, val | opt)
@@ -1501,13 +1512,13 @@ class AXP2101(I2CInterface):
         val = super().readRegister(XPOWERS_AXP2101_ITERM_CHG_SET_CTRL)
         super().writeRegister(XPOWERS_AXP2101_ITERM_CHG_SET_CTRL, val & 0xEF)
 
-    def isChargerTerminationLimit(self):
+    def isChargerTerminationLimit(self)->bool:
         return super().getRegisterBit(XPOWERS_AXP2101_ITERM_CHG_SET_CTRL, 4)
 
     # @brief Set charge target voltage.
     # @param   opt: See xpowers_axp2101_chg_vol_t enum for details.
 
-    def setChargeTargetVoltage(self, opt):
+    def setChargeTargetVoltage(self, opt:int):
         if (opt >= XPOWERS_AXP2101_CHG_VOL_MAX):
             return False
         val = super().readRegister(XPOWERS_AXP2101_CV_CHG_VOL_SET)
@@ -1522,7 +1533,7 @@ class AXP2101(I2CInterface):
 
     # @brief  设定热阈值
     # @note   Thermal regulation threshold setting
-    def setThermaThreshold(self, opt):
+    def setThermaThreshold(self, opt:int):
         val = super().readRegister(XPOWERS_AXP2101_THE_REGU_THRES_SET)
         val &= 0xFC
         super().writeRegister(XPOWERS_AXP2101_THE_REGU_THRES_SET, val | opt)
@@ -1552,58 +1563,58 @@ class AXP2101(I2CInterface):
     # @brief  Eanble PMU interrupt control mask .
     # @param   opt: View the related chip type xpowers_axp2101_irq_t enumeration parameters in "XPowersParams.hpp"
 
-    def enableIRQ(self, opt, debug=False):
-        return self.setInterruptImpl(opt, True, debug)
+    def enableIRQ(self, opt:int, debug=False):
+        self.setInterruptImpl(opt, True, debug)
 
     # @brief  Disable PMU interrupt control mask .
     # @param   opt: View the related chip type xpowers_axp2101_irq_t enumeration parameters in "XPowersParams.hpp"
-    def disableIRQ(self, opt, debug=False):
-        return self.setInterruptImpl(opt, False, debug)
+    def disableIRQ(self, opt:int, debug=False):
+        self.setInterruptImpl(opt, False, debug)
 
     # IRQ STATUS 0
-    def isDropWarningLevel2Irq(self):
+    def isDropWarningLevel2Irq(self)->bool:
         mask = XPOWERS_AXP2101_WARNING_LEVEL2_IRQ
         if self.intRegister[0] & mask:
             return super()._IS_BIT_SET(self.statusRegister[0], mask)
         else:
             return False
 
-    def isDropWarningLevel1Irq(self):
+    def isDropWarningLevel1Irq(self)->bool:
         mask = XPOWERS_AXP2101_WARNING_LEVEL1_IRQ
         if self.intRegister[0] & mask:
             return super()._IS_BIT_SET(self.statusRegister[0], mask)
         else:
             return False
 
-    def isGaugeWdtTimeoutIrq(self):
+    def isGaugeWdtTimeoutIrq(self)->bool:
         mask = XPOWERS_AXP2101_WDT_TIMEOUT_IRQ
         if self.intRegister[0] & mask:
             return super()._IS_BIT_SET(self.statusRegister[0], mask)
         else:
             return False
 
-    def isBatChargerOverTemperatureIrq(self):
+    def isBatChargerOverTemperatureIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_CHG_OVER_TEMP_IRQ
         if self.intRegister[0] & mask:
             return super()._IS_BIT_SET(self.statusRegister[0], mask)
         else:
             return False
 
-    def isBatChargerUnderTemperatureIrq(self):
+    def isBatChargerUnderTemperatureIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_CHG_UNDER_TEMP_IRQ
         if self.intRegister[0] & mask:
             return super()._IS_BIT_SET(self.statusRegister[0], mask)
         else:
             return False
             
-    def isBatWorkOverTemperatureIrq(self):
+    def isBatWorkOverTemperatureIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_NOR_OVER_TEMP_IRQ
         if self.intRegister[0] & mask:
             return super()._IS_BIT_SET(self.statusRegister[0], mask)
         else:
             return False
             
-    def isBatWorkUnderTemperatureIrq(self):
+    def isBatWorkUnderTemperatureIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_NOR_UNDER_TEMP_IRQ
         if self.intRegister[0] & mask:
             return super()._IS_BIT_SET(self.statusRegister[0], mask)
@@ -1611,56 +1622,56 @@ class AXP2101(I2CInterface):
             return False
             
     # IRQ STATUS 1
-    def isVbusInsertIrq(self):
+    def isVbusInsertIrq(self)->bool:
         mask = XPOWERS_AXP2101_VBUS_INSERT_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isVbusRemoveIrq(self):
+    def isVbusRemoveIrq(self)->bool:
         mask = XPOWERS_AXP2101_VBUS_REMOVE_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isBatInsertIrq(self):
+    def isBatInsertIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_INSERT_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isBatRemoveIrq(self):
+    def isBatRemoveIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_REMOVE_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isPekeyShortPressIrq(self):
+    def isPekeyShortPressIrq(self)->bool:
         mask = XPOWERS_AXP2101_PKEY_SHORT_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isPekeyLongPressIrq(self):
+    def isPekeyLongPressIrq(self)->bool:
         mask = XPOWERS_AXP2101_PKEY_LONG_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isPekeyNegativeIrq(self):
+    def isPekeyNegativeIrq(self)->bool:
         mask = XPOWERS_AXP2101_PKEY_NEGATIVE_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isPekeyPositiveIrq(self):
+    def isPekeyPositiveIrq(self)->bool:
         mask = XPOWERS_AXP2101_PKEY_POSITIVE_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
@@ -1668,56 +1679,56 @@ class AXP2101(I2CInterface):
             return False
 
     # IRQ STATUS 2
-    def isWdtExpireIrq(self):
+    def isWdtExpireIrq(self)->bool:
         mask = XPOWERS_AXP2101_WDT_EXPIRE_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isLdoOverCurrentIrq(self):
+    def isLdoOverCurrentIrq(self)->bool:
         mask = XPOWERS_AXP2101_LDO_OVER_CURR_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isBatfetOverCurrentIrq(self):
+    def isBatfetOverCurrentIrq(self)->bool:
         mask = XPOWERS_AXP2101_BATFET_OVER_CURR_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isBatChagerDoneIrq(self):
+    def isBatChagerDoneIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_CHG_DONE_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isBatChagerStartIrq(self):
+    def isBatChagerStartIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_CHG_START_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isBatDieOverTemperatureIrq(self):
+    def isBatDieOverTemperatureIrq(self)->bool:
         mask = XPOWERS_AXP2101_DIE_OVER_TEMP_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isChagerOverTimeoutIrq(self):
+    def isChagerOverTimeoutIrq(self)->bool:
         mask = XPOWERS_AXP2101_CHAGER_TIMER_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isBatOverVoltageIrq(self):
+    def isBatOverVoltageIrq(self)->bool:
         mask = XPOWERS_AXP2101_BAT_OVER_VOL_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
@@ -1736,9 +1747,7 @@ class AXP2101(I2CInterface):
             bin_chars = bin_char + bin_chars
         return bin_chars.upper()
 
-    def setInterruptImpl(self, opts, enable, debug):
-        data = 0
-        value = 0
+    def setInterruptImpl(self, opts:int, enable:bool, debug:bool):
         if debug:
             print(("DISABLE", "ENABLE ")[enable], end='')
             print(': HEX:{:#08X}'.format(opts), end='')
