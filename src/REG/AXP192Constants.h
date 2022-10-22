@@ -137,7 +137,6 @@
 #define XPOWERS_AXP192_ACIN_CUR_STEP                    (0.625F)
 #define XPOWERS_AXP192_VBUS_VOLTAGE_STEP                (1.7F)
 #define XPOWERS_AXP192_VBUS_CUR_STEP                    (0.375F)
-#define XPOWERS_AXP192_INTERNAL_TEMP_STEP               (0.1F)
 #define XPOWERS_AXP192_APS_VOLTAGE_STEP                 (1.4F)
 #define XPOWERS_AXP192_TS_PIN_OUT_STEP                  (0.8F)
 

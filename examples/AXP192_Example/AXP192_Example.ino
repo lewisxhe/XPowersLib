@@ -79,22 +79,22 @@ void setup()
     PMU.setDC1Voltage(3300);
     Serial.printf("DC1  :%s   Voltage:%u mV \n",  PMU.isEnableDC1()  ? "+" : "-", PMU.getDC1Voltage());
 
-    // DC2 700~2750mV, IMAX=1.6A;
+    // DC2 700~2750 mV, IMAX=1.6A;
     PMU.setDC2Voltage(700);
     Serial.printf("DC2  :%s   Voltage:%u mV \n",  PMU.isEnableDC2()  ? "+" : "-", PMU.getDC2Voltage());
 
-    // DC3 700~3500mV,IMAX=0.7A;
+    // DC3 700~3500 mV,IMAX=0.7A;
     PMU.setDC3Voltage(3300);
     Serial.printf("DC3  :%s   Voltage:%u mV \n",  PMU.isEnableDC3()  ? "+" : "-", PMU.getDC3Voltage());
 
 
-    //LDO2 1800~3300V, 100mV/step, IMAX=200mA
+    //LDO2 1800~3300 mV, 100mV/step, IMAX=200mA
     PMU.setLDO2Voltage(1800);
 
-    //LDO3 1800~3300V, 100mV/step, IMAX=200mA
+    //LDO3 1800~3300 mV, 100mV/step, IMAX=200mA
     PMU.setLDO3Voltage(1800);
 
-    //LDOio 1800~3300V, 100mV/step, IMAX=50mA
+    //LDOio 1800~3300 mV, 100mV/step, IMAX=50mA
     PMU.setLDOioVoltage(3300);
 
 
