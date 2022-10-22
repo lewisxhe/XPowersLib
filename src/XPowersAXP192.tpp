@@ -273,8 +273,6 @@ public:
     */
     bool setVbusCurrentLimit(uint8_t opt)
     {
-        int val = readRegister(XPOWERS_AXP192_IPS_SET);
-        if (val == -1)return false;
         switch (opt) {
         case XPOWERS_AXP192_VBUS_CUR_LIM_500MA:
             setRegisterBit(XPOWERS_AXP192_IPS_SET, 1);
@@ -1388,12 +1386,12 @@ public:
                ) * XPOWERS_AXP192_BATT_CHARGE_CUR_STEP;
     }
 
-    uint16_t getGpio0Voltage(uint8_t opts)
+    uint16_t getGpio0Voltage()
     {
         return readRegisterH8L4(XPOWERS_AXP192_GPIO0_VOL_ADC_H8, XPOWERS_AXP192_GPIO0_VOL_ADC_L4) * XPOWERS_AXP192_GPIO0_STEP * 1000;
     }
 
-    uint16_t getGpio1Voltage(uint8_t opts)
+    uint16_t getGpio1Voltage()
     {
         return readRegisterH8L4(XPOWERS_AXP192_GPIO1_VOL_ADC_H8, XPOWERS_AXP192_GPIO1_VOL_ADC_L4) * XPOWERS_AXP192_GPIO1_STEP * 1000;
     }
