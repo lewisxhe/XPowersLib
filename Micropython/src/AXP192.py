@@ -37,13 +37,18 @@ class PMU_Gpio:
         self.val = 0
 
 class AXP192(I2CInterface):
-    def __init__(self, sda, scl, addr=AXP192_SLAVE_ADDRESS) -> None:
-        super().__init__(addr, sda, scl)
+    def __init__(self, i2c_bus:I2C, addr=AXP192_SLAVE_ADDRESS) -> None:
+        super().__init__(i2c_bus,addr)
         print('AXP192 __init__')
         self.statusRegister = [0] * XPOWERS_AXP192_INTSTS_CNT
         self.intRegister = [0] * XPOWERS_AXP192_INTSTS_CNT
         self.gpio = [PMU_Gpio(),PMU_Gpio(),PMU_Gpio(),PMU_Gpio(),PMU_Gpio(),PMU_Gpio()] 
 
+        if self.getChipID() != XPOWERS_AXP192_CHIP_ID:
+            raise RuntimeError(
+                "Failed to find %s - check your wiring!" % self.__class__.__name__
+            )
+        
 
     def isAcinVbusStart(self) -> bool:
         return bool(super().getRegisterBit(XPOWERS_AXP192_STATUS, 0))

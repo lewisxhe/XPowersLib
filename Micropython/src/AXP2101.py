@@ -31,12 +31,18 @@ from I2CInterface import *
 from AXP2101Constants import *
 
 class AXP2101(I2CInterface):
-    def __init__(self, sda, scl, addr=AXP2101_SLAVE_ADDRESS) -> None:
-        super().__init__(addr, sda, scl)
+    def __init__(self, i2c_bus, addr=AXP2101_SLAVE_ADDRESS) -> None:
+        super().__init__(i2c_bus,addr)
         print('AXP2101 __init__')
         self.statusRegister = [0] * XPOWERS_AXP2101_INTSTS_CNT
         self.intRegister = [0] * XPOWERS_AXP2101_INTSTS_CNT
         
+        if self.getChipID() != XPOWERS_AXP2101_CHIP_ID:
+            raise RuntimeError(
+                "Failed to find %s - check your wiring!" % self.__class__.__name__
+            )
+
+
     #  PMU status functions
     def isVbusGood(self) ->bool:
         return bool(super().getRegisterBit(XPOWERS_AXP2101_STATUS1, 5))

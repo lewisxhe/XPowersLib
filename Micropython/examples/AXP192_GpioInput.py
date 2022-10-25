@@ -31,17 +31,24 @@ import time
 
 SDA = None
 SCL = None
-
+IRQ = None
+I2CBUS = None
 if implementation.name == 'micropython':
+    from machine import Pin, I2C
     SDA = 21
     SCL = 22
+    IRQ = 35
+    I2CBUS = I2C(scl=Pin(SCL), sda=Pin(SDA))
 if implementation.name == 'circuitpython':
     from board import *
+    import busio
     SDA = IO15
     SCL = IO7
+    IRQ = IO6
+    I2CBUS = busio.I2C(SCL, SDA)
 
 
-PMU = AXP192(addr=AXP192_SLAVE_ADDRESS,sda=SDA, scl=SCL)
+PMU = AXP192(I2CBUS,addr=AXP192_SLAVE_ADDRESS)
 
 id = PMU.getChipID()
 if id != XPOWERS_AXP192_CHIP_ID:

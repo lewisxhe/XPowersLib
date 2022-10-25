@@ -41,16 +41,14 @@ if implementation.name == 'circuitpython':
 
 class I2CInterface:
 
-    def __init__(self, addr, sda, scl):
-        self._i2c = None
+    def __init__(self, i2c_bus:I2C,addr):
 
         if implementation.name == 'micropython':
             print('micropython')
-            self._bus = I2C(scl=Pin(scl), sda=Pin(sda))
+            self._bus = i2c_bus
         if implementation.name == 'circuitpython':
             print('circuitpython')
-            self._i2c = busio.I2C(scl, sda)
-            self._bus = i2c_device.I2CDevice(self._i2c, addr)
+            self._bus = i2c_device.I2CDevice(i2c_bus, addr)
 
         self._address = addr
         self._buffer = bytearray(8)
