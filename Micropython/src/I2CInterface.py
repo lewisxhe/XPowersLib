@@ -28,87 +28,83 @@ SOFTWARE.
 '''
 
 from sys import implementation
-from struct import unpack
 
 if implementation.name == 'micropython':
     from machine import Pin, I2C
 if implementation.name == 'circuitpython':
-    import digitalio
-    import busio
-    from time import sleep, monotonic_ns
     from adafruit_bus_device import i2c_device
 
 
 class I2CInterface:
-
-    def __init__(self, i2c_bus:I2C,addr):
-
+    def __init__(self, i2c_bus: I2C, addr: int) -> None:
         if implementation.name == 'micropython':
             print('micropython')
             self._bus = i2c_bus
         if implementation.name == 'circuitpython':
             print('circuitpython')
             self._bus = i2c_device.I2CDevice(i2c_bus, addr)
-
         self._address = addr
-        self._buffer = bytearray(8)
-        self._bytebuf = memoryview(self._buffer[0:1])
 
-    def _BV(self, bit):
+    def _BV(self, bit) -> int:
         return (1 << bit)
 
-    def _IS_BIT_SET(self, val, mask):
+    def _IS_BIT_SET(self, val, mask) -> bool:
         return bool((((val) & (mask)) == (mask)))
 
-    def writeRegister(self, reg: int, val: int):
+    def writeRegister(self, reg: int, val: int) -> None:
         if implementation.name == 'micropython':
-            self._bytebuf[0] = val
-            self._bus.writeto_mem(self._address, reg, self._bytebuf)
+            buf = bytearray(1)
+            buf[0] = val
+            self._bus.writeto_mem(
+                self._address, (reg & 0xFF), buf)
         elif implementation.name == 'circuitpython':
-            self._buffer[0] = reg & 0xFF
-            self._buffer[1] = val & 0xFF
+            buf = bytearray(2)
+            buf[0] = reg & 0xFF
+            buf[1] = val & 0xFF
             with self._bus as i2c:
-                i2c.write(self._buffer, start=0, end=2)
+                i2c.write(buf, start=0, end=2)
 
-    def readRegister(self, reg: int) -> int:
+    def readRegister(self, reg: int, length: int = 1) -> list:
         if implementation.name == 'micropython':
-            self._bus.readfrom_mem_into(self._address, reg, self._bytebuf)
-            return self._bytebuf[0]
+            buf = bytearray(length)
+            self._bus.readfrom_mem_into(
+                self._address, (reg & 0xFF), buf)
+            return list(buf)
         elif implementation.name == 'circuitpython':
-            self._buffer[0] = reg & 0xFF
             with self._bus as i2c:
-                i2c.write(self._buffer, start=0, end=1)
-                i2c.readinto(self._buffer, start=0, end=1)
-                return unpack("<b", self._buffer[0:1])[0]
+                i2c.write(bytes([reg & 0xFF]))
+                result = bytearray(length)
+                i2c.readinto(result)
+                return result
 
-    def getRegisterBit(self, reg, bit)->bool:
-        val = self.readRegister(reg)
+    def getRegisterBit(self, reg, bit) -> bool:
+        val = self.readRegister(reg)[0]
         return val & self._BV(bit)
 
-    def setRegisterBit(self, reg : int , bit: int ):
-        val = self.readRegister(reg)
+    def setRegisterBit(self, reg: int, bit: int):
+        val = self.readRegister(reg)[0]
         self.writeRegister(reg, (val | (self._BV(bit))))
 
-    def clrRegisterBit(self, reg: int , bit: int ):
-        val = self.readRegister(reg)
+    def clrRegisterBit(self, reg: int, bit: int):
+        val = self.readRegister(reg)[0]
         self.writeRegister(reg, (val & (~self._BV(bit))))
 
     def readRegisterH8L4(self, highReg, lowReg) -> int:
-        h8 = self.readRegister(highReg)
-        l4 = self.readRegister(lowReg)
+        h8 = self.readRegister(highReg)[0]
+        l4 = self.readRegister(lowReg)[0]
         return (h8 << 4) | (l4 & 0x0F)
 
     def readRegisterH8L5(self, highReg, lowReg) -> int:
-        h8 = self.readRegister(highReg)
-        l5 = self.readRegister(lowReg)
+        h8 = self.readRegister(highReg)[0]
+        l5 = self.readRegister(lowReg)[0]
         return (h8 << 5) | (l5 & 0x1F)
 
     def readRegisterH6L8(self, highReg, lowReg) -> int:
-        h6 = self.readRegister(highReg)
-        l8 = self.readRegister(lowReg)
+        h6 = self.readRegister(highReg)[0]
+        l8 = self.readRegister(lowReg)[0]
         return ((h6 & 0x3F) << 8) | l8
 
     def readRegisterH5L8(self, highReg, lowReg) -> int:
-        h5 = self.readRegister(highReg)
-        l8 = self.readRegister(lowReg)
+        h5 = self.readRegister(highReg)[0]
+        l8 = self.readRegister(lowReg)[0]
         return ((h5 & 0x1F) << 8) | l8

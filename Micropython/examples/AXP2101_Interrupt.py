@@ -40,60 +40,58 @@ if implementation.name == 'micropython':
     IRQ = 35
     I2CBUS = I2C(scl=Pin(SCL), sda=Pin(SDA))
 if implementation.name == 'circuitpython':
-    from board import *
+    import digitalio
+    import board
     import busio
-    SDA = IO15
-    SCL = IO7
-    IRQ = IO6
+    SDA = board.IO42
+    SCL = board.IO41
+    IRQ = board.IO6
     I2CBUS = busio.I2C(SCL, SDA)
 
 irq = None
 pmu_flag = False
 
+
 def __callback(args):
     global pmu_flag
-    pmu_flag=True
+    pmu_flag = True
 
-PMU = AXP2101(I2CBUS,addr=AXP2101_SLAVE_ADDRESS)
 
-id = PMU.getChipID()
-if id != XPOWERS_AXP2101_CHIP_ID:
-    print("PMU is not online...")
-    while True:
-        pass
+PMU = AXP2101(I2CBUS, addr=AXP2101_SLAVE_ADDRESS)
+print('getID:%s' % hex(PMU.getChipID()))
 
-print('getID:%s' % hex(id))
-
-PMU.disableIRQ(XPOWERS_AXP2101_ALL_IRQ)
+PMU.disableIRQ(PMU.XPOWERS_AXP2101_ALL_IRQ)
 #  Clear all interrupt flags
 PMU.clearIrqStatus()
 PMU.printIntRegister()
 
-PMU.enableIRQ(XPOWERS_AXP2101_PKEY_SHORT_IRQ | XPOWERS_AXP2101_PKEY_NEGATIVE_IRQ)
+PMU.enableIRQ(PMU.XPOWERS_AXP2101_PKEY_SHORT_IRQ |
+              PMU.XPOWERS_AXP2101_PKEY_NEGATIVE_IRQ)
 # Print AXP2101 interrupt control register
 PMU.printIntRegister()
 
 # PMU.enableIRQ(
-#     XPOWERS_AXP2101_BAT_INSERT_IRQ | XPOWERS_AXP2101_BAT_REMOVE_IRQ |  # BATTERY
-#     XPOWERS_AXP2101_VBUS_INSERT_IRQ | XPOWERS_AXP2101_VBUS_REMOVE_IRQ |  # VBUS
-#     XPOWERS_AXP2101_PKEY_SHORT_IRQ | XPOWERS_AXP2101_PKEY_LONG_IRQ |  # POWER KEY
-#     XPOWERS_AXP2101_BAT_CHG_DONE_IRQ | XPOWERS_AXP2101_BAT_CHG_START_IRQ  # CHARGE
+#     PMU.XPOWERS_AXP2101_BAT_INSERT_IRQ | PMU.XPOWERS_AXP2101_BAT_REMOVE_IRQ |  # BATTERY
+#     PMU.XPOWERS_AXP2101_VBUS_INSERT_IRQ | PMU.XPOWERS_AXP2101_VBUS_REMOVE_IRQ |  # VBUS
+#     PMU.XPOWERS_AXP2101_PKEY_SHORT_IRQ | PMU.XPOWERS_AXP2101_PKEY_LONG_IRQ |  # POWER KEY
+#     PMU.XPOWERS_AXP2101_BAT_CHG_DONE_IRQ | PMU.XPOWERS_AXP2101_BAT_CHG_START_IRQ  # CHARGE
 # )
 
-PMU.enableIRQ(XPOWERS_AXP2101_BAT_NOR_UNDER_TEMP_IRQ)
+PMU.enableIRQ(PMU.XPOWERS_AXP2101_BAT_NOR_UNDER_TEMP_IRQ)
 # Print AXP2101 interrupt control register
 PMU.printIntRegister()
 
-PMU.enableIRQ(XPOWERS_AXP2101_PKEY_SHORT_IRQ | XPOWERS_AXP2101_PKEY_NEGATIVE_IRQ)
+PMU.enableIRQ(PMU.XPOWERS_AXP2101_PKEY_SHORT_IRQ |
+              PMU.XPOWERS_AXP2101_PKEY_NEGATIVE_IRQ)
 # Print AXP2101 interrupt control register
 PMU.printIntRegister()
 
-PMU.enableIRQ(XPOWERS_AXP2101_BAT_OVER_VOL_IRQ)
+PMU.enableIRQ(PMU.XPOWERS_AXP2101_BAT_OVER_VOL_IRQ)
 # Print AXP2101 interrupt control register
 PMU.printIntRegister()
 
 if implementation.name == 'micropython':
-    irq = Pin(IRQ, Pin.IN,Pin.PULL_UP)
+    irq = Pin(IRQ, Pin.IN, Pin.PULL_UP)
     irq.irq(trigger=Pin.IRQ_FALLING, handler=__callback)
 if implementation.name == 'circuitpython':
     irq = digitalio.DigitalInOut(IRQ)
@@ -102,7 +100,7 @@ if implementation.name == 'circuitpython':
 while True:
     if implementation.name == 'circuitpython':
         if irq.value == False:
-            pmu_flag=True
+            pmu_flag = True
 
     if pmu_flag:
         pmu_flag = False
@@ -113,67 +111,67 @@ while True:
 
         if PMU.isDropWarningLevel2Irq():
             print("isDropWarningLevel2")
-        
+
         if PMU.isDropWarningLevel1Irq():
             print("isDropWarningLevel1")
-        
+
         if PMU.isGaugeWdtTimeoutIrq():
             print("isWdtTimeout")
-        
+
         if PMU.isBatChargerOverTemperatureIrq():
             print("isBatChargeOverTemperature")
-        
+
         if PMU.isBatWorkOverTemperatureIrq():
             print("isBatWorkOverTemperature")
-        
+
         if PMU.isBatWorkUnderTemperatureIrq():
             print("isBatWorkUnderTemperature")
-        
+
         if PMU.isVbusInsertIrq():
             print("isVbusInsert")
-        
+
         if PMU.isVbusRemoveIrq():
             print("isVbusRemove")
-        
+
         if PMU.isBatInsertIrq():
             print("isBatInsert")
-        
+
         if PMU.isBatRemoveIrq():
             print("isBatRemove")
-        
+
         if PMU.isPekeyShortPressIrq():
             print("isPekeyShortPress")
-        
+
         if PMU.isPekeyLongPressIrq():
             print("isPekeyLongPress")
-        
+
         if PMU.isPekeyNegativeIrq():
             print("isPekeyNegative")
-        
+
         if PMU.isPekeyPositiveIrq():
             print("isPekeyPositive")
-        
+
         if PMU.isWdtExpireIrq():
             print("isWdtExpire")
-        
+
         if PMU.isLdoOverCurrentIrq():
             print("isLdoOverCurrentIrq")
-        
+
         if PMU.isBatfetOverCurrentIrq():
             print("isBatfetOverCurrentIrq")
-        
+
         if PMU.isBatChagerDoneIrq():
             print("isBatChagerDone")
-        
+
         if PMU.isBatChagerStartIrq():
             print("isBatChagerStart")
-        
+
         if PMU.isBatDieOverTemperatureIrq():
             print("isBatDieOverTemperature")
-        
+
         if PMU.isChagerOverTimeoutIrq():
             print("isChagerOverTimeout")
-        
+
         if PMU.isBatOverVoltageIrq():
             print("isBatOverVoltage")
 
@@ -184,7 +182,3 @@ while True:
         PMU.printIntRegister()
 
     time.sleep(0.2)
-
-
-
-    

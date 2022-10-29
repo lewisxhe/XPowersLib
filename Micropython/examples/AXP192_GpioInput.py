@@ -48,34 +48,27 @@ if implementation.name == 'circuitpython':
     I2CBUS = busio.I2C(SCL, SDA)
 
 
-PMU = AXP192(I2CBUS,addr=AXP192_SLAVE_ADDRESS)
-
-id = PMU.getChipID()
-if id != XPOWERS_AXP192_CHIP_ID:
-    print("PMU is not online...")
-    while True:
-        pass
-
+PMU = AXP192(I2CBUS, addr=AXP192_SLAVE_ADDRESS)
 print('getID:%s' % hex(PMU.getChipID()))
 
-PMU.pinMode(PMU_GPIO0,INPUT_PULLDOWN)
-PMU.pinMode(PMU_GPIO1,INPUT_PULLDOWN)
-PMU.pinMode(PMU_GPIO2,INPUT_PULLDOWN)
-PMU.pinMode(PMU_GPIO3,INPUT)
-PMU.pinMode(PMU_GPIO4,INPUT)
-PMU.pinMode(PMU_GPIO5,INPUT)
+PMU.pinMode(PMU.PMU_GPIO0, PMU.INPUT_PULLDOWN)
+PMU.pinMode(PMU.PMU_GPIO1, PMU.INPUT_PULLDOWN)
+PMU.pinMode(PMU.PMU_GPIO2, PMU.INPUT_PULLDOWN)
+PMU.pinMode(PMU.PMU_GPIO3, PMU.INPUT)
+PMU.pinMode(PMU.PMU_GPIO4, PMU.INPUT)
+PMU.pinMode(PMU.PMU_GPIO5, PMU.INPUT)
 
 print('AXP192 GPIO 3 ~ 5 is a floating input, please ensure there is an external pull-up or pull-down resistor')
 
 while True:
-    IO0 = PMU.digitalRead(PMU_GPIO0)
-    IO1 = PMU.digitalRead(PMU_GPIO1)
-    IO2 = PMU.digitalRead(PMU_GPIO2)
-    IO3 = PMU.digitalRead(PMU_GPIO3)
-    IO4 = PMU.digitalRead(PMU_GPIO4)
-    IO5 = PMU.digitalRead(PMU_GPIO5)
-    
-    print('IO0:{0} IO1:{1} IO2:{2} IO3:{3} IO4:{4} IO5:{5} '.format(IO0,IO1,IO2,IO3,IO4,IO5))
-    
-    time.sleep(1.5)
+    IO0 = PMU.digitalRead(PMU.PMU_GPIO0)
+    IO1 = PMU.digitalRead(PMU.PMU_GPIO1)
+    IO2 = PMU.digitalRead(PMU.PMU_GPIO2)
+    IO3 = PMU.digitalRead(PMU.PMU_GPIO3)
+    IO4 = PMU.digitalRead(PMU.PMU_GPIO4)
+    IO5 = PMU.digitalRead(PMU.PMU_GPIO5)
 
+    print('IO0:{0} IO1:{1} IO2:{2} IO3:{3} IO4:{4} IO5:{5} '.format(
+        IO0, IO1, IO2, IO3, IO4, IO5))
+
+    time.sleep(1.5)

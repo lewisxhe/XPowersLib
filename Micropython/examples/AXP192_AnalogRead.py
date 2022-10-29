@@ -47,26 +47,18 @@ if implementation.name == 'circuitpython':
     I2CBUS = busio.I2C(SCL, SDA)
 
 
-PMU = AXP192(I2CBUS,addr=AXP192_SLAVE_ADDRESS)
-
-id = PMU.getChipID()
-if id != XPOWERS_AXP192_CHIP_ID:
-    print("PMU is not online...")
-    while True:
-        pass
-
+PMU = AXP192(I2CBUS, addr=AXP192_SLAVE_ADDRESS)
 print('getID:%s' % hex(PMU.getChipID()))
 
 
 val = 0
 while True:
-    IO0 = PMU.analogRead(PMU_GPIO0)
-    IO1 = PMU.analogRead(PMU_GPIO1)
+    IO0 = PMU.analogRead(PMU.PMU_GPIO0)
+    IO1 = PMU.analogRead(PMU.PMU_GPIO1)
     # IO2 = PMU.analogRead(PMU_GPIO2)   # not support
     # IO3 = PMU.analogRead(PMU_GPIO3)   # not support
     # IO4 = PMU.analogRead(PMU_GPIO4)   # not support
     # IO5 = PMU.analogRead(PMU_GPIO5)   # not support
-    print('IO0:{0} IO1:{1} '.format(IO0,IO1))
-    
-    time.sleep(1.5)
+    print('IO0:{0} IO1:{1} '.format(IO0, IO1))
 
+    time.sleep(1.5)

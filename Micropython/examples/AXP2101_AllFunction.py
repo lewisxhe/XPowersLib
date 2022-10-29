@@ -41,22 +41,24 @@ if implementation.name == 'micropython':
     IRQ = 35
     I2CBUS = I2C(scl=Pin(SCL), sda=Pin(SDA))
 if implementation.name == 'circuitpython':
-    from board import *
+    import digitalio
+    import board
     import busio
-    SDA = IO15
-    SCL = IO7
-    IRQ = IO6
+    SDA = board.IO42
+    SCL = board.IO41
+    IRQ = board.IO6
     I2CBUS = busio.I2C(SCL, SDA)
-
 pmu_flag = False
 irq = None
 
+
 def __callback(args):
     global pmu_flag
-    pmu_flag=True 
+    pmu_flag = True
     # print('callback')
 
-PMU = AXP2101(I2CBUS,addr=AXP2101_SLAVE_ADDRESS)
+
+PMU = AXP2101(I2CBUS, addr=AXP2101_SLAVE_ADDRESS)
 
 id = PMU.getChipID()
 if id != XPOWERS_AXP2101_CHIP_ID:
@@ -68,11 +70,11 @@ print('getID:%s' % hex(PMU.getChipID()))
 
 #  Set the minimum common working voltage of the PMU VBUS input,
 #  below this value will turn off the PMU
-PMU.setVbusVoltageLimit(XPOWERS_AXP2101_VBUS_VOL_LIM_4V36)
+PMU.setVbusVoltageLimit(PMU.XPOWERS_AXP2101_VBUS_VOL_LIM_4V36)
 
 #  Set the maximum current of the PMU VBUS input,
 #  higher than this value will turn off the PMU
-PMU.setVbusCurrentLimit(XPOWERS_AXP2101_VBUS_CUR_LIM_1500MA)
+PMU.setVbusCurrentLimit(PMU.XPOWERS_AXP2101_VBUS_CUR_LIM_1500MA)
 
 #  Get the VSYS shutdown voltage
 vol = PMU.getSysPowerDownVoltage()
@@ -210,14 +212,14 @@ print('===================================')
 
 #  Set the time of pressing the button to turn off
 powerOff = ['4', '6', '8', '10']
-PMU.setPowerKeyPressOffTime(XPOWERS_POWEROFF_6S)
+PMU.setPowerKeyPressOffTime(PMU.XPOWERS_POWEROFF_6S)
 opt = PMU.getPowerKeyPressOffTime()
 print('PowerKeyPressOffTime: %s Sceond' % powerOff[opt])
 
 
 #  Set the button power-on press time
 powerOn = ['128ms', '512ms', '1000ms', '2000ms']
-PMU.setPowerKeyPressOnTime(XPOWERS_POWERON_2S)
+PMU.setPowerKeyPressOnTime(PMU.XPOWERS_POWERON_2S)
 opt = PMU.getPowerKeyPressOnTime()
 print('PowerKeyPressOnTime: %s ' % powerOn[opt])
 
@@ -276,36 +278,36 @@ The default setting is CHGLED is automatically controlled by the PMU.
 - XPOWERS_CHG_LED_ON,
 - XPOWERS_CHG_LED_CTRL_CHG,
 '''
-PMU.setChargingLedMode(XPOWERS_CHG_LED_OFF)
+PMU.setChargingLedMode(PMU.XPOWERS_CHG_LED_OFF)
 
 
 #  Disable all interrupts
-PMU.disableIRQ(XPOWERS_AXP2101_ALL_IRQ)
+PMU.disableIRQ(PMU.XPOWERS_AXP2101_ALL_IRQ)
 #  Clear all interrupt flags
 PMU.clearIrqStatus()
 #  Enable the required interrupt function
 PMU.enableIRQ(
-    XPOWERS_AXP2101_BAT_INSERT_IRQ | XPOWERS_AXP2101_BAT_REMOVE_IRQ |  # BATTERY
-    XPOWERS_AXP2101_VBUS_INSERT_IRQ | XPOWERS_AXP2101_VBUS_REMOVE_IRQ |  # VBUS
-    XPOWERS_AXP2101_PKEY_SHORT_IRQ | XPOWERS_AXP2101_PKEY_LONG_IRQ |  # POWER KEY
-    XPOWERS_AXP2101_BAT_CHG_DONE_IRQ | XPOWERS_AXP2101_BAT_CHG_START_IRQ  # CHARGE
-    #  XPOWERS_AXP2101_PKEY_NEGATIVE_IRQ | XPOWERS_AXP2101_PKEY_POSITIVE_IRQ | # POWER KEY
+    PMU.XPOWERS_AXP2101_BAT_INSERT_IRQ | PMU.XPOWERS_AXP2101_BAT_REMOVE_IRQ |  # BATTERY
+    PMU.XPOWERS_AXP2101_VBUS_INSERT_IRQ | PMU.XPOWERS_AXP2101_VBUS_REMOVE_IRQ |  # VBUS
+    PMU.XPOWERS_AXP2101_PKEY_SHORT_IRQ | PMU.XPOWERS_AXP2101_PKEY_LONG_IRQ |  # POWER KEY
+    PMU.XPOWERS_AXP2101_BAT_CHG_DONE_IRQ | PMU.XPOWERS_AXP2101_BAT_CHG_START_IRQ  # CHARGE
+    #  PMU.XPOWERS_AXP2101_PKEY_NEGATIVE_IRQ | PMU.XPOWERS_AXP2101_PKEY_POSITIVE_IRQ | # POWER KEY
 )
 
 #  Set the precharge charging current
-PMU.setPrechargeCurr(XPOWERS_AXP2101_PRECHARGE_50MA)
+PMU.setPrechargeCurr(PMU.XPOWERS_AXP2101_PRECHARGE_50MA)
 #  Set constant current charge current limit
-PMU.setChargerConstantCurr(XPOWERS_AXP2101_CHG_CUR_200MA)
+PMU.setChargerConstantCurr(PMU.XPOWERS_AXP2101_CHG_CUR_200MA)
 #  Set stop charging termination current
-PMU.setChargerTerminationCurr(XPOWERS_AXP2101_CHG_ITERM_25MA)
+PMU.setChargerTerminationCurr(PMU.XPOWERS_AXP2101_CHG_ITERM_25MA)
 
 #  Set charge cut-off voltage
-PMU.setChargeTargetVoltage(XPOWERS_AXP2101_CHG_VOL_4V1)
+PMU.setChargeTargetVoltage(PMU.XPOWERS_AXP2101_CHG_VOL_4V1)
 
 #  Set the watchdog trigger event type
-PMU.setWatchdogConfig(XPOWERS_AXP2101_WDT_IRQ_TO_PIN)
+PMU.setWatchdogConfig(PMU.XPOWERS_AXP2101_WDT_IRQ_TO_PIN)
 #  Set watchdog timeout
-PMU.setWatchdogTimeout(XPOWERS_AXP2101_WDT_TIMEOUT_4S)
+PMU.setWatchdogTimeout(PMU.XPOWERS_AXP2101_WDT_TIMEOUT_4S)
 #  Enable watchdog to trigger interrupt event
 #  PMU.enableWatchdog()
 
@@ -323,23 +325,22 @@ print(tmp)
 
 
 if implementation.name == 'micropython':
-    irq = Pin(IRQ, Pin.IN,Pin.PULL_UP)
+    irq = Pin(IRQ, Pin.IN, Pin.PULL_UP)
     irq.irq(trigger=Pin.IRQ_FALLING, handler=__callback)
 if implementation.name == 'circuitpython':
     irq = digitalio.DigitalInOut(IRQ)
     irq.switch_to_input()
 
 
-
 while True:
     if implementation.name == 'circuitpython':
         if irq.value == False:
-            pmu_flag=True
+            pmu_flag = True
 
     if pmu_flag:
-        pmu_flag=False
+        pmu_flag = False
         mask = PMU.getIrqStatus()
-        print('pmu_flag:',end='')
+        print('pmu_flag:', end='')
         print(bin(mask))
 
         if PMU.isPekeyShortPressIrq():
@@ -355,8 +356,8 @@ while True:
 
         PMU.clearIrqStatus()
 
-    PMU.setChargingLedMode((XPOWERS_CHG_LED_OFF, XPOWERS_CHG_LED_ON)[
-                           PMU.getChargingLedMode() == XPOWERS_CHG_LED_OFF])
+    PMU.setChargingLedMode((PMU.XPOWERS_CHG_LED_OFF, PMU.XPOWERS_CHG_LED_ON)[
+                           PMU.getChargingLedMode() == PMU.XPOWERS_CHG_LED_OFF])
     print("getBattVoltage:{0}mV".format(PMU.getBattVoltage()))
     print("getSystemVoltage:{0}mV".format(PMU.getSystemVoltage()))
     print("getBatteryPercent:{0}%".format(PMU.getBatteryPercent()))
@@ -364,6 +365,5 @@ while True:
     print("isCharging:{0}".format(PMU.isCharging()))
     print("isDischarge:{0}".format(PMU.isDischarge()))
     print("isStandby:{0}".format(PMU.isStandby()))
-    
-    time.sleep(0.8)
 
+    time.sleep(0.8)
