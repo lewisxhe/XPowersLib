@@ -2197,6 +2197,9 @@ public:
 
     uint16_t getVbusVoltage(void)
     {
+        if (!isVbusIn()) {
+            return 0;
+        }
         return readRegisterH6L8(XPOWERS_AXP2101_ADC_DATA_RELUST4, XPOWERS_AXP2101_ADC_DATA_RELUST5);
     }
 
