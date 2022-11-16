@@ -2247,6 +2247,9 @@ public:
 
     uint16_t getBattVoltage(void)
     {
+        if (!isBatteryConnect()) {
+            return 0;
+        }
         return readRegisterH5L8(XPOWERS_AXP2101_ADC_DATA_RELUST0, XPOWERS_AXP2101_ADC_DATA_RELUST1);
     }
 
