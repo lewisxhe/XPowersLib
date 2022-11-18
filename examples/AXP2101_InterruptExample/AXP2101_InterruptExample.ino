@@ -37,17 +37,25 @@ if there is any loss, please bear it by yourself
 #include <Arduino.h>
 #include "XPowersLib.h"
 
+#ifndef CONFIG_PMU_SDA
+#define CONFIG_PMU_SDA 21
+#endif
+
+#ifndef CONFIG_PMU_SCL
+#define CONFIG_PMU_SCL 22
+#endif
+
+#ifndef CONFIG_PMU_IRQ
+#define CONFIG_PMU_IRQ 35
+#endif
 
 bool  pmu_flag = 0;
 XPowersPMU PMU;
 
-#define I2C_SDA                     42
-#define I2C_SCL                     41
-#define PMU_IRQ                     40
 
-const uint8_t i2c_sda = I2C_SDA;
-const uint8_t i2c_scl = I2C_SCL;
-const uint8_t pmu_irq_pin = PMU_IRQ;
+const uint8_t i2c_sda = CONFIG_PMU_SDA;
+const uint8_t i2c_scl = CONFIG_PMU_SCL;
+const uint8_t pmu_irq_pin = CONFIG_PMU_IRQ;
 
 void setFlag(void)
 {
