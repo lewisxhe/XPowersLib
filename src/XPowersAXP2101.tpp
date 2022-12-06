@@ -302,7 +302,7 @@ public:
 
     bool isVbusIn(void)
     {
-        return getRegisterBit(XPOWERS_AXP2101_STATUS2, 3) == 0;
+        return getRegisterBit(XPOWERS_AXP2101_STATUS2, 3) == 0 && isVbusGood();
     }
 
     xpowers_chg_status_t getChargerStatus(void)
