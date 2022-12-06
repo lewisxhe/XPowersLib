@@ -197,6 +197,11 @@ public:
         end();
     }
 
+    uint16_t status()
+    {
+        return readRegister(XPOWERS_AXP192_STATUS);
+    }
+
     bool isAcinVbusStart()
     {
         return getRegisterBit(XPOWERS_AXP192_STATUS, 0);

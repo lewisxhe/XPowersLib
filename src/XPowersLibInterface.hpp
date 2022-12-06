@@ -196,6 +196,12 @@ public:
     virtual void shutdown() = 0;
 
 
+    /**
+     * @brief Get PMU satatus register
+     * @note
+     * @retval register value
+     */
+    virtual uint16_t status() = 0;
 
 
     /**

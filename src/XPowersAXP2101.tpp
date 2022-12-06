@@ -244,6 +244,13 @@ public:
     /*
      * PMU status functions
      */
+    uint16_t status()
+    {
+        uint8_t status1 = readRegister(XPOWERS_AXP2101_STATUS1);
+        uint8_t status2 = readRegister(XPOWERS_AXP2101_STATUS2);
+        return (status1 << 8) | (status2);
+    }
+
     bool isVbusGood(void)
     {
         return  getRegisterBit(XPOWERS_AXP2101_STATUS1, 5);
