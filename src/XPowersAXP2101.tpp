@@ -1342,6 +1342,35 @@ public:
         :  clrRegisterBit(XPOWERS_AXP2101_DC_FORCE_PWM_CTRL, 7);
     }
 
+    void enableCCM()
+    {
+        setRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 6);
+    }
+
+    void disableCCM()
+    {
+        clrRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 6);
+    }
+
+    bool isEanbleCCM()
+    {
+        return getRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 6);
+    }
+
+    enum DVMRamp {
+        XPOWERS_AXP2101_DVM_RAMP_15_625US,
+        XPOWERS_AXP2101_DVM_RAMP_31_250US,
+    };
+
+    //args:enum DVMRamp
+    void setDVMRamp(uint8_t opt)
+    {
+        if (opt > 2)return;
+        opt == 0 ? clrRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 5) : setRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 5);
+    }
+
+
+
     /*
      * Power control DCDC1 functions
      */
