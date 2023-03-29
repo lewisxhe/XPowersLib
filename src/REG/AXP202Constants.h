@@ -152,9 +152,9 @@
 #define XPOWERS_AXP202_LDO2_VOL_STEPS                   (100u)
 #define XPOWERS_AXP202_LDO2_VOL_BIT_MASK                (4u)
 
-#define XPOWERS_AXP202_LDO3_VOL_MIN                     (700u)
-#define XPOWERS_AXP202_LDO3_VOL_MAX                     (2275u)
-#define XPOWERS_AXP202_LDO3_VOL_STEPS                   (25u)
+#define XPOWERS_AXP202_LDO3_VOL_MIN                     (1800u)
+#define XPOWERS_AXP202_LDO3_VOL_MAX                     (3300u)
+#define XPOWERS_AXP202_LDO3_VOL_STEPS                   (100u)
 
 #define XPOWERS_AXP202_DC2_VOL_STEPS                    (25u)
 #define XPOWERS_AXP202_DC2_VOL_MIN                      (700u)

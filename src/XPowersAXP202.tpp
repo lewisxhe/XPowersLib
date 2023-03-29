@@ -36,46 +36,22 @@
 #include "REG/AXP202Constants.h"
 #include "XPowersLibInterface.hpp"
 
-typedef enum {
-    MONITOR_TS_PIN      = _BV(0),
-    MONITOR_APS_VOLTAGE = _BV(1),
-    MONITOR_USB_CURRENT = _BV(2),
-    MONITOR_USB_VOLTAGE = _BV(3),
-    MONITOR_AC_CURRENT  = _BV(4),
-    MONITOR_AC_VOLTAGE  = _BV(5),
-    MONITOR_BAT_CURRENT = _BV(6),
-    MONITOR_BAT_VOLTAGE = _BV(7),
-    MONITOR_ADC_IO3     = _BV(8),
-    MONITOR_ADC_IO2     = _BV(9),
-    MONITOR_ADC_IO1     = _BV(10),
-    MONITOR_ADC_IO0     = _BV(11),
-    MONITOR_TEMPERATURE = _BV(16),
-} axp202_adc_func_t;
-
 
 typedef enum {
     XPOWERS_AXP202_BOOT_TIME_128MS,
     XPOWERS_AXP202_BOOT_TIME_512MS,
     XPOWERS_AXP202_BOOT_TIME_1S,
     XPOWERS_AXP202_BOOT_TIME_2S,
-} axp202_boot_time_t;
+} xpowers_axp202_boot_time_t;
 
 
-typedef enum {
-    PMU_GPIO0,
-    PMU_GPIO1,
-    PMU_GPIO2,
-    PMU_GPIO3,
-    PMU_GPIO4,
-    PMU_GPIO5,
-    PMU_TS_PIN
-} xpowers_num_t;
+
 
 
 typedef enum {
     XPOWERS_AXP202_CHG_ITERM_LESS_10_PERCENT,
     XPOWERS_AXP202_CHG_ITERM_LESS_15_PERCENT,
-} xpowers_chg_iterm_t;
+} xpowers_axp202_chg_iterm_t;
 
 
 typedef enum {
@@ -83,14 +59,14 @@ typedef enum {
     XPOWERS_AXP202_PRECHG_TIMEOUT_40MIN,
     XPOWERS_AXP202_PRECHG_TIMEOUT_50MIN,
     XPOWERS_AXP202_PRECHG_TIMEOUT_60MIN,
-} xpoers_prechg_to_t;
+} xpoers_axp202_prechg_to_t;
 
 typedef enum {
     XPOWERS_AXP202_POWEROFF_4S,
     XPOWERS_AXP202_POWEROFF_65,
     XPOWERS_AXP202_POWEROFF_8S,
     XPOWERS_AXP202_POWEROFF_10S,
-} xpowers_pekey_poweroff_arg_t;
+} xpowers_axp202_pekey_poweroff_arg_t;
 
 
 typedef enum {
@@ -98,7 +74,7 @@ typedef enum {
     XPOWERS_AXP202_LONGPRESS_1500MS,
     XPOWERS_AXP202_LONGPRESS_2000MS,
     XPOWERS_AXP202_LONGPRESS_2500MS,
-} xpowers_pekey_long_press_t;
+} xpowers_axp202_pekey_long_press_t;
 
 typedef enum {
     XPOWERS_AXP202_VBUS_VOL_LIM_4V,
@@ -117,7 +93,7 @@ typedef enum {
     XPOWERS_AXP202_CHG_CONS_TIMEOUT_8H,
     XPOWERS_AXP202_CHG_CONS_TIMEOUT_9H,
     XPOWERS_AXP202_CHG_CONS_TIMEOUT_10H,
-} xpowers_chg_cons_to_t;
+} xpowers_axp202_chg_cons_to_t;
 
 
 typedef enum {
@@ -125,22 +101,38 @@ typedef enum {
     XPOWERS_AXP202_BACKUP_BAT_VOL_3V,
     XPOWERS_AXP202_BACKUP_BAT_VOL_3V0, //!NEED FIX,DATASHEET ERROR!
     XPOWERS_AXP202_BACKUP_BAT_VOL_2V5,
-} xpowers_backup_batt_vol_t;
+} xpowers_axp202_backup_batt_vol_t;
 
 typedef enum {
     XPOWERS_AXP202_BACKUP_BAT_CUR_50UA,
     XPOWERS_AXP202_BACKUP_BAT_CUR_100UA,
     XPOWERS_AXP202_BACKUP_BAT_CUR_200UA,
     XPOWERS_AXP202_BACKUP_BAT_CUR_400UA,
-} xpowers_backup_batt_curr_t;
+} xpowers_axp202_backup_batt_curr_t;
 
 
 class XPowersAXP202 :
     public XPowersCommon<XPowersAXP202>, public XPowersLibInterface
 {
     friend class XPowersCommon<XPowersAXP202>;
-public:
 
+    typedef enum {
+        MONITOR_TS_PIN      = _BV(0),
+        MONITOR_APS_VOLTAGE = _BV(1),
+        MONITOR_USB_CURRENT = _BV(2),
+        MONITOR_USB_VOLTAGE = _BV(3),
+        MONITOR_AC_CURRENT  = _BV(4),
+        MONITOR_AC_VOLTAGE  = _BV(5),
+        MONITOR_BAT_CURRENT = _BV(6),
+        MONITOR_BAT_VOLTAGE = _BV(7),
+        MONITOR_ADC_IO3     = _BV(8),
+        MONITOR_ADC_IO2     = _BV(9),
+        MONITOR_ADC_IO1     = _BV(10),
+        MONITOR_ADC_IO0     = _BV(11),
+        MONITOR_TEMPERATURE = _BV(16),
+    } axp202_adc_func_t;
+
+public:
 
 #if defined(ARDUINO)
     XPowersAXP202(TwoWire &w, int sda = SDA, int scl = SCL, uint8_t addr = AXP202_SLAVE_ADDRESS)
@@ -398,7 +390,7 @@ public:
         return val;
     }
 
-    void setChargerTerminationCurr(xpowers_chg_iterm_t opt)
+    void setChargerTerminationCurr(xpowers_axp202_chg_iterm_t opt)
     {
         switch (opt) {
         case XPOWERS_AXP202_CHG_ITERM_LESS_10_PERCENT:
@@ -417,7 +409,7 @@ public:
         return getRegisterBit(XPOWERS_AXP202_CHARGE1, 4);
     }
 
-    bool setPrechargeTimeout(xpoers_prechg_to_t opt)
+    bool setPrechargeTimeout(xpoers_axp202_prechg_to_t opt)
     {
         int val = readRegister(XPOWERS_AXP202_CHARGE2);
         if (val == -1)return false;
@@ -457,7 +449,7 @@ public:
     }
 
     // Timeout setting in constant current mode
-    bool setChargerConstantTimeout(xpowers_chg_cons_to_t opt)
+    bool setChargerConstantTimeout(xpowers_axp202_chg_cons_to_t opt)
     {
         int val = readRegister(XPOWERS_AXP202_CHARGE2);
         if (val == -1)return false;
@@ -481,7 +473,7 @@ public:
         return getRegisterBit(XPOWERS_AXP202_BACKUP_CHG, 7);
     }
 
-    bool setBackupBattChargerVoltage(xpowers_backup_batt_vol_t opt)
+    bool setBackupBattChargerVoltage(xpowers_axp202_backup_batt_vol_t opt)
     {
         int val = readRegister(XPOWERS_AXP202_BACKUP_CHG);
         if (val == -1)return false;
@@ -489,7 +481,7 @@ public:
         return 0 == writeRegister(XPOWERS_AXP202_BACKUP_CHG, val | (opt << 5));
     }
 
-    bool setBackupBattChargerCurr(xpowers_backup_batt_curr_t opt)
+    bool setBackupBattChargerCurr(xpowers_axp202_backup_batt_curr_t opt)
     {
         int val = readRegister(XPOWERS_AXP202_BACKUP_CHG);
         if (val == -1)return false;
@@ -642,16 +634,17 @@ public:
             log_e("Mistake ! LDO3 maximum output voltage is  %umV", XPOWERS_AXP202_LDO3_VOL_MAX);
             return false;
         }
-        int val = readRegister(XPOWERS_AXP202_LDO24OUT_VOL) & 0x80;
-        return 0 == writeRegister(XPOWERS_AXP202_LDO24OUT_VOL, val | ((millivolt - XPOWERS_AXP202_LDO3_VOL_MIN) / XPOWERS_AXP202_LDO3_VOL_STEPS));
+        int val = readRegister(XPOWERS_AXP202_LDO3OUT_VOL) & 0x80;
+        return 0 == writeRegister(XPOWERS_AXP202_LDO3OUT_VOL, val | ((millivolt - XPOWERS_AXP202_LDO3_VOL_MIN) / XPOWERS_AXP202_LDO3_VOL_STEPS));
     }
 
     uint16_t getLDO3Voltage(void)
     {
-        int val = readRegister(XPOWERS_AXP202_LDO24OUT_VOL);
+        int val = readRegister(XPOWERS_AXP202_LDO3OUT_VOL);
         if (val == -1)return 0;
         // Returns the voltage value of VBUS if in pass-through mode
         if (val & 0x80) {
+            log_i("ldo3 pass-through mode");
             return getVbusVoltage();
         }
         val &= 0x7F;
@@ -689,14 +682,15 @@ public:
                 break;
             }
         }
-        if (index = -1) {
+        if (index == -1) {
+            log_e("Mistake ! Out of adjustment range");
             return false;
         }
-        int val = readRegister(XPOWERS_AXP202_LDO24OUT_VOL) & 0xF0;
+        int val = readRegister(XPOWERS_AXP202_LDO24OUT_VOL) ;
         if (val == -1) {
             return false;
         }
-        return 0 == writeRegister(XPOWERS_AXP202_LDO24OUT_VOL, val | index);
+        return 0 == writeRegister(XPOWERS_AXP202_LDO24OUT_VOL, (val & 0xF0) | index);
     }
 
     uint16_t getLDO4Voltage(void)
@@ -704,10 +698,9 @@ public:
         int val = readRegister(XPOWERS_AXP202_LDO24OUT_VOL);
         if (val == -1)return 0;
         val &= 0x0F;
-        if (val >= (sizeof(ldo4_table) / sizeof(ldo4_table[0])))
-            return 0;
         return ldo4_table[val];
     }
+
     /*
      * Power control DCDC2 functions
      */
@@ -1460,7 +1453,7 @@ public:
     }
 
 
-    void setPowerKeyLongPressOnTime(xpowers_pekey_long_press_t opt)
+    void setPowerKeyLongPressOnTime(xpowers_axp202_pekey_long_press_t opt)
     {
         int val =  readRegister(XPOWERS_AXP202_POK_SET);
         if (val == -1)return;
@@ -1491,6 +1484,8 @@ protected:
             return getLDO2Voltage();
         case XPOWERS_LDO3:
             return getLDO3Voltage();
+        case XPOWERS_LDO4:
+            return getLDO4Voltage();
         case XPOWERS_LDOIO:
             return getLDOioVoltage();
         default:
@@ -1675,6 +1670,8 @@ protected:
     {
         return "AXP202";
     }
+
+
 
 private:
     const uint16_t chargeTargetVol[4] = {4100, 4150, 4200, 4360};
