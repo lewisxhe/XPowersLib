@@ -109,9 +109,11 @@ void setup()
 
 
     // Enable power output channel
-    // PMU.enableDC1();
+
     PMU.enableDC2();
-    PMU.enableDC3();
+
+    // PMU.enableDC3();
+
     PMU.enableLDO2();
     PMU.enableLDO3();
     PMU.enableLDO4();
