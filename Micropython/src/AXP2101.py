@@ -551,7 +551,7 @@ class AXP2101(I2CInterface):
         return bool(super().getRegisterBit(_AXP2101_STATUS2, 3) == 0)
 
     def getChargerStatus(self) -> None:
-        return super().readRegister(_AXP2101_THE_REGU_THRES_SET)[0] & 0x07
+        return super().readRegister(_AXP2101_STATUS2)[0] & 0x07
 
     # Data Buffer
     def writeDataBuffer(self, data: list,  size: int) -> None:
@@ -612,7 +612,7 @@ class AXP2101(I2CInterface):
         super().setRegisterBit(_AXP2101_BATFET_CTRL, 0)
 
     def disableBatfetDieOverTempDetect(self) -> None:
-        super().setRegisterBit(_AXP2101_BATFET_CTRL, 0)
+        super().clrRegisterBit(_AXP2101_BATFET_CTRL, 0)
 
     # @param   opt: 0:115 , 1:125 , 2:135
     def setDieOverTempLevel1(self, opt: int) -> None:
@@ -629,7 +629,7 @@ class AXP2101(I2CInterface):
         super().setRegisterBit(_AXP2101_DIE_TEMP_CTRL, 0)
 
     def disableDieOverTempDetect(self) -> None:
-        super().setRegisterBit(_AXP2101_DIE_TEMP_CTRL, 0)
+        super().clrRegisterBit(_AXP2101_DIE_TEMP_CTRL, 0)
 
     # Linear Charger Vsys voltage dpm
     def setLinearChargerVsysDpm(self, opt: int) -> None:
