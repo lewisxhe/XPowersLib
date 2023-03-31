@@ -1944,9 +1944,21 @@ class AXP2101(I2CInterface):
     def getBatteryParameter(self) -> int:
         return super().readRegister(_AXP2101_BAT_PARAME)[0]
 
+    def fuelGaugeControl(self, writeROM: bool, enable: bool) -> int:
+        if writeROM:
+            super().clrRegisterBit(_AXP2101_FUEL_GAUGE_CTRL, 4)
+        else:
+            super().setRegisterBit(_AXP2101_FUEL_GAUGE_CTRL, 4)
+
+        if enable:
+            super().setRegisterBit(_AXP2101_FUEL_GAUGE_CTRL, 0)
+        else:
+            super().clrRegisterBit(_AXP2101_FUEL_GAUGE_CTRL, 0)
+
     #  Interrupt status/control functions
     # @brief  Get the interrupt controller mask value.
     # @retval   Mask value corresponds to _axp2101_irq_t ,
+
     def getIrqStatus(self) -> int:
         self.statusRegister = super().readRegister(_AXP2101_INTSTS1, 3)
         return (self.statusRegister[0] << 16) | (self.statusRegister[1] << 8) | (self.statusRegister[2])
