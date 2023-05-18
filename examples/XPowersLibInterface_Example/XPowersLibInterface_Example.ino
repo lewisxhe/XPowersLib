@@ -379,6 +379,9 @@ void setup()
     PMU->clearIrqStatus();
 
 
+    /*
+    // call specific interrupt request
+
     uint64_t pmuIrqMask = 0;
 
     if (PMU->getChipModel() == XPOWERS_AXP192) {
@@ -387,26 +390,28 @@ void setup()
                      XPOWERS_AXP192_BAT_INSERT_IRQ      | XPOWERS_AXP192_BAT_REMOVE_IRQ  |      //VBUS
                      XPOWERS_AXP192_PKEY_SHORT_IRQ      | XPOWERS_AXP192_PKEY_LONG_IRQ   |      //POWER KEY
                      XPOWERS_AXP192_BAT_CHG_START_IRQ   | XPOWERS_AXP192_BAT_CHG_DONE_IRQ ;     //CHARGE
-
-
-
     } else if (PMU->getChipModel() == XPOWERS_AXP2101) {
 
         pmuIrqMask = XPOWERS_AXP2101_BAT_INSERT_IRQ     | XPOWERS_AXP2101_BAT_REMOVE_IRQ      |   //BATTERY
                      XPOWERS_AXP2101_VBUS_INSERT_IRQ    | XPOWERS_AXP2101_VBUS_REMOVE_IRQ     |   //VBUS
                      XPOWERS_AXP2101_PKEY_SHORT_IRQ     | XPOWERS_AXP2101_PKEY_LONG_IRQ       |   //POWER KEY
                      XPOWERS_AXP2101_BAT_CHG_DONE_IRQ   | XPOWERS_AXP2101_BAT_CHG_START_IRQ;      //CHARGE
-
-
-
     }
-
-
     // Enable the required interrupt function
     PMU->enableIRQ(pmuIrqMask);
 
+    */
 
+    // Call the interrupt request through the interface class
+    PMU->disableInterrupt(XPOWERS_ALL_INT);
 
+    PMU->enableInterrupt(XPOWERS_USB_INSERT_INT |
+                         XPOWERS_USB_REMOVE_INT |
+                         XPOWERS_BATTERY_INSERT_INT |
+                         XPOWERS_BATTERY_REMOVE_INT |
+                         XPOWERS_PWR_BTN_CLICK_INT |
+                         XPOWERS_CHARGE_START_INT |
+                         XPOWERS_CHARGE_DONE_INT);
 }
 
 void printPMU()
