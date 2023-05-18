@@ -202,6 +202,24 @@ typedef enum {
     XPOWERS_AXP202_VBUS_CUR_LIM_OFF,
 } xpowers_axp202_vbus_cur_limit_t;
 
+/**
+ * @brief XPowersLibInterface interrupt control mask parameters.
+ *          Common interrupt interfaces
+ * @Example: enableInterrupt(XPOWERS_USB_INSERT_INT|XPOWERS_USB_REMOVE_INT);
+ *           disableInterrupt(XPOWERS_CHARGE_START_INT|XPOWERS_PWR_BTN_CLICK_INT);
+ */
+typedef enum __xpowers_interrupt_enum {
+    XPOWERS_USB_INSERT_INT          = _BV(0),
+    XPOWERS_USB_REMOVE_INT          = _BV(1),
+    XPOWERS_BATTERY_INSERT_INT      = _BV(2),
+    XPOWERS_BATTERY_REMOVE_INT      = _BV(3),
+    XPOWERS_CHARGE_START_INT        = _BV(4),
+    XPOWERS_CHARGE_DONE_INT         = _BV(5),
+    XPOWERS_PWR_BTN_CLICK_INT       = _BV(6),
+    XPOWERS_PWR_BTN_LONGPRESSED_INT = _BV(7),
+    XPOWERS_ALL_INT                 = _BV(8),
+} xpowers_interrupt_enum_t;
+
 
 /**
  * @brief axp192 interrupt control mask parameters.
