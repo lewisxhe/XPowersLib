@@ -989,8 +989,8 @@ public:
     {
         int val = readRegister(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL);
         if (val == -1)return;
-        enable ? (val | opt) : (val & (~opt));
-        writeRegister(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, val | opt);
+        enable ? (val |= opt) : (val &= (~opt));
+        writeRegister(XPOWERS_AXP2101_SLEEP_WAKEUP_CTRL, val);
     }
 
     bool enableWakeup(void)
