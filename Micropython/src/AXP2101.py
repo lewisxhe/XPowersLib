@@ -962,7 +962,7 @@ class AXP2101(I2CInterface):
             val |= opt
         else:
             val &= (~opt)
-        super().writeRegister(_AXP2101_SLEEP_WAKEUP_CTRL, val | opt)
+        super().writeRegister(_AXP2101_SLEEP_WAKEUP_CTRL, val)
 
     def enableWakeup(self) -> None:
         super().setRegisterBit(_AXP2101_SLEEP_WAKEUP_CTRL, 1)
