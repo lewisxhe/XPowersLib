@@ -98,6 +98,8 @@ public:
     {
         if (__has_init)return thisChip().initImpl();
         __has_init = true;
+        __sda = sda;
+        __scl = scl;
         __wire = &w;
 #if defined(ARDUINO_ARCH_RP2040)
         __wire->end();
