@@ -36,7 +36,7 @@
 #include "REG/SY6970Constants.h"
 // #include "XPowersLibInterface.hpp"
 
-typedef enum PowersSY6970BusStatus {
+enum PowersSY6970BusStatus {
     POWERS_SY_NOINPUT,
     POWERS_SY_USB_SDP,
     POWERS_SY_USB_CDP,
@@ -47,7 +47,7 @@ typedef enum PowersSY6970BusStatus {
     POWERS_SY_OTG
 } ;
 
-typedef enum PowersSY6970ChargeStatus {
+enum PowersSY6970ChargeStatus {
     POWERS_SY_NO_CHARGE,
     POWERS_SY_PRE_CHARGE,
     POWERS_SY_FAST_CHARGE,
@@ -55,7 +55,7 @@ typedef enum PowersSY6970ChargeStatus {
     POWERS_SY_CHARGE_UNKOWN,
 } ;
 
-typedef enum PowersSY6970NTCStatus {
+enum PowersSY6970NTCStatus {
     POWERS_SY_BUCK_NTC_NORMAL,
     POWERS_SY_BUCK_NTC_WARM,
     POWERS_SY_BUCK_NTC_COOL,
@@ -443,7 +443,7 @@ public:
         return val * POWERS_SY6970_CHG_VOL_STEP + POWERS_SY6970_CHG_VOL_BASE;
     }
 
-    // Range:0 ~ 5056 ,step:16 mA
+    // Range:3840 ~ 4608mV ,step:16 mV
     bool setChargeTargetVoltage(uint16_t millivolt)
     {
         if (millivolt % POWERS_SY6970_CHG_VOL_STEP) {
