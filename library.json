@@ -1,6 +1,6 @@
 {
   "name": "XPowersLib",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Arduino,CircuitPython,Micropython library for x-powers power management series",
   "keywords": "AXP192 AXP202 AXP2101 x-powers",
   "authors": [
@@ -57,6 +57,17 @@
       "base": "examples/AXP2101_Voltage_Example",
       "files": ["AXP2101_Voltage_Example.ino"]
     },
+    {
+      "name": "AXP2101_ADC_Example",
+      "base": "examples/AXP2101_ADC_Example",
+      "files": ["AXP2101_ADC_Example.ino"]
+    },
+    {
+      "name": "AXP2101_Sleep_Example",
+      "base": "examples/AXP2101_Sleep_Example",
+      "files": ["AXP2101_Sleep_Example.ino"]
+    },
+
     {
       "name": "ESP_IDF_Example",
       "base": "examples/ESP_IDF_Example/main",
