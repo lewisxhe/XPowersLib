@@ -1780,9 +1780,9 @@ class AXP2101(I2CInterface):
     def disableTemperatureMeasure(self) -> None:
         super().clrRegisterBit(_AXP2101_ADC_CHANNEL_CTRL, 4)
 
-    def getTemperature(self) -> int:
-        #!FIXME
-        return super().readRegisterH6L8(_AXP2101_ADC_DATA_RELUST8, _AXP2101_ADC_DATA_RELUST9)
+    def getTemperature(self) -> float:
+        raw = super().readRegisterH6L8(_AXP2101_ADC_DATA_RELUST8, _AXP2101_ADC_DATA_RELUST9)
+        return (22.0 + (7274 - raw) / 20.0)
 
     def enableSystemVoltageMeasure(self) -> None:
         super().setRegisterBit(_AXP2101_ADC_CHANNEL_CTRL, 3)
