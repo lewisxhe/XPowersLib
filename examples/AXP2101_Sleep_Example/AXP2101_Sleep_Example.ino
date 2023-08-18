@@ -149,11 +149,15 @@ void loop()
             // Send IRQ wakeup command
             PMU.enableWakeup();
 
+#if !CONFIG_IDF_TARGET_ESP32S3
+            Serial.println("Please implement the MCU sleep method");
+#else
             // Set ESP32 to wake up externally
             esp_sleep_enable_ext0_wakeup((gpio_num_t )pmu_irq_pin, LOW);
 
             // Enable ESP32 sleep
             esp_deep_sleep_start();
+#endif
 
             Serial.println("Here never prints . ");
         }
