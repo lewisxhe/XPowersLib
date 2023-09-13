@@ -422,7 +422,7 @@ public:
         XPOWERS_CHECK_RANGE(milliampere, POWERS_PRE_CHG_CURRENT_MIN, POWERS_PRE_CHG_CURRENT_MAX, false);
         int val = readRegister(POWERS_SY6970_REG_05H);
         val &= 0x0F;
-        milliampere = (milliampere / POWERS_SY6970_PRE_CHG_CUR_STEP) - POWERS_SY6970_PRE_CHG_CUR_STEP;
+        milliampere = ((milliampere - POWERS_SY6970_PRE_CHG_CUR_BASE) / POWERS_SY6970_PRE_CHG_CUR_STEP);
         val |=  milliampere << 4;
         return writeRegister(POWERS_SY6970_REG_05H, val) != -1;
     }
