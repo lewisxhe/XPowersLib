@@ -524,13 +524,13 @@ class AXP2101(I2CInterface):
         return bool(super().getRegisterBit(_AXP2101_STATUS1, 3))
 
     def isBatInActiveModeState(self) -> bool:
-        return bool(super().getRegisterBit(_AXP2101_STATUS1, 3))
+        return bool(super().getRegisterBit(_AXP2101_STATUS1, 2))
 
     def getThermalRegulationStatus(self) -> bool:
-        return super().getRegisterBit(_AXP2101_STATUS1, 2)
+        return super().getRegisterBit(_AXP2101_STATUS1, 1)
 
     def getCurrnetLimitStatus(self) -> bool:
-        return super().getRegisterBit(_AXP2101_STATUS1, 1)
+        return super().getRegisterBit(_AXP2101_STATUS1, 0)
 
     def isCharging(self) -> bool:
         return (super().readRegister(_AXP2101_STATUS2)[0] >> 5) == 0x01
