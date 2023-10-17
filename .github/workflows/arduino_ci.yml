@@ -3,9 +3,6 @@ name: Arduino_CI
 on:
   pull_request:
   push:
-    paths:
-      - "examples/**"
-      - "src/**"
 
 jobs:
   build:
