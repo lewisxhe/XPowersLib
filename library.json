@@ -94,7 +94,7 @@
     }
   ],
   "frameworks": ["arduino", "espidf"],
-  "platforms": "esp32",
+  "platforms": "esp32,ststm32",
   "headers": "XPowersLib.h",
   "license": "MIT"
 }
