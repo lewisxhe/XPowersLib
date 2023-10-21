@@ -153,7 +153,7 @@ public:
         return chargeStatus() != POWERS_SY_CHARGE_DONE;
     }
 
-    bool isBatteryConnect(void)
+    bool isBatteryConnect(void) __attribute__((error("Not implemented")))
     {
         //TODO:
         return false;
@@ -171,11 +171,13 @@ public:
 
     void disableCharge()
     {
+        __user_disable_charge = true;
         clrRegisterBit(POWERS_SY6970_REG_03H, 4);
     }
 
     void enableCharge()
     {
+        __user_disable_charge = false;
         setRegisterBit(POWERS_SY6970_REG_03H, 4);
     }
 
@@ -187,13 +189,23 @@ public:
     void disableOTG()
     {
         clrRegisterBit(POWERS_SY6970_REG_03H, 5);
+        /*
+        * After turning on the OTG function, the charging function will
+        * be automatically disabled. If the user does not disable the charging
+        * function, the charging function will be automatically enabled after
+        * turning off the OTG output.
+        * */
+        if (!__user_disable_charge) {
+            setRegisterBit(POWERS_SY6970_REG_03H, 4);
+        }
     }
 
-    void enableOTG()
+    bool enableOTG()
     {
-        setRegisterBit(POWERS_SY6970_REG_03H, 5);
+        if (isVbusIn())
+            return false;
+        return setRegisterBit(POWERS_SY6970_REG_03H, 5);
     }
-
 
     void feedWatchdog()
     {
@@ -493,9 +505,12 @@ public:
         return  writeRegister(POWERS_SY6970_REG_06H, val) != -1;
     }
 
+
+private:
+
     bool initImpl()
     {
-
+        __user_disable_charge = false;
         if (getChipID() != 0x00) {
             return false;
         }
@@ -506,8 +521,7 @@ public:
         return true;
     }
 
-private:
-
+    bool __user_disable_charge;
 };
 
 
