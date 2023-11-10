@@ -546,12 +546,12 @@ public:
 
     void enableInputCurrentLimit()
     {
-        setRegisterBit(POWERS_SY6970_REG_02H, 1);
+        setRegisterBit(POWERS_SY6970_REG_02H, 4);
     }
 
     void disableInputCurrentLimit()
     {
-        clrRegisterBit(POWERS_SY6970_REG_02H, 1);
+        clrRegisterBit(POWERS_SY6970_REG_02H, 4);
     }
 
     void enableHVDCP()
@@ -561,7 +561,7 @@ public:
 
     void disableHVDCP()
     {
-        clrRegisterBit(POWERS_SY6970_REG_02H, 2);
+        clrRegisterBit(POWERS_SY6970_REG_02H, 3);
     }
 
     bool isEnableHVDCP()
@@ -796,6 +796,8 @@ private:
         if (getChipID() != 0x00) {
             return false;
         }
+        // Set the minimum operating voltage. Below this voltage, the PMU will protect
+        setSysPowerDownVoltage(3300);
 
         //Default disbale Watchdog
         disableWatchdog();
