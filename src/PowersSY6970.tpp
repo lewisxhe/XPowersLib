@@ -112,6 +112,13 @@ public:
     }
 #endif
 
+    PowersSY6970(uint8_t addr, iic_fptr_t readRegCallback, iic_fptr_t writeRegCallback)
+    {
+        thisReadRegCallback = readRegCallback;
+        thisWriteRegCallback = writeRegCallback;
+        __addr = addr;
+    }
+
     PowersSY6970()
     {
 #if defined(ARDUINO)

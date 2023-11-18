@@ -53,9 +53,18 @@
 #define IS_BIT_SET(val,mask)            (((val)&(mask)) == (mask))
 
 #if !defined(ARDUINO)
+#ifdef linux
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#define log_e(__info,...)          printf("error :"  __info,##__VA_ARGS__)
+#define log_i(__info,...)          printf("info  :"  __info,##__VA_ARGS__)
+#define log_d(__info,...)          printf("debug :"  __info,##__VA_ARGS__)
+#else
 #define log_e(...)
 #define log_i(...)
 #define log_d(...)
+#endif
 
 #define LOW                 0x0
 #define HIGH                0x1
@@ -84,11 +93,11 @@
 #endif
 #endif
 
+typedef int (*iic_fptr_t)(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint8_t len);
 
 template <class chipType>
 class XPowersCommon
 {
-    typedef int (*iic_fptr_t)(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint8_t len);
 
 public:
 
@@ -267,15 +276,17 @@ protected:
 #if defined(ARDUINO)
         if (__has_init) return thisChip().initImpl();
         __has_init = true;
-        log_i("SDA:%d SCL:%d", __sda, __scl);
+        if (__wire) {
+            log_i("SDA:%d SCL:%d", __sda, __scl);
 #if defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_STM32)
-        __wire->end();
-        __wire->setSDA(__sda);
-        __wire->setSCL(__scl);
-        __wire->begin();
+            __wire->end();
+            __wire->setSDA(__sda);
+            __wire->setSCL(__scl);
+            __wire->begin();
 #else
-        __wire->begin(__sda, __scl);
+            __wire->begin(__sda, __scl);
 #endif
+        }
 #endif  /*ARDUINO*/
         return thisChip().initImpl();
     }
