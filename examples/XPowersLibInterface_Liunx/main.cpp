@@ -44,16 +44,19 @@ if there is any loss, please bear it by yourself
 #include "XPowersLib.h"
 
 #ifndef CONFIG_PMU_IRQ
-#define CONFIG_PMU_IRQ 28
+#define CONFIG_PMU_IRQ 55
 #endif
+
+extern int liunx_gpio_edge(int pin, int edge);
+extern int liunx_gpio_direction(int pin, int dir);
+extern int liunx_gpio_export(int pin);
+extern int liunx_gpio_unexport(int pin);
+
 const uint8_t pmu_irq_pin = CONFIG_PMU_IRQ;
 
 // Change to the hardware I2C device name you need to use
 const char *i2c_device = "/dev/i2c-3";
 int     hardware_i2c_fd = -1;
-
-// Use the XPowersLibInterface standard to use the xpowers API
-XPowersLibInterface *PMU = NULL;
 
 
 int liunx_i2c_read_callback(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint8_t len)
@@ -74,40 +77,9 @@ int liunx_i2c_write_callback(uint8_t devAddr, uint8_t regAddr, uint8_t *data, ui
     return write(hardware_i2c_fd, data, len);
 }
 
-int liunx_user_open_gpio(int pin, int direction)
-{
-    const char dir_str[]  = "in\0out";
-    char path[128];
-    int fd;
 
-    snprintf(path, 128, "/sys/class/gpio/gpio%d/direction", pin);
-    fd = open(path, O_WRONLY);
-    if (fd < 0) {
-        printf( "Set direction failed: pin%d\n", pin);
-        return -1;
-    }
-
-    if (write(fd, &dir_str[direction == INPUT ? 0 : 3], direction == INPUT ? 2 : 3) < 0) {
-        printf("failed to set direction!\n");
-        return -1;
-    }
-
-    if (direction == INPUT) {
-        printf("pin%d:intput\n", pin);
-    } else {
-        printf("pin%d:Output\n", pin);
-    }
-
-    close(fd);
-
-    snprintf(path, 128, "/sys/class/gpio/gpio%d/value", pin);
-    fd = open(path, O_RDONLY);
-    if (fd < 0) {
-        printf( "read %d pin Failed\n", pin);
-        return -1;
-    }
-    return fd;
-}
+// Use the XPowersLibInterface standard to use the xpowers API
+XPowersLibInterface *PMU = NULL;
 
 void printPMU()
 {
@@ -131,7 +103,7 @@ void printPMU()
 int main()
 {
 
-    //device
+    // Open I2C device
     if ((hardware_i2c_fd = open(i2c_device, O_RDWR)) < 0)  {
         perror("Failed to open i2c device.\n");
         exit(1);
@@ -184,10 +156,8 @@ int main()
     }
 
     if (!PMU) {
-        while (1) {
-            printf("PMU not detected, please check..");
-            usleep(1000 * 1000);
-        }
+        printf("PMU not detected, please check..\n");
+        exit(1);
     }
 
     //The following AXP192 power supply setting voltage is based on esp32 T-beam
@@ -489,25 +459,42 @@ int main()
                          XPOWERS_PWR_BTN_CLICK_INT |
                          XPOWERS_CHARGE_START_INT |
                          XPOWERS_CHARGE_DONE_INT);
-    // TODO:
-    /*
-    struct pollfd fdset;
-    unsigned char buf[128];
 
-    int fd = liunx_user_open_gpio(pmu_irq_pin, INPUT);
+    // Attach PMU irq to gpio interrupt
+    liunx_gpio_unexport(pmu_irq_pin);
+    liunx_gpio_export(pmu_irq_pin);
+    liunx_gpio_direction(pmu_irq_pin, INPUT);
+    liunx_gpio_edge(pmu_irq_pin, FALLING);
+
+    struct pollfd fdset[1];
+    char buf[64];
+    int fd, ret;
+
+    snprintf(buf, sizeof(buf), "/sys/class/gpio/gpio%d/value", pmu_irq_pin);
+    fd = open(buf, O_RDONLY);
     if (fd < 0) {
-        printf("Can't set gpio %d input mode!\n", pmu_irq_pin);
-        exit(-1);
+        printf("Failed to open gpio value for reading!\n");
+        return -1;
     }
+    fdset[0].fd = fd;
+    fdset[0].events = POLLPRI;
 
     while (1) {
-        memset(&fdset, 0x00, sizeof(struct pollfd));
-        fdset.fd = fd;
-        fdset.events = POLLPRI;
-        poll(&fdset, 1, 3000);
-        if (fdset.events & POLLPRI) {
-            read(fdset.fd, buf, sizeof(buf));
-            lseek(fdset.fd, 0, SEEK_SET);
+        ret = read(fd, buf, 10);
+        if (ret == -1) {
+            printf("read failed\n");
+        }
+
+        ret = poll(fdset, 1, 0);
+        if (ret == -1) {
+            printf("poll failed\n");
+        }
+
+        if (fdset[0].revents & POLLPRI) {
+            ret = lseek(fd, 0, SEEK_SET);
+            if (ret == -1) {
+                printf("lseek failed\n");
+            }
 
             // Get PMU Interrupt Status Register
             uint32_t status = PMU->getIrqStatus();
@@ -541,6 +528,5 @@ int main()
             PMU->clearIrqStatus();
         }
     }
-    */
     return 0;
 }
