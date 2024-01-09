@@ -61,13 +61,16 @@ extern "C" void app_main(void)
     // Register PMU interrupt pins
     irq_init();
 
+#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW
     ESP_ERROR_CHECK(i2c_init());
-
     ESP_LOGI(TAG, "I2C initialized successfully");
+#endif
 
     ESP_ERROR_CHECK(pmu_init());
 
     xTaskCreate(pmu_hander_task, "App/pwr", 4 * 1024, NULL, 10, NULL);
+
+    ESP_LOGI(TAG, "Run...");
 
 }
 

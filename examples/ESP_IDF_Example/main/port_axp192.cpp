@@ -18,12 +18,27 @@ extern int pmu_register_write_byte(uint8_t devAddr, uint8_t regAddr, uint8_t *da
 
 esp_err_t pmu_init()
 {
+    //* Implemented using read and write callback methods, applicable to other platforms
+#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW
+    ESP_LOGI(TAG, "Implemented using read and write callback methods");
     if (PMU.begin(AXP192_SLAVE_ADDRESS, pmu_register_read, pmu_register_write_byte)) {
         ESP_LOGI(TAG, "Init PMU SUCCESS!");
     } else {
         ESP_LOGE(TAG, "Init PMU FAILED!");
         return ESP_FAIL;
     }
+#endif
+
+    //* Use the built-in esp-idf communication method
+#if CONFIG_I2C_COMMUNICATION_METHOD_BUILTIN_RW
+    ESP_LOGI(TAG, "Implemented using built-in read and write methods");
+    if (PMU.begin((i2c_port_t)CONFIG_I2C_MASTER_PORT_NUM, AXP192_SLAVE_ADDRESS, CONFIG_PMU_I2C_SDA, CONFIG_PMU_I2C_SCL)) {
+        ESP_LOGI(TAG, "Init PMU SUCCESS!");
+    } else {
+        ESP_LOGE(TAG, "Init PMU FAILED!");
+        return false;
+    }
+#endif
 
     ESP_LOGI(TAG, "getID:0x%x", PMU.getChipID());
 

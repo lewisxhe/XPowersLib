@@ -9,7 +9,7 @@
 
 static const char *TAG = "XPowersLib";
 
-
+#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW
 #define I2C_MASTER_NUM                  (i2c_port_t)CONFIG_I2C_MASTER_PORT_NUM
 #define I2C_MASTER_FREQ_HZ              CONFIG_I2C_MASTER_FREQUENCY /*!< I2C master clock frequency */
 #define I2C_MASTER_SDA_IO               (gpio_num_t)CONFIG_PMU_I2C_SDA
@@ -107,3 +107,4 @@ esp_err_t i2c_init(void)
     i2c_param_config(I2C_MASTER_NUM, &i2c_conf);
     return i2c_driver_install(I2C_MASTER_NUM, i2c_conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
 }
+#endif

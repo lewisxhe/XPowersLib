@@ -3,6 +3,7 @@
 #include "sdkconfig.h"
 #include "esp_log.h"
 #include "esp_err.h"
+#include "driver/i2c.h"
 
 #ifdef CONFIG_XPOWERS_CHIP_AXP2101
 
@@ -18,13 +19,27 @@ extern int pmu_register_write_byte(uint8_t devAddr, uint8_t regAddr, uint8_t *da
 
 esp_err_t pmu_init()
 {
+    //* Implemented using read and write callback methods, applicable to other platforms
+#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW
+    ESP_LOGI(TAG, "Implemented using read and write callback methods");
     if (PMU.begin(AXP2101_SLAVE_ADDRESS, pmu_register_read, pmu_register_write_byte)) {
         ESP_LOGI(TAG, "Init PMU SUCCESS!");
     } else {
         ESP_LOGE(TAG, "Init PMU FAILED!");
         return ESP_FAIL;
     }
+#endif
 
+    //* Use the built-in esp-idf communication method
+#if CONFIG_I2C_COMMUNICATION_METHOD_BUILTIN_RW
+    ESP_LOGI(TAG, "Implemented using built-in read and write methods");
+    if (PMU.begin((i2c_port_t)CONFIG_I2C_MASTER_PORT_NUM, AXP2101_SLAVE_ADDRESS, CONFIG_PMU_I2C_SDA, CONFIG_PMU_I2C_SCL)) {
+        ESP_LOGI(TAG, "Init PMU SUCCESS!");
+    } else {
+        ESP_LOGE(TAG, "Init PMU FAILED!");
+        return false;
+    }
+#endif
     //Turn off not use power channel
     PMU.disableDC2();
     PMU.disableDC3();
@@ -134,9 +149,9 @@ esp_err_t pmu_init()
     // Set the watchdog trigger event type
     // PMU.setWatchdogConfig(XPOWERS_AXP2101_WDT_IRQ_TO_PIN);
     // Set watchdog timeout
-    // PMU.setWatchdogTimeout(XPOWERS_AXP2101_WDT_TIMEOUT_4S);
+    PMU.setWatchdogTimeout(XPOWERS_AXP2101_WDT_TIMEOUT_4S);
     // Enable watchdog to trigger interrupt event
-    // PMU.enableWatchdog();
+    PMU.enableWatchdog();
     return ESP_OK;
 }
 
