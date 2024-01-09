@@ -31,8 +31,21 @@
 
 #pragma once
 
+#include <stdint.h>
+
 #if defined(ARDUINO)
 #include <Wire.h>
+#elif defined(ESP_PLATFORM)
+#include "esp_log.h"
+#include "esp_err.h"
+#include "driver/i2c.h"
+#include <cstring>
+
+#define XPOWERSLIB_I2C_MASTER_TX_BUF_DISABLE   0                          /*!< I2C master doesn't need buffer */
+#define XPOWERSLIB_I2C_MASTER_RX_BUF_DISABLE   0                          /*!< I2C master doesn't need buffer */
+#define XPOWERSLIB_I2C_MASTER_TIMEOUT_MS       1000
+#define XPOWERSLIB_I2C_MASTER_SEEED            400000
+
 #endif
 
 
@@ -120,6 +133,41 @@ public:
         __addr = addr;
         return thisChip().initImpl();
     }
+#elif defined(ESP_PLATFORM)
+    bool begin(i2c_port_t port_num, uint8_t addr, int sda, int scl)
+    {
+        __i2c_num = port_num;
+        log_i("Using ESP-IDF Driver interface.\n");
+        if (__has_init)return thisChip().initImpl();
+        __sda = sda;
+        __scl = scl;
+        __addr = addr;
+        thisReadRegCallback = NULL;
+        thisWriteRegCallback = NULL;
+
+        i2c_config_t i2c_conf;
+        memset(&i2c_conf, 0, sizeof(i2c_conf));
+        i2c_conf.mode = I2C_MODE_MASTER;
+        i2c_conf.sda_io_num = sda;
+        i2c_conf.scl_io_num = scl;
+        i2c_conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
+        i2c_conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
+        i2c_conf.master.clk_speed = XPOWERSLIB_I2C_MASTER_SEEED;
+
+        /**
+         * @brief Without checking whether the initialization is successful,
+         * I2C may be initialized externally,
+         * so just make sure there is an initialization here.
+         */
+        i2c_param_config(__i2c_num, &i2c_conf);
+        i2c_driver_install(__i2c_num,
+                           i2c_conf.mode,
+                           XPOWERSLIB_I2C_MASTER_RX_BUF_DISABLE,
+                           XPOWERSLIB_I2C_MASTER_TX_BUF_DISABLE, 0);
+
+        __has_init = thisChip().initImpl();
+        return __has_init;
+    }
 #endif
 
     bool begin(uint8_t addr, iic_fptr_t readRegCallback, iic_fptr_t writeRegCallback)
@@ -135,46 +183,18 @@ public:
     int readRegister(uint8_t reg)
     {
         uint8_t val = 0;
-        if (thisReadRegCallback) {
-            if (thisReadRegCallback(__addr, reg, &val, 1) != 0) {
-                return 0;
-            }
-            return val;
-        }
-#if defined(ARDUINO)
-        if (__wire) {
-            __wire->beginTransmission(__addr);
-            __wire->write(reg);
-            if (__wire->endTransmission() != 0) {
-                return -1;
-            }
-            __wire->requestFrom(__addr, 1U);
-            return __wire->read();
-        }
-#endif
-        return -1;
+        return readRegister(reg, &val, 1) == -1 ? -1 : val;
     }
 
     int writeRegister(uint8_t reg, uint8_t val)
     {
-        if (thisWriteRegCallback) {
-            return thisWriteRegCallback(__addr, reg, &val, 1);
-        }
-#if defined(ARDUINO)
-        if (__wire) {
-            __wire->beginTransmission(__addr);
-            __wire->write(reg);
-            __wire->write(val);
-            return (__wire->endTransmission() == 0) ? 0 : -1;
-        }
-#endif
-        return -1;
+        return writeRegister(reg, &val, 1);
     }
 
-    int readRegister(uint8_t reg, uint8_t *buf, uint8_t lenght)
+    int readRegister(uint8_t reg, uint8_t *buf, uint8_t length)
     {
         if (thisReadRegCallback) {
-            return thisReadRegCallback(__addr, reg, buf, lenght);
+            return thisReadRegCallback(__addr, reg, buf, length);
         }
 #if defined(ARDUINO)
         if (__wire) {
@@ -183,27 +203,56 @@ public:
             if (__wire->endTransmission() != 0) {
                 return -1;
             }
-            __wire->requestFrom(__addr, lenght);
-            return __wire->readBytes(buf, lenght) == lenght ? 0 : -1;
+            __wire->requestFrom(__addr, length);
+            return __wire->readBytes(buf, length) == length ? 0 : -1;
         }
-#endif
         return -1;
+#elif defined(ESP_PLATFORM)
+        if (ESP_OK != i2c_master_write_read_device(__i2c_num,
+                __addr,
+                (uint8_t *)&reg,
+                1,
+                buf,
+                length,
+                XPOWERSLIB_I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS)) {
+            return -1;
+        }
+        return 0;
+#endif
     }
 
-    int writeRegister(uint8_t reg, uint8_t *buf, uint8_t lenght)
+    int writeRegister(uint8_t reg, uint8_t *buf, uint8_t length)
     {
         if (thisWriteRegCallback) {
-            return thisWriteRegCallback(__addr, reg, buf, lenght);
+            return thisWriteRegCallback(__addr, reg, buf, length);
         }
 #if defined(ARDUINO)
         if (__wire) {
             __wire->beginTransmission(__addr);
             __wire->write(reg);
-            __wire->write(buf, lenght);
+            __wire->write(buf, length);
             return (__wire->endTransmission() == 0) ? 0 : -1;
         }
-#endif
         return -1;
+#elif defined(ESP_PLATFORM)
+        uint8_t *write_buffer = (uint8_t *)malloc(sizeof(uint8_t) * (length + 1));
+        if (!write_buffer) {
+            return -1;
+        }
+        write_buffer[0] = reg;
+        memcpy(write_buffer + 1, buf, length);
+
+        if (ESP_OK != i2c_master_write_to_device(__i2c_num,
+                __addr,
+                write_buffer,
+                length + 1,
+                XPOWERSLIB_I2C_MASTER_TIMEOUT_MS / portTICK_PERIOD_MS)) {
+            free(write_buffer);
+            return -1;
+        }
+        free(write_buffer);
+        return 0;
+#endif
     }
 
 
@@ -319,6 +368,8 @@ protected:
     bool        __has_init              = false;
 #if defined(ARDUINO)
     TwoWire     *__wire                 = NULL;
+#elif defined(ESP_PLATFORM)
+    i2c_port_t  __i2c_num;
 #endif
     int         __sda                   = -1;
     int         __scl                   = -1;
