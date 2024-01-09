@@ -3,7 +3,6 @@
 #include "sdkconfig.h"
 #include "esp_log.h"
 #include "esp_err.h"
-#include "driver/i2c.h"
 
 #ifdef CONFIG_XPOWERS_CHIP_AXP2101
 
