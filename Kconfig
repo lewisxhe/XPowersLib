@@ -13,6 +13,18 @@ menu "XPowersLib Configuration"
             bool "Xpowers AXP192"
     endchoice
 
+    choice XPowersLib_ESP_IDF_API
+        prompt "XPowers library esp-idf api version"
+        default XPOWERS_ESP_IDF_NEW_API
+        help
+            Define API version
+
+        config XPOWERS_ESP_IDF_NEW_API
+            bool "Use esp-idf higher version (>= 5.0) API"
+        config XPOWERS_ESP_IDF_OLD_API
+            bool "Use esp-idf lower version ( < 5.0) API , Compatible with lower versions of esp-idf"
+    endchoice
+
     config I2C_MASTER_PORT_NUM
         int "PMU I2C Port Number"
         default 1

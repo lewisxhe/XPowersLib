@@ -61,7 +61,8 @@ extern "C" void app_main(void)
     // Register PMU interrupt pins
     irq_init();
 
-#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW
+#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW || \
+    ((ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API))
     ESP_ERROR_CHECK(i2c_init());
     ESP_LOGI(TAG, "I2C initialized successfully");
 #endif

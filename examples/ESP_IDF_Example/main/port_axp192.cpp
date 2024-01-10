@@ -31,14 +31,31 @@ esp_err_t pmu_init()
 
     //* Use the built-in esp-idf communication method
 #if CONFIG_I2C_COMMUNICATION_METHOD_BUILTIN_RW
-    ESP_LOGI(TAG, "Implemented using built-in read and write methods");
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
+
+    ESP_LOGI(TAG, "Implemented using built-in read and write methods (Use higher version >= 5.0 API)");
+    // * Using the new API of esp-idf 5.x, you need to pass the I2C BUS handle,
+    // * which is useful when the bus shares multiple devices.
+    extern i2c_master_bus_handle_t bus_handle;
+
+    if (PMU.begin(bus_handle, AXP192_SLAVE_ADDRESS)) {
+        ESP_LOGI(TAG, "Init PMU SUCCESS!");
+    } else {
+        ESP_LOGE(TAG, "Init PMU FAILED!");
+        return false;
+    }
+#else
+
+    ESP_LOGI(TAG, "Implemented using built-in read and write methods (Use lower version < 5.0 API)");
+
     if (PMU.begin((i2c_port_t)CONFIG_I2C_MASTER_PORT_NUM, AXP192_SLAVE_ADDRESS, CONFIG_PMU_I2C_SDA, CONFIG_PMU_I2C_SCL)) {
         ESP_LOGI(TAG, "Init PMU SUCCESS!");
     } else {
         ESP_LOGE(TAG, "Init PMU FAILED!");
         return false;
     }
-#endif
+#endif //ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#endif //CONFIG_I2C_COMMUNICATION_METHOD_BUILTIN_RW
 
     ESP_LOGI(TAG, "getID:0x%x", PMU.getChipID());
 

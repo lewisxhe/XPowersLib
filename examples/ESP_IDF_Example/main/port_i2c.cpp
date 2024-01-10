@@ -6,7 +6,7 @@
 #include "esp_log.h"
 #include "sdkconfig.h"
 #include "esp_idf_version.h"
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
 #include "driver/i2c_master.h"
 #else
 #include "driver/i2c.h"
@@ -14,12 +14,12 @@
 
 static const char *TAG = "XPowersLib";
 
-#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW
 #define I2C_MASTER_NUM                  (i2c_port_t)CONFIG_I2C_MASTER_PORT_NUM
-#define I2C_MASTER_FREQ_HZ              CONFIG_I2C_MASTER_FREQUENCY /*!< I2C master clock frequency */
 #define I2C_MASTER_SDA_IO               (gpio_num_t)CONFIG_PMU_I2C_SDA
 #define I2C_MASTER_SCL_IO               (gpio_num_t)CONFIG_PMU_I2C_SCL
+#define I2C_MASTER_FREQ_HZ              CONFIG_I2C_MASTER_FREQUENCY /*!< I2C master clock frequency */
 
+#if CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW
 
 #define I2C_MASTER_TX_BUF_DISABLE       0                           /*!< I2C master doesn't need buffer */
 #define I2C_MASTER_RX_BUF_DISABLE       0                           /*!< I2C master doesn't need buffer */
@@ -33,7 +33,7 @@ static const char *TAG = "XPowersLib";
 #define NACK_VAL                        (i2c_ack_type_t)0x1         /*!< I2C nack value */
 
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
 // The new API passes the device address before initialization,
 // AXP2102, 1XP192 belong to the same address
 #define PMU_SLAVE_ADDRESS   0X34
@@ -53,7 +53,7 @@ int pmu_register_read(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uint8_t l
         return ESP_FAIL;
     }
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
 
     ret = i2c_master_transmit_receive(
               i2c_device,
@@ -104,7 +104,7 @@ int pmu_register_write_byte(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uin
         return ESP_FAIL;
     }
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
     uint8_t *write_buffer = (uint8_t *)malloc(sizeof(uint8_t) * (len + 1));
     if (!write_buffer) {
         return -1;
@@ -140,7 +140,10 @@ int pmu_register_write_byte(uint8_t devAddr, uint8_t regAddr, uint8_t *data, uin
  */
 esp_err_t i2c_init(void)
 {
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
+
+    ESP_LOGI(TAG, "Implemented using read and write callback methods (Use higher version >= 5.0 API)");
+
     i2c_master_bus_handle_t  bus_handle;
     i2c_master_bus_config_t i2c_bus_config;
     memset(&i2c_bus_config, 0, sizeof(i2c_bus_config));
@@ -160,6 +163,9 @@ esp_err_t i2c_init(void)
     return i2c_master_bus_add_device(bus_handle, &i2c_dev_conf, &i2c_device);
 
 #else
+
+    ESP_LOGI(TAG, "Implemented using read and write callback methods (Use lower version < 5.0 API)");
+
     i2c_config_t i2c_conf ;
     memset(&i2c_conf, 0, sizeof(i2c_conf));
     i2c_conf.mode = I2C_MODE_MASTER;
@@ -172,4 +178,32 @@ esp_err_t i2c_init(void)
     return i2c_driver_install(I2C_MASTER_NUM, i2c_conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
 #endif
 }
-#endif
+
+
+#else
+
+
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
+
+#include "soc/clk_tree_defs.h"
+i2c_master_bus_handle_t bus_handle;
+
+// * Using the new API of esp-idf 5.x, you need to pass the I2C BUS handle,
+// * which is useful when the bus shares multiple devices.
+
+esp_err_t i2c_init(void)
+{
+    i2c_master_bus_config_t i2c_bus_config;
+    memset(&i2c_bus_config, 0, sizeof(i2c_bus_config));
+    i2c_bus_config.clk_source = I2C_CLK_SRC_DEFAULT;
+    i2c_bus_config.i2c_port = I2C_MASTER_NUM;
+    i2c_bus_config.scl_io_num = I2C_MASTER_SCL_IO;
+    i2c_bus_config.sda_io_num = I2C_MASTER_SDA_IO;
+    i2c_bus_config.glitch_ignore_cnt = 7;
+    return i2c_new_master_bus(&i2c_bus_config, &bus_handle);
+}
+
+#endif //ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+
+
+#endif //CONFIG_I2C_COMMUNICATION_METHOD_CALLBACK_RW

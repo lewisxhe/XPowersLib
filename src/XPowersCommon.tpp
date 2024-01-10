@@ -40,19 +40,19 @@
 #include "esp_err.h"
 #include <cstring>
 #include "esp_idf_version.h"
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
 #include "driver/i2c_master.h"
 #else
 #include "driver/i2c.h"
-#endif //ESP_IDF_VERSION
-
 #define XPOWERSLIB_I2C_MASTER_TX_BUF_DISABLE   0                          /*!< I2C master doesn't need buffer */
 #define XPOWERSLIB_I2C_MASTER_RX_BUF_DISABLE   0                          /*!< I2C master doesn't need buffer */
 #define XPOWERSLIB_I2C_MASTER_TIMEOUT_MS       1000
-#define XPOWERSLIB_I2C_MASTER_SEEED            400000
+#endif //ESP_IDF_VERSION
+
 
 #endif //ESP_PLATFORM
 
+#define XPOWERSLIB_I2C_MASTER_SEEED            400000
 
 
 #ifdef _BV
@@ -139,6 +139,60 @@ public:
         return thisChip().initImpl();
     }
 #elif defined(ESP_PLATFORM)
+
+
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
+
+    // * Using the new API of esp-idf 5.x, you need to pass the I2C BUS handle,
+    // * which is useful when the bus shares multiple devices.
+    bool begin(i2c_master_bus_handle_t i2c_dev_bus_handle, uint8_t addr)
+    {
+        log_i("Using ESP-IDF Driver interface.\n");
+        if (i2c_dev_bus_handle == NULL) return false;
+        if (__has_init)return thisChip().initImpl();
+
+        thisReadRegCallback = NULL;
+        thisWriteRegCallback = NULL;
+
+        /*
+            i2c_master_bus_config_t i2c_bus_config;
+            memset(&i2c_bus_config, 0, sizeof(i2c_bus_config));
+            i2c_bus_config.clk_source = I2C_CLK_SRC_DEFAULT;
+            i2c_bus_config.i2c_port = port_num;
+            i2c_bus_config.scl_io_num = (gpio_num_t)__scl;
+            i2c_bus_config.sda_io_num = (gpio_num_t)__sda;
+            i2c_bus_config.glitch_ignore_cnt = 7;
+
+            i2c_new_master_bus(&i2c_bus_config, &bus_handle);
+        */
+
+        bus_handle = i2c_dev_bus_handle;
+
+        i2c_device_config_t i2c_dev_conf = {
+            .dev_addr_length = I2C_ADDR_BIT_LEN_7,
+            .device_address = addr,
+            .scl_speed_hz = XPOWERSLIB_I2C_MASTER_SEEED,
+        };
+
+        if (ESP_OK != i2c_master_bus_add_device(bus_handle,
+                                                &i2c_dev_conf,
+                                                &__i2c_device)) {
+            return false;
+        }
+
+        __has_init = thisChip().initImpl();
+
+        if (!__has_init) {
+            // Initialization failed, delete device
+            i2c_master_bus_rm_device(__i2c_device);
+        }
+        return __has_init;
+    }
+
+
+#else //ESP 4.X
+
+
     bool begin(i2c_port_t port_num, uint8_t addr, int sda, int scl)
     {
         __i2c_num = port_num;
@@ -150,30 +204,6 @@ public:
         thisReadRegCallback = NULL;
         thisWriteRegCallback = NULL;
 
-
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
-
-        i2c_master_bus_config_t i2c_bus_config;
-        memset(&i2c_bus_config, 0, sizeof(i2c_bus_config));
-        i2c_bus_config.clk_source = I2C_CLK_SRC_DEFAULT;
-        i2c_bus_config.i2c_port = port_num;
-        i2c_bus_config.scl_io_num = (gpio_num_t)__scl;
-        i2c_bus_config.sda_io_num = (gpio_num_t)__sda;
-        i2c_bus_config.glitch_ignore_cnt = 7;
-
-        i2c_new_master_bus(&i2c_bus_config, &bus_handle);
-
-        i2c_device_config_t i2c_dev_conf = {
-            .dev_addr_length = I2C_ADDR_BIT_LEN_7,
-            .device_address = __addr,
-            .scl_speed_hz = XPOWERSLIB_I2C_MASTER_SEEED,
-        };
-
-        i2c_master_bus_add_device(bus_handle,
-                                  &i2c_dev_conf,
-                                  &__i2c_device);
-
-#else //ESP_IDF_VERSION
         i2c_config_t i2c_conf;
         memset(&i2c_conf, 0, sizeof(i2c_conf));
         i2c_conf.mode = I2C_MODE_MASTER;
@@ -193,11 +223,11 @@ public:
                            i2c_conf.mode,
                            XPOWERSLIB_I2C_MASTER_RX_BUF_DISABLE,
                            XPOWERSLIB_I2C_MASTER_TX_BUF_DISABLE, 0);
-#endif //ESP_IDF_VERSION
         __has_init = thisChip().initImpl();
         return __has_init;
     }
-#endif
+#endif //ESP 5.X
+#endif //ESP_PLATFORM
 
     bool begin(uint8_t addr, iic_fptr_t readRegCallback, iic_fptr_t writeRegCallback)
     {
@@ -237,7 +267,7 @@ public:
         }
 #elif defined(ESP_PLATFORM)
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
         if (ESP_OK == i2c_master_transmit_receive(
                     __i2c_device,
                     (const uint8_t *)&reg,
@@ -284,7 +314,7 @@ public:
         memcpy(write_buffer + 1, buf, length);
 
 
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
         if (ESP_OK != i2c_master_transmit(
                     __i2c_device,
                     write_buffer,
@@ -423,7 +453,7 @@ protected:
     TwoWire     *__wire                 = NULL;
 #elif defined(ESP_PLATFORM)
     i2c_port_t  __i2c_num;
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
     i2c_master_bus_handle_t  bus_handle;
     i2c_master_dev_handle_t  __i2c_device;
 #endif //ESP_IDF_VERSION
