@@ -1898,7 +1898,7 @@ class AXP2101(I2CInterface):
     def setChargerTerminationCurr(self, opt: int) -> None:
         val = super().readRegister(_AXP2101_ITERM_CHG_SET_CTRL)[0]
         val &= 0xF0
-        super().writeRegister(_AXP2101_ICC_CHG_SET, val | opt)
+        super().writeRegister(_AXP2101_ITERM_CHG_SET_CTRL, val | opt)
 
     def getChargerTerminationCurr(self) -> int:
         return (super().readRegister(_AXP2101_ITERM_CHG_SET_CTRL)[0] & 0x0F)
