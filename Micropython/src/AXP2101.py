@@ -756,17 +756,19 @@ class AXP2101(I2CInterface):
 
     # @brief Low battery warning threshold 5-20%, 1% per step
     def setLowBatWarnThreshold(self, opt: int) -> None:
-        # todo:
+        if opt < 5 or opt > 20:
+            return
         val = super().readRegister(_AXP2101_LOW_BAT_WARN_SET)[0]
         val &= 0x0F
-        super().writeRegister(_AXP2101_LOW_BAT_WARN_SET, val | (opt << 4))
+        super().writeRegister(_AXP2101_LOW_BAT_WARN_SET, val | ((opt - 5) << 4))
 
     def getLowBatWarnThreshold(self) -> int:
         return (super().readRegister(_AXP2101_LOW_BAT_WARN_SET)[0] & 0xF0) >> 4
 
     # @brief Low battery shutdown threshold 0-15%, 1% per step
     def setLowBatShutdownThreshold(self, opt: int) -> None:
-        # todo:
+        if opt > 15:
+            opt = 15
         val = super().readRegister(_AXP2101_LOW_BAT_WARN_SET)[0]
         val &= 0xF0
         super().writeRegister(_AXP2101_LOW_BAT_WARN_SET, val | opt)
