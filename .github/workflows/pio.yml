@@ -27,6 +27,7 @@ jobs:
             examples/SY6970_Example/SY6970_Example.ino,
             examples/SY6970_Watchdog_Example/SY6970_Watchdog_Example.ino,
             examples/XPowersLibInterface_Example/XPowersLibInterface_Example.ino,
+            examples/AXP2101_LowBatteryWarningExample/AXP2101_LowBatteryWarningExample.ino,
           ]
 
     steps:
