@@ -980,13 +980,15 @@ private:
     bool initImpl()
     {
         __user_disable_charge = false;
-        if (getChipID() != 0x00) {
+
+        uint8_t rev = getChipID();
+        if (rev != SY6970_DEV_REV && rev != BQ25896_DEV_REV) {
             return false;
         }
         // Set the minimum operating voltage. Below this voltage, the PMU will protect
         setSysPowerDownVoltage(3300);
 
-        //Default disbale Watchdog
+        //Default disable Watchdog
         disableWatchdog();
 
         return true;
@@ -998,3 +1000,4 @@ private:
 
 
 
+typedef PowersSY6970 XPowersPPM;

@@ -30,6 +30,13 @@
 #pragma once
 
 #define SY6970_SLAVE_ADDRESS                                    (0x6A)
+// https://www.ti.com/product/BQ25896
+#define BQ25896_SLAVE_ADDRESS                                   (0x6B)
+// https://www.sg-micro.com/cnproduct/SGM41511
+#define SGM41511_SLAVE_ADDRESS                                  (0x6B)
+
+#define SY6970_DEV_REV                                          (0x00)
+#define BQ25896_DEV_REV                                         (0x02)
 
 #define POWERS_SY6970_REG_00H                                   (0x00)
 #define POWERS_SY6970_REG_01H                                   (0x01)
