@@ -1,6 +1,6 @@
 {
   "name": "XPowersLib",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Arduino,CircuitPython,Micropython library for x-powers power management series",
   "keywords": "AXP192 AXP202 AXP2101 x-powers",
   "authors": [
@@ -106,7 +106,19 @@
       "name": "SY6970_Shutdown_Example",
       "base": "examples/SY6970_Shutdown_Example",
       "files": ["SY6970_Shutdown_Example.ino"]
-    }
+    },
+    {
+      "name": "BQ25896_Example",
+      "base": "examples/BQ25896_Example",
+      "files": ["BQ25896_Example.ino"]
+    },
+    {
+      "name": "BQ25896_Shutdown_Example",
+      "base": "examples/BQ25896_Shutdown_Example",
+      "files": ["BQ25896_Shutdown_Example.ino"]
+    },
+
+
   ],
   "frameworks": ["arduino", "espidf"],
   "platforms": "esp32,ststm32,espressif32",
