@@ -4,7 +4,7 @@
  * @license   MIT
  * @copyright Copyright (c) 2023  Shenzhen Xin Yuan Electronic Technology Co., Ltd
  * @date      2023-08-05
- * @note      SY6970 If the power supply is a separate USB power supply, VSYS can only provide a maximum load current of 500mA. 
+ * @note      SY6970 If the power supply is a separate USB power supply, VSYS can only provide a maximum load current of 500mA.
  *            If it is connected to a battery, the discharge current depends on the maximum discharge current of the battery.
  *
  */
@@ -52,7 +52,7 @@ void setup()
     // Set input current limit, default is 500mA
     PMU.setInputCurrentLimit(3250);
 
-    Serial.printf("getInputCurrentLimit: %d mA\n",PMU.getInputCurrentLimit());
+    Serial.printf("getInputCurrentLimit: %d mA\n", PMU.getInputCurrentLimit());
 
     // Disable current limit pin
     PMU.disableCurrentLimitPin();
@@ -65,22 +65,22 @@ void setup()
 
     // The premise is that Limit Pin is disabled, or it will only follow the maximum charging current set by Limi tPin.
     // Set the charging current , Range:0~5056mA ,step:64mA
-    PMU.setChargerConstantCurr(832);
+    PMU.setChargerConstantCurr(1024);
 
     // Get the set charging current
     PMU.getChargerConstantCurr();
-    Serial.printf("getChargerConstantCurr: %d mA\n",PMU.getChargerConstantCurr());
+    Serial.printf("getChargerConstantCurr: %d mA\n", PMU.getChargerConstantCurr());
 
 
     // To obtain voltage data, the ADC must be enabled first
     PMU.enableADCMeasure();
-    
+
     // Turn on charging function
     // If there is no battery connected, do not turn on the charging function
     PMU.enableCharge();
 
     // Turn off charging function
-    // If USB is used as the only power input, it is best to turn off the charging function, 
+    // If USB is used as the only power input, it is best to turn off the charging function,
     // otherwise the VSYS power supply will have a sawtooth wave, affecting the discharge output capability.
     // PMU.disableCharge();
 
@@ -93,80 +93,82 @@ void setup()
     // pinMode(OTG_ENABLE_PIN, OUTPUT);
     // digitalWrite(OTG_ENABLE_PIN, HIGH);
 
-
+    pinMode(pmu_irq_pin, INPUT_PULLUP);
     attachInterrupt(pmu_irq_pin, []() {
         pmu_irq = true;
     }, FALLING);
 
-    delay(2000);
 }
 
 
 void loop()
 {
-
     if (pmu_irq) {
         pmu_irq = false;
+        // Get PMU interrupt status
+        PMU.getIrqStatus();
+
         Serial.print("-> [");
         Serial.print(millis() / 1000);
         Serial.print("] ");
 
-        // Get PMU interrupt status
-        PMU.getIrqStatus();
-
-
         if (PMU.isWatchdogFault()) {
+
             Serial.println("Watchdog Fault");
-        }
-        if (PMU.isBoostFault()) {
+
+        } else if (PMU.isBoostFault()) {
+
             Serial.println("Boost Fault");
-        }
-        if (PMU.isChargeFault()) {
+
+        } else if (PMU.isChargeFault()) {
+
             Serial.println("Charge Fault");
-        }
-        if (PMU.isBatteryFault()) {
+
+        } else if (PMU.isBatteryFault()) {
+
             Serial.println("Batter Fault");
-        }
-        if (PMU.isNTCFault()) {
+
+        } else if (PMU.isNTCFault()) {
+
             Serial.print("NTC Fault:");
             Serial.print(PMU.getNTCStatusString());
-
             Serial.print(" Percentage:");
             Serial.print(PMU.getNTCPercentage()); Serial.println("%");
-        }   
-        // The battery may be disconnected or damaged.
-        if (PMU.isVsysLowVoltageWarning()) {
-            Serial.println("In VSYSMIN regulation (BAT<VSYSMIN)");
         }
+        // The battery may be disconnected or damaged.
+        else if (PMU.isVsysLowVoltageWarning()) {
 
+            Serial.println("In VSYSMIN regulation (BAT<VSYSMIN)");
+
+        } else {
+            /*
+            * When the battery is removed, INT will send an interrupt every 100ms. If the battery is not connected,
+            * you can use PMU.disableCharge() to turn off the charging function.
+            * */
+            // PMU.disableCharge();
+
+            Serial.println("Battery remove");
+        }
     }
 
-    // SY6970 When VBUS is input, the battery voltage detection will not take effect
+    /*
+    * Obtaining the battery voltage and battery charging status does not directly read the register, 
+    * but determines whether the charging current register is normal. 
+    * If read directly, the reading will be inaccurate.
+    * The premise for obtaining these two states is that the NTC temperature measurement circuit is normal.
+    * If the NTC detection is abnormal, it will return 0
+    * * */
     if (millis() > cycleInterval) {
-
-        Serial.println("Sats        VBUS    VBAT   SYS    VbusStatus      String   ChargeStatus     String      TargetVoltage       ChargeCurrent       Precharge       NTCStatus           String");
-        Serial.println("            (mV)    (mV)   (mV)   (HEX)                         (HEX)                    (mV)                 (mA)                   (mA)           (HEX)           ");
-        Serial.println("--------------------------------------------------------------------------------------------------------------------------------");
-        Serial.print(PMU.isVbusIn() ? "Connected" : "Disconnect"); Serial.print("\t");
-        Serial.print(PMU.getVbusVoltage()); Serial.print("\t");
-        Serial.print(PMU.getBattVoltage()); Serial.print("\t");
-        Serial.print(PMU.getSystemVoltage()); Serial.print("\t");
-        Serial.print("0x");
-        Serial.print(PMU.getBusStatus(), HEX); Serial.print("\t");
-        Serial.print(PMU.getBusStatusString()); Serial.print("\t");
-        Serial.print("0x");
-        Serial.print(PMU.chargeStatus(), HEX); Serial.print("\t");
-        Serial.print(PMU.getChargeStatusString()); Serial.print("\t");
-
-        Serial.print(PMU.getChargeTargetVoltage()); Serial.print("\t");
-        Serial.print(PMU.getChargeCurrent()); Serial.print("\t");
-        Serial.print(PMU.getPrechargeCurr()); Serial.print("\t");
-        Serial.print(PMU.getNTCStatus()); Serial.print("\t");
-        Serial.print(PMU.getNTCStatusString()); Serial.print("\t");
-
-
-        Serial.println();
-        Serial.println();
+        Serial.printf("CHG TARGET VOLTAGE :%04dmV CURRENT:%04dmA PER_CHARGE_CUR %04dmA\n",
+                      PMU.getChargeTargetVoltage(), PMU.getChargerConstantCurr(), PMU.getPrechargeCurr());
+        Serial.printf("VBUS:%s %04dmV VBAT:%04dmV VSYS:%04dmV\n", PMU.isVbusIn() ? "Connected" : "Disconnect",
+                      PMU.getVbusVoltage(),
+                      PMU.getBattVoltage(),
+                      PMU.getSystemVoltage());
+        Serial.printf("BUS STATE:%d STR:%s\n", PMU.getBusStatus(), PMU.getBusStatusString());
+        Serial.printf("CHG STATE:%d STR:%s CURRENT:%04dmA\n", PMU.chargeStatus(), PMU.getChargeStatusString(), PMU.getChargeCurrent());
+        Serial.printf("[%lu]", millis() / 1000);
+        Serial.println("----------------------------------------------------------------------------------");
         cycleInterval = millis() + 1000;
     }
 
