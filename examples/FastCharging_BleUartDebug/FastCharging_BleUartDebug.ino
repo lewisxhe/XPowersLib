@@ -1,9 +1,9 @@
 /**
- * @file      PowerDeliveryHUSB238_BleUart.ino
+ * @file      FastCharging_BleUartDebug.ino
  * @author    Lewis He (lewishe@outlook.com)
  * @license   MIT
  * @copyright Copyright (c) 2024  Shenzhen Xin Yuan Electronic Technology Co., Ltd
- * @date      2024-07-24
+ * @date      2024-07-30
  *
  */
 
@@ -15,7 +15,7 @@
 #include <Adafruit_LittleFS.h>
 
 PowerDeliveryHUSB238 pd;
-
+XPowersPPM ppm;
 
 #ifndef CONFIG_PMU_SDA
 #define CONFIG_PMU_SDA 0
@@ -30,6 +30,15 @@ const uint8_t i2c_scl = CONFIG_PMU_SCL;
 
 
 BLEUart bleuart; // uart over ble
+bool find_ppm = false;
+String buffer;
+
+
+void disconnect_callback(uint16_t conn_handle, uint8_t reason)
+{
+    Serial.println();
+    Serial.print("Disconnected, reason = 0x"); Serial.println(reason, HEX);
+}
 
 
 void connect_callback(uint16_t conn_handle)
@@ -47,10 +56,14 @@ void connect_callback(uint16_t conn_handle)
 
     // request mtu exchange
     Serial.println("Request to change MTU");
+
     conn->requestMtuExchange(247);
 
     // request connection interval of 7.5 ms
     //conn->requestConnectionParameter(6); // in unit of 1.25
+    // Print out the current connection info
+    Serial.printf("Connection Info: PHY = %d Mbps, Conn Interval = %.2f ms, Data Length = %d, MTU = %d\n",
+                  conn->getPHY(), conn->getConnectionInterval() * 1.25f, conn->getDataLength(), conn->getMtu());
 
     // delay a bit for all the request to complete
     delay(1000);
@@ -98,15 +111,48 @@ void setup()
         }
     }
 
+    find_ppm = ppm.init(Wire);
+    if (!find_ppm) {
+        Serial.println("Can't find XPowers PPM Chip !");
+    } else {
+        Serial.println("Find XPowers ppm Chip .Reset PPM default config");
+
+        ppm.resetDefault();
+
+        ppm.disableWatchdog();
+
+        ppm.enableCharge();
+
+        ppm.disableOTG();
+
+        ppm.setChargerConstantCurr(2048);
+        // Disable current limit pin
+        ppm.disableCurrentLimitPin();
+
+        ppm.setInputCurrentLimit(POWERS_SY6970_IN_CURRENT_MAX);
+
+        // ppm.disableInputCurrentLimit();
+
+        // Set the charging target voltage, Range:3840 ~ 4608mV ,step:16 mV
+        ppm.setChargeTargetVoltage(4208);
+
+        ppm.enableADCMeasure();
+
+        // ppm.setHighVoltageRequestedRange(RequestRange::REQUEST_9V);
+        // ppm.setSysPowerDownVoltage(3500);
+        // ppm.setVinDpmThreshold(POWERS_SY6970_VINDPM_VOL_MAX);
+
+    }
     // Config the peripheral connection with maximum bandwidth
     // more SRAM required by SoftDevice
     // Note: All config***() function must be called before begin()
     Bluefruit.configPrphBandwidth(BANDWIDTH_MAX);
-    
+
     Bluefruit.begin();
     Bluefruit.setName("PowerDelivery");
     Bluefruit.setTxPower(4);    // Check bluefruit.h for supported values
     Bluefruit.Periph.setConnectCallback(connect_callback);
+    Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
     Bluefruit.Periph.setConnInterval(6, 12); // 7.5 - 15 ms
 
     // Configure and Start BLE Uart Service
@@ -118,51 +164,73 @@ void setup()
 }
 
 
-String buffer;
 
 void loop()
 {
-
-    Serial.print("PD Voltage:"); Serial.print(pd.getPdVoltage()); Serial.print(" V");
-    Serial.print(" Current: "); Serial.print(pd.getPdCurrent()); Serial.println(" A");
-
-    buffer = "Vol:";
+    buffer = "PD Vol:";
     buffer.concat(pd.getPdVoltage());
     buffer.concat("V ");
     buffer.concat("Cur:");
     buffer.concat(pd.getPdCurrent());
-    buffer.concat("A");
+    buffer.concat("A\n");
+
     buffer.concat("Status:");
-
-
     PowerDeliveryHUSB238::PD_Status status =  pd.status();
-    Serial.print("USB Power Delivery Status : ");
-
     switch (status) {
     case PowerDeliveryHUSB238::NO_RESPONSE:
-        Serial.println("no response");
         buffer.concat("no response");
         break;
     case PowerDeliveryHUSB238::SUCCESS:
-        Serial.println("success");
         buffer.concat("success");
         break;
     case PowerDeliveryHUSB238::INVALID_CMD:
-        Serial.println("invalid command");
         buffer.concat("invalid command");
         break;
     case PowerDeliveryHUSB238::NOT_SUPPORT:
-        Serial.println("not support");
         buffer.concat("not support");
         break;
     case PowerDeliveryHUSB238::TRANSACTION_FAIL:
-        Serial.println("transaction failed");
         buffer.concat("transaction failed");
         break;
     default:
         break;
     }
-    bleuart.write(buffer.c_str());
+
+    if (Bluefruit.connected() && bleuart.notifyEnabled()) {
+
+        buffer.concat("\n");
+
+        if (find_ppm) {
+            ppm.getIrqStatus();
+            buffer.concat("NTC:"); buffer.concat(ppm.getNTCStatusString()); buffer.concat("\n");
+            buffer.concat("VBUS:"); buffer.concat(ppm.getVbusVoltage()); buffer.concat("\n");
+            buffer.concat("VBAT:"); buffer.concat(ppm.getBattVoltage()); buffer.concat("\n");
+            buffer.concat("VSYS:"); buffer.concat(ppm.getSystemVoltage()); buffer.concat("\n");
+            buffer.concat("BUS:"); buffer.concat(ppm.getBusStatusString()); buffer.concat("\n");
+            buffer.concat("CHG:"); buffer.concat(ppm.getChargeStatusString()); buffer.concat("\n");
+            buffer.concat("CUR:"); buffer.concat(ppm.getChargeCurrent()); buffer.concat("\n");
+        }
+        bleuart.write(buffer.c_str());
+
+    } else {
+
+        Serial.println(buffer);
+        if (find_ppm) {
+
+            ppm.getIrqStatus();
+            Serial.print("NTC STR:"); Serial.println(ppm.getNTCStatusString());
+            Serial.printf("CHG TARGET VOLTAGE :%04dmV CURRENT:%04dmA PER_CHARGE_CUR %04dmA\n",
+                          ppm.getChargeTargetVoltage(), ppm.getChargerConstantCurr(), ppm.getPrechargeCurr());
+            Serial.printf("VBUS:%s %04dmV VBAT:%04dmV VSYS:%04dmV\n", ppm.isVbusIn() ? "Connected" : "Disconnect",
+                          ppm.getVbusVoltage(),
+                          ppm.getBattVoltage(),
+                          ppm.getSystemVoltage());
+            Serial.printf("BUS STATE:%d  --  STR:%s\n", ppm.getBusStatus(), ppm.getBusStatusString());
+            Serial.printf("CHG STATE:%d  --  STR:%s CURRENT:%04dmA\n", ppm.chargeStatus(), ppm.getChargeStatusString(), ppm.getChargeCurrent());
+            Serial.printf("[%lu]", millis() / 1000);
+            Serial.println("----------------------------------------------------------------------------------");
+        }
+    }
 
     delay(5000);
 }
