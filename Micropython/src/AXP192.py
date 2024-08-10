@@ -963,14 +963,14 @@ class AXP192(I2CInterface):
         else:
             return False
 
-    def isBatChagerStartIrq(self) -> bool:
+    def isBatChargeStartIrq(self) -> bool:
         mask = self.XPOWERS_AXP192_BAT_CHG_START_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)
         else:
             return False
 
-    def isBatChagerDoneIrq(self) -> bool:
+    def isBatChargeDoneIrq(self) -> bool:
         mask = self.XPOWERS_AXP192_BAT_CHG_DONE_IRQ >> 8
         if self.intRegister[1] & mask:
             return super()._IS_BIT_SET(self.statusRegister[1], mask)

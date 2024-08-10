@@ -240,16 +240,16 @@ void pmu_isr_handler()
     if (power.isBatfetOverCurrentIrq()) {
         ESP_LOGI(TAG, "isBatfetOverCurrentIrq");
     }
-    if (power.isBatChagerDoneIrq()) {
+    if (power.isBatChargeDoneIrq()) {
         ESP_LOGI(TAG, "isBatChagerDone");
     }
-    if (power.isBatChagerStartIrq()) {
+    if (power.isBatChargeStartIrq()) {
         ESP_LOGI(TAG, "isBatChagerStart");
     }
     if (power.isBatDieOverTemperatureIrq()) {
         ESP_LOGI(TAG, "isBatDieOverTemperature");
     }
-    if (power.isChagerOverTimeoutIrq()) {
+    if (power.isChargeOverTimeoutIrq()) {
         ESP_LOGI(TAG, "isChagerOverTimeout");
     }
     if (power.isBatOverVoltageIrq()) {

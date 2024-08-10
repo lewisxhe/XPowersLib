@@ -985,12 +985,12 @@ public:
         return (bool)(statusRegister[1] & _BV(4));
     }
 
-    bool isBatChagerStartIrq(void)
+    bool isBatChargeStartIrq(void)
     {
         return (bool)(statusRegister[1] & _BV(3));
     }
 
-    bool isBatChagerDoneIrq(void)
+    bool isBatChargeDoneIrq(void)
     {
         return (bool)(statusRegister[1] & _BV(2));
     }

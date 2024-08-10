@@ -312,11 +312,11 @@ void loop()
         if (power.isBattExitActivateIrq()) {
             Serial.println("isBattExitActivateIrq");
         }
-        if (power.isBatChagerStartIrq()) {
-            Serial.println("isBatChagerStartIrq");
+        if (power.isBatChargeStartIrq()) {
+            Serial.println("isBatChargeStartIrq");
         }
-        if (power.isBatChagerDoneIrq()) {
-            Serial.println("isBatChagerDoneIrq");
+        if (power.isBatChargeDoneIrq()) {
+            Serial.println("isBatChargeDoneIrq");
         }
         if (power.isBattTempHighIrq()) {
             Serial.println("isBattTempHighIrq");

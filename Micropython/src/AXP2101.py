@@ -529,7 +529,7 @@ class AXP2101(I2CInterface):
     def getThermalRegulationStatus(self) -> bool:
         return super().getRegisterBit(_AXP2101_STATUS1, 1)
 
-    def getCurrnetLimitStatus(self) -> bool:
+    def getCurrentLimitStatus(self) -> bool:
         return super().getRegisterBit(_AXP2101_STATUS1, 0)
 
     def isCharging(self) -> bool:
@@ -2110,14 +2110,14 @@ class AXP2101(I2CInterface):
         else:
             return False
 
-    def isBatChagerDoneIrq(self) -> bool:
+    def isBatChargeDoneIrq(self) -> bool:
         mask = self.XPOWERS_AXP2101_BAT_CHG_DONE_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:
             return False
 
-    def isBatChagerStartIrq(self) -> bool:
+    def isBatChargeStartIrq(self) -> bool:
         mask = self.XPOWERS_AXP2101_BAT_CHG_START_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
@@ -2131,7 +2131,7 @@ class AXP2101(I2CInterface):
         else:
             return False
 
-    def isChagerOverTimeoutIrq(self) -> bool:
+    def isChargeOverTimeoutIrq(self) -> bool:
         mask = self.XPOWERS_AXP2101_CHAGER_TIMER_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)

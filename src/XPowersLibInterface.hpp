@@ -404,7 +404,7 @@ public:
      *      if (PMU->isPekeyShortPressIrq()) {
      *          Serial.println("isPekeyShortPressIrq");
      *      }
-     *      if (PMU->isBatChagerStartIrq()) {
+     *      if (PMU->isBatChargeStartIrq()) {
      *          Serial.println("isBatChagerStart");
      *      }
      *      ......
@@ -507,13 +507,13 @@ public:
      * @brief  Interrupt response when PMU charging is complete
      * @retval true valid false invalid
      */
-    virtual bool isBatChagerDoneIrq() = 0;
+    virtual bool isBatChargeDoneIrq() = 0;
 
     /**
      * @brief  Interrupt response when PMU charging starts
      * @retval true valid false invalid
      */
-    virtual bool isBatChagerStartIrq() = 0;
+    virtual bool isBatChargeStartIrq() = 0;
 
 
     //Data collection function

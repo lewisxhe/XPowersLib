@@ -295,7 +295,7 @@ public:
         return  getRegisterBit(XPOWERS_AXP2101_STATUS1, 1);
     }
 
-    bool getCurrnetLimitStatus(void)
+    bool getCurrentLimitStatus(void)
     {
         return getRegisterBit(XPOWERS_AXP2101_STATUS1, 0);
     }
@@ -2776,7 +2776,7 @@ public:
         return false;
     }
 
-    bool isBatChagerDoneIrq(void)
+    bool isBatChargeDoneIrq(void)
     {
         uint8_t mask = XPOWERS_AXP2101_BAT_CHG_DONE_IRQ  >> 16;
         if (intRegister[2] & mask) {
@@ -2785,7 +2785,7 @@ public:
         return false;
     }
 
-    bool isBatChagerStartIrq(void)
+    bool isBatChargeStartIrq(void)
     {
         uint8_t mask = XPOWERS_AXP2101_BAT_CHG_START_IRQ  >> 16;
         if (intRegister[2] & mask) {
@@ -2803,7 +2803,7 @@ public:
         return false;
     }
 
-    bool isChagerOverTimeoutIrq(void)
+    bool isChargeOverTimeoutIrq(void)
     {
         uint8_t mask = XPOWERS_AXP2101_CHAGER_TIMER_IRQ  >> 16;
         if (intRegister[2] & mask) {

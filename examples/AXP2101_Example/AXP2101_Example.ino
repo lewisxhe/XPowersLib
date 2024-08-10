@@ -29,7 +29,7 @@ it may burn your external load, please check the voltage setting before running 
 if there is any loss, please bear it by yourself
 */
 #ifndef XPOWERS_NO_ERROR
-#error "Running this example is known to not damage the device! Please go and uncomment this!"
+// #error "Running this example is known to not damage the device! Please go and uncomment this!"
 #endif
 // Defined using AXP2102
 #define XPOWERS_CHIP_AXP2101
@@ -487,16 +487,16 @@ void loop()
         if (power.isBatfetOverCurrentIrq()) {
             Serial.println("isBatfetOverCurrentIrq");
         }
-        if (power.isBatChagerDoneIrq()) {
+        if (power.isBatChargeDoneIrq()) {
             Serial.println("isBatChagerDone");
         }
-        if (power.isBatChagerStartIrq()) {
+        if (power.isBatChargeStartIrq()) {
             Serial.println("isBatChagerStart");
         }
         if (power.isBatDieOverTemperatureIrq()) {
             Serial.println("isBatDieOverTemperature");
         }
-        if (power.isChagerOverTimeoutIrq()) {
+        if (power.isChargeOverTimeoutIrq()) {
             Serial.println("isChagerOverTimeout");
         }
         if (power.isBatOverVoltageIrq()) {

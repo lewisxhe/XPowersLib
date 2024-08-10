@@ -247,11 +247,11 @@ void pmu_isr_handler()
     if (power.isBattExitActivateIrq()) {
         ESP_LOGI(TAG, "isBattExitActivateIrq");
     }
-    if (power.isBatChagerStartIrq()) {
-        ESP_LOGI(TAG, "isBatChagerStartIrq");
+    if (power.isBatChargeStartIrq()) {
+        ESP_LOGI(TAG, "isBatChargeStartIrq");
     }
-    if (power.isBatChagerDoneIrq()) {
-        ESP_LOGI(TAG, "isBatChagerDoneIrq");
+    if (power.isBatChargeDoneIrq()) {
+        ESP_LOGI(TAG, "isBatChargeDoneIrq");
     }
     if (power.isBattTempHighIrq()) {
         ESP_LOGI(TAG, "isBattTempHighIrq");

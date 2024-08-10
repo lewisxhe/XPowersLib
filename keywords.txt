@@ -117,8 +117,8 @@ isBatInsertIrq	KEYWORD2
 isBatRemoveIrq	KEYWORD2
 isBattEnterActivateIrq	KEYWORD2
 isBattExitActivateIrq	KEYWORD2
-isBatChagerStartIrq	KEYWORD2
-isBatChagerDoneIrq	KEYWORD2
+isBatChargeStartIrq	KEYWORD2
+isBatChargeDoneIrq	KEYWORD2
 isBattTempHighIrq	KEYWORD2
 isBattTempLowIrq	KEYWORD2
 isChipOverTemperatureIrq	KEYWORD2
@@ -197,7 +197,7 @@ disablePowerKeyLongPressPowerOff	KEYWORD2
 # AXP2102
 isBatInActiveModeState	KEYWORD2
 getThermalRegulationStatus	KEYWORD2
-getCurrnetLimitStatus	KEYWORD2
+getCurrentLimitStatus	KEYWORD2
 isStandby	KEYWORD2
 isPowerOn	KEYWORD2
 isPowerOff	KEYWORD2
@@ -446,7 +446,7 @@ isPekeyPositiveIrq	KEYWORD2
 isLdoOverCurrentIrq	KEYWORD2
 isBatfetOverCurrentIrq	KEYWORD2
 isBatDieOverTemperatureIrq	KEYWORD2
-isChagerOverTimeoutIrq	KEYWORD2
+isChargeOverTimeoutIrq	KEYWORD2
 isBatOverVoltageIrq	KEYWORD2
 
 
