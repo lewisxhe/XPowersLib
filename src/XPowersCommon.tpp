@@ -199,10 +199,8 @@ public:
             .device_address = addr,
             .scl_speed_hz = XPOWERSLIB_I2C_MASTER_SPEED,
 #if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,3,0))
-#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,4,0))
             // New fields since esp-idf-v5.3-beta1
             .scl_wait_us = 0,
-#endif
             .flags = {
                 . disable_ack_check = 0
             }
