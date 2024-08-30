@@ -197,7 +197,7 @@ public:
 
 
     /**
-     * @brief Get PMU satatus register
+     * @brief Get PMU status register
      * @note
      * @retval register value
      */
@@ -405,7 +405,7 @@ public:
      *          Serial.println("isPekeyShortPressIrq");
      *      }
      *      if (PMU->isBatChargeStartIrq()) {
-     *          Serial.println("isBatChagerStart");
+     *          Serial.println("isBatChargeStart");
      *      }
      *      ......
      *
@@ -428,7 +428,7 @@ public:
     virtual void clearIrqStatus() = 0;
 
     /**
-     * @brief  Eanble PMU interrupt control mask .
+     * @brief  Enable PMU interrupt control mask .
      * @param  opt: View the related chip type xpowers_axpxxx_irq_t enumeration
      *              parameters in "XPowersParams.hpp"
      * @retval true valid false invalid

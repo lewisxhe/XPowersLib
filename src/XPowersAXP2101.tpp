@@ -83,7 +83,7 @@ typedef enum {
     XPOWERS_AXP2101_CHG_CC_STATE,    //constant charge
     XPOWERS_AXP2101_CHG_CV_STATE,    //constant voltage
     XPOWERS_AXP2101_CHG_DONE_STATE,  //charge done
-    XPOWERS_AXP2101_CHG_STOP_STATE,  //not chargin
+    XPOWERS_AXP2101_CHG_STOP_STATE,  //not charge
 } xpowers_chg_status_t;
 
 typedef enum {

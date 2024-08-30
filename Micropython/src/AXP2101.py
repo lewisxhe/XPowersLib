@@ -245,7 +245,7 @@ class AXP2101(I2CInterface):
     XPOWERS_AXP2101_CHG_CC_STATE = const(2)  # constant charge
     XPOWERS_AXP2101_CHG_CV_STATE = const(3)  # constant voltage
     XPOWERS_AXP2101_CHG_DONE_STATE = const(4)  # charge done
-    XPOWERS_AXP2101_CHG_STOP_STATE = const(5)  # not chargin
+    XPOWERS_AXP2101_CHG_STOP_STATE = const(5)  # not charge
 
     """PMU wakeup method values"""
     XPOWERS_AXP2101_WAKEUP_IRQ_PIN_TO_LOW = const(1 << 4)

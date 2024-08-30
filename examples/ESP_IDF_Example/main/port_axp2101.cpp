@@ -241,16 +241,16 @@ void pmu_isr_handler()
         ESP_LOGI(TAG, "isBatfetOverCurrentIrq");
     }
     if (power.isBatChargeDoneIrq()) {
-        ESP_LOGI(TAG, "isBatChagerDone");
+        ESP_LOGI(TAG, "isBatChargeDone");
     }
     if (power.isBatChargeStartIrq()) {
-        ESP_LOGI(TAG, "isBatChagerStart");
+        ESP_LOGI(TAG, "isBatChargeStart");
     }
     if (power.isBatDieOverTemperatureIrq()) {
         ESP_LOGI(TAG, "isBatDieOverTemperature");
     }
     if (power.isChargeOverTimeoutIrq()) {
-        ESP_LOGI(TAG, "isChagerOverTimeout");
+        ESP_LOGI(TAG, "isChargeOverTimeout");
     }
     if (power.isBatOverVoltageIrq()) {
         ESP_LOGI(TAG, "isBatOverVoltage");

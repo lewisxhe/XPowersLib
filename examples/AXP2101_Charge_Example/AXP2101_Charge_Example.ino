@@ -216,7 +216,7 @@ void printPMU()
     } else if (charge_status == XPOWERS_AXP2101_CHG_DONE_STATE) {
         Serial.println("charge done");
     } else if (charge_status == XPOWERS_AXP2101_CHG_STOP_STATE) {
-        Serial.println("not chargin");
+        Serial.println("not charge");
     }
     Serial.println();
 
@@ -303,16 +303,16 @@ void loop()
             Serial.println("isBatfetOverCurrentIrq");
         }
         if (power.isBatChargeDoneIrq()) {
-            Serial.println("isBatChagerDone");
+            Serial.println("isBatChargeDone");
         }
         if (power.isBatChargeStartIrq()) {
-            Serial.println("isBatChagerStart");
+            Serial.println("isBatChargeStart");
         }
         if (power.isBatDieOverTemperatureIrq()) {
             Serial.println("isBatDieOverTemperature");
         }
         if (power.isChargeOverTimeoutIrq()) {
-            Serial.println("isChagerOverTimeout");
+            Serial.println("isChargeOverTimeout");
         }
         if (power.isBatOverVoltageIrq()) {
             Serial.println("isBatOverVoltage");

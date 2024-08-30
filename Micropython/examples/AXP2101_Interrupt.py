@@ -161,16 +161,16 @@ while True:
             print("isBatfetOverCurrentIrq")
 
         if PMU.isBatChargeDoneIrq():
-            print("isBatChagerDone")
+            print("isBatChargeDone")
 
         if PMU.isBatChargeStartIrq():
-            print("isBatChagerStart")
+            print("isBatChargeStart")
 
         if PMU.isBatDieOverTemperatureIrq():
             print("isBatDieOverTemperature")
 
         if PMU.isChargeOverTimeoutIrq():
-            print("isChagerOverTimeout")
+            print("isChargeOverTimeout")
 
         if PMU.isBatOverVoltageIrq():
             print("isBatOverVoltage")

@@ -179,16 +179,16 @@ void loop()
             Serial.println("isBatfetOverCurrentIrq");
         }
         if (power.isBatChargeDoneIrq()) {
-            Serial.println("isBatChagerDone");
+            Serial.println("isBatChargeDone");
         }
         if (power.isBatChargeStartIrq()) {
-            Serial.println("isBatChagerStart");
+            Serial.println("isBatChargeStart");
         }
         if (power.isBatDieOverTemperatureIrq()) {
             Serial.println("isBatDieOverTemperature");
         }
         if (power.isChargeOverTimeoutIrq()) {
-            Serial.println("isChagerOverTimeout");
+            Serial.println("isChargeOverTimeout");
         }
         if (power.isBatOverVoltageIrq()) {
             Serial.println("isBatOverVoltage");

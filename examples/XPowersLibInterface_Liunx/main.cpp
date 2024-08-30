@@ -519,10 +519,10 @@ int main()
                 printf("isPekeyLongPress\n");
             }
             if (PMU->isBatChargeDoneIrq()) {
-                printf("isBatChagerDone\n");
+                printf("isBatChargeDone\n");
             }
             if (PMU->isBatChargeStartIrq()) {
-                printf("isBatChagerStart\n");
+                printf("isBatChargeStart\n");
             }
             // Clear PMU Interrupt Status Register
             PMU->clearIrqStatus();

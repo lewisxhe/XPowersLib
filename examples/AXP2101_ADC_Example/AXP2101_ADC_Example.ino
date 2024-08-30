@@ -162,7 +162,7 @@ void loop()
     } else if (charge_status == XPOWERS_AXP2101_CHG_DONE_STATE) {
         Serial.println("charge done");
     } else if (charge_status == XPOWERS_AXP2101_CHG_STOP_STATE) {
-        Serial.println("not chargin");
+        Serial.println("not charge");
     }
 
     // After the ADC detection is turned off, the register will return to the last reading. The PMU will not refresh the data register
