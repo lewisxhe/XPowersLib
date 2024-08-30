@@ -338,6 +338,22 @@ public:
     virtual uint8_t getVbusCurrentLimit(void) = 0;
 
 
+    /**
+     * @brief  Set VBUS Voltage Input Limit.
+     * @param  opt: View the related chip type xpowers_axpxxx_vbus_vol_limit_t enumeration
+     *              parameters in "XPowersParams.hpp"
+     * 
+     */
+    virtual void setVbusVoltageLimit(uint8_t opt) = 0;
+
+    /**
+    * @brief  Get VBUS Voltage Input Limit.
+    * @retval View the related chip type xpowers_axpxxx_vbus_vol_limit_t enumeration
+    *              parameters in "XPowersParams.hpp"
+    */
+    virtual uint8_t getVbusVoltageLimit(void) = 0;
+
+
     // SYS
     /**
     * @brief  Get PMU SYS main Voltage
