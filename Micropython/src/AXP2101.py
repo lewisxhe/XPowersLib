@@ -703,8 +703,7 @@ class AXP2101(I2CInterface):
                              _AXP2101_BTN_VOL_MAX)
         val = super().readRegister(_AXP2101_BTN_BAT_CHG_VOL_SET)[0]
         val &= 0xF8
-        val |= (int)(millivolt - _AXP2101_BTN_VOL_MIN) / \
-            _AXP2101_BTN_VOL_STEPS
+        val |= (int)((millivolt - _AXP2101_BTN_VOL_MIN) /  _AXP2101_BTN_VOL_STEPS)
         super().writeRegister(_AXP2101_BTN_BAT_CHG_VOL_SET, val)
 
     def getButtonBatteryVoltage(self) -> int:
