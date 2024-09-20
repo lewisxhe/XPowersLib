@@ -237,36 +237,36 @@ void setup()
     bool en;
 
     // DCDC 120%(130%) high voltage turn off PMIC function
-    en = power.getDCHighVoltagePowerDowmEn();
-    Serial.print("getDCHighVoltagePowerDowmEn:");
+    en = power.getDCHighVoltagePowerDownEn();
+    Serial.print("getDCHighVoltagePowerDownEn:");
     Serial.println(en ? "ENABLE" : "DISABLE");
     // DCDC1 85% low voltage turn off PMIC function
-    en = power.getDC1LowVoltagePowerDowmEn();
-    Serial.print("getDC1LowVoltagePowerDowmEn:");
+    en = power.getDC1LowVoltagePowerDownEn();
+    Serial.print("getDC1LowVoltagePowerDownEn:");
     Serial.println(en ? "ENABLE" : "DISABLE");
     // DCDC2 85% low voltage turn off PMIC function
-    en = power.getDC2LowVoltagePowerDowmEn();
-    Serial.print("getDC2LowVoltagePowerDowmEn:");
+    en = power.getDC2LowVoltagePowerDownEn();
+    Serial.print("getDC2LowVoltagePowerDownEn:");
     Serial.println(en ? "ENABLE" : "DISABLE");
     // DCDC3 85% low voltage turn off PMIC function
-    en = power.getDC3LowVoltagePowerDowmEn();
-    Serial.print("getDC3LowVoltagePowerDowmEn:");
+    en = power.getDC3LowVoltagePowerDownEn();
+    Serial.print("getDC3LowVoltagePowerDownEn:");
     Serial.println(en ? "ENABLE" : "DISABLE");
     // DCDC4 85% low voltage turn off PMIC function
-    en = power.getDC4LowVoltagePowerDowmEn();
-    Serial.print("getDC4LowVoltagePowerDowmEn:");
+    en = power.getDC4LowVoltagePowerDownEn();
+    Serial.print("getDC4LowVoltagePowerDownEn:");
     Serial.println(en ? "ENABLE" : "DISABLE");
     // DCDC5 85% low voltage turn off PMIC function
-    en = power.getDC5LowVoltagePowerDowmEn();
-    Serial.print("getDC5LowVoltagePowerDowmEn:");
+    en = power.getDC5LowVoltagePowerDownEn();
+    Serial.print("getDC5LowVoltagePowerDownEn:");
     Serial.println(en ? "ENABLE" : "DISABLE");
 
-    // power.setDCHighVoltagePowerDowm(true);
-    // power.setDC1LowVoltagePowerDowm(true);
-    // power.setDC2LowVoltagePowerDowm(true);
-    // power.setDC3LowVoltagePowerDowm(true);
-    // power.setDC4LowVoltagePowerDowm(true);
-    // power.setDC5LowVoltagePowerDowm(true);
+    // power.setDCHighVoltagePowerDown(true);
+    // power.setDC1LowVoltagePowerDown(true);
+    // power.setDC2LowVoltagePowerDown(true);
+    // power.setDC3LowVoltagePowerDown(true);
+    // power.setDC4LowVoltagePowerDown(true);
+    // power.setDC5LowVoltagePowerDown(true);
 
     // It is necessary to disable the detection function of the TS pin on the board
     // without the battery temperature detection function, otherwise it will cause abnormal charging

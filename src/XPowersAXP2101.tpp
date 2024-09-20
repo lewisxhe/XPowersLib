@@ -557,7 +557,7 @@ public:
         return clrRegisterBit(XPOWERS_AXP2101_CHARGE_GAUGE_WDT_CTRL, 2);
     }
 
-    bool isEanbleButtonBatteryCharge()
+    bool isEnableButtonBatteryCharge()
     {
         return getRegisterBit(XPOWERS_AXP2101_CHARGE_GAUGE_WDT_CTRL, 2);
     }
@@ -946,7 +946,7 @@ public:
     }
 
     // POWEROFF Delay 4ms after PWROK enable
-    void eanblePowerOffDelay()
+    void enablePowerOffDelay()
     {
         setRegisterBit(XPOWERS_AXP2101_PWROK_SEQU_CTRL, 3);
     }
@@ -958,7 +958,7 @@ public:
     }
 
     // POWEROFF Sequence Control the reverse of the Startup
-    void eanblePowerSequence()
+    void enablePowerSequence()
     {
         setRegisterBit(XPOWERS_AXP2101_PWROK_SEQU_CTRL, 2);
     }
@@ -1303,12 +1303,12 @@ public:
     }
 
     // DCDC 120%(130%) high voltage turn off PMIC function
-    void setDCHighVoltagePowerDowm(bool en)
+    void setDCHighVoltagePowerDown(bool en)
     {
         en ? setRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 5) : clrRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 5);
     }
 
-    bool getDCHighVoltagePowerDowmEn()
+    bool getDCHighVoltagePowerDownEn()
     {
         return getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 5);
     }
@@ -1373,7 +1373,7 @@ public:
         clrRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 6);
     }
 
-    bool isEanbleCCM()
+    bool isenableCCM()
     {
         return getRegisterBit(XPOWERS_AXP2101_DC_ONOFF_DVM_CTRL, 6);
     }
@@ -1434,12 +1434,12 @@ public:
 
 
     // DCDC1 85% low voltage turn off PMIC function
-    void setDC1LowVoltagePowerDowm(bool en)
+    void setDC1LowVoltagePowerDown(bool en)
     {
         en ? setRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 0) : clrRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 0);
     }
 
-    bool getDC1LowVoltagePowerDowmEn()
+    bool getDC1LowVoltagePowerDownEn()
     {
         return getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 0);
     }
@@ -1502,12 +1502,12 @@ public:
         return getRegisterBit(XPOWERS_AXP2101_DCDC2_VOL_STEPS2, 7);
     }
 
-    void setDC2LowVoltagePowerDowm(bool en)
+    void setDC2LowVoltagePowerDown(bool en)
     {
         en ? setRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 1) : clrRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 1);
     }
 
-    bool getDC2LowVoltagePowerDowmEn()
+    bool getDC2LowVoltagePowerDownEn()
     {
         return getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 1);
     }
@@ -1587,12 +1587,12 @@ public:
     }
 
     // DCDC3 85% low voltage turn off PMIC function
-    void setDC3LowVoltagePowerDowm(bool en)
+    void setDC3LowVoltagePowerDown(bool en)
     {
         en ? setRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 2) : clrRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 2);
     }
 
-    bool getDC3LowVoltagePowerDowmEn()
+    bool getDC3LowVoltagePowerDownEn()
     {
         return getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 2);
     }
@@ -1658,12 +1658,12 @@ public:
     }
 
     // DCDC4 85% low voltage turn off PMIC function
-    void setDC4LowVoltagePowerDowm(bool en)
+    void setDC4LowVoltagePowerDown(bool en)
     {
         en ? setRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 3) : clrRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 3);
     }
 
-    bool getDC4LowVoltagePowerDowmEn()
+    bool getDC4LowVoltagePowerDownEn()
     {
         return getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 3);
     }
@@ -1735,12 +1735,12 @@ public:
     }
 
     // DCDC4 85% low voltage turn off PMIC function
-    void setDC5LowVoltagePowerDowm(bool en)
+    void setDC5LowVoltagePowerDown(bool en)
     {
         en ? setRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 4) : clrRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 4);
     }
 
-    bool getDC5LowVoltagePowerDowmEn()
+    bool getDC5LowVoltagePowerDownEn()
     {
         return getRegisterBit(XPOWERS_AXP2101_DC_OVP_UVP_CTRL, 4);
     }
@@ -2577,7 +2577,7 @@ public:
 #endif
 
     /**
-     * @brief  Eanble PMU interrupt control mask .
+     * @brief  Enable PMU interrupt control mask .
      * @param  opt: View the related chip type xpowers_axp2101_irq_t enumeration
      *              parameters in "XPowersParams.hpp"
      * @retval
@@ -2964,7 +2964,7 @@ protected:
         case XPOWERS_DLDO2:
             return isEnableDLDO2();
         case XPOWERS_VBACKUP:
-            return isEanbleButtonBatteryCharge();
+            return isEnableButtonBatteryCharge();
         case XPOWERS_CPULDO:
             return isEnableCPUSLDO();
         default:

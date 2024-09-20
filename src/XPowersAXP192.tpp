@@ -513,7 +513,7 @@ public:
         return clrRegisterBit(XPOWERS_AXP192_BACKUP_CHG, 7);
     }
 
-    bool isEanbleBackupCharger()
+    bool isEnableBackupCharger()
     {
         return getRegisterBit(XPOWERS_AXP192_BACKUP_CHG, 7);
     }
@@ -785,7 +785,7 @@ public:
         writeRegister(XPOWERS_AXP192_DC2_DVM, val | opts);
     }
 
-    bool isEanbleDC2VRC(void)
+    bool isEnableDC2VRC(void)
     {
         return (readRegister(XPOWERS_AXP192_DC2_DVM) & 0x04) == 0x04;
     }
@@ -937,7 +937,7 @@ public:
     }
 
     /**
-     * @brief  Eanble PMU interrupt control mask .
+     * @brief  Enable PMU interrupt control mask .
      * @param  opt: View the related chip type xpowers_axp192_irq_t enumeration
      *              parameters in "XPowersParams.hpp"
      * @retval
@@ -1964,7 +1964,7 @@ protected:
         case XPOWERS_LDOIO:
             return isEnableLDOio();
         case XPOWERS_VBACKUP:
-            return isEanbleBackupCharger();
+            return isEnableBackupCharger();
         default:
             break;
         }
