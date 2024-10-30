@@ -38,7 +38,7 @@
 
 
 class PowersSY6970 :
-    public XPowersCommon<PowersSY6970> 
+    public XPowersCommon<PowersSY6970>
 {
     friend class XPowersCommon<PowersSY6970>;
 
@@ -511,6 +511,11 @@ public:
             }
         }
         return "Unknown";
+    }
+
+    bool enableADCMeasure() __attribute__((deprecated("The enableADCMeasure method will be replaced by enableMeasure in the future. Please update it to enableMeasure.")))
+    {
+        return enableMeasure();
     }
 
     bool enableMeasure(MeasureMode mode = CONTINUOUS)
