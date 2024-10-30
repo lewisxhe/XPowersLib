@@ -439,9 +439,8 @@ public:
         case BUS_STATE_HVDCP:
             return "HVDCP";
         case BUS_STATE_ADAPTER:
-            return "Adapter";
         case BUS_STATE_NO_STANDARD_ADAPTER:
-            return "Non-Standard Adapter";
+            return "Adapter";
         case BUS_STATE_OTG:
             return "OTG";
         default:
@@ -522,10 +521,10 @@ public:
     {
         int val = readRegister(POWERS_PPM_REG_02H);
         switch (mode) {
-        case ONE_SHORT:
+        case CONTINUOUS:
             val |= _BV(6);
             break;
-        case CONTINUOUS:
+        case ONE_SHORT:
             val &= (~_BV(6));
         default:
             break;
