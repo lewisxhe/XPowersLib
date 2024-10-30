@@ -781,7 +781,6 @@ public:
      * @brief  setChargerConstantCurr
      * @note
      * @param  milliampere: SY6970 Range:0~5056 mA / step:64mA
-     *                      BQ25896 Range:0~3008 mA / step:64mA
      * @retval true : success false : failed
      */
     bool setChargerConstantCurr(uint16_t milliampere)
