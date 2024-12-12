@@ -53,3 +53,5 @@ typedef PowersBQ25896 XPowersPPM;
 #endif
 
 #include "PowerDeliveryHUSB238.hpp"
+
+#include "XPowersLib_Version.h"
