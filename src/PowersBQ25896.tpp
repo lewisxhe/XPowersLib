@@ -37,7 +37,7 @@
 #include "REG/BQ25896Constants.h"
 
 class PowersBQ25896 :
-    public XPowersCommon<PowersBQ25896> 
+    public XPowersCommon<PowersBQ25896>
 {
     friend class XPowersCommon<PowersBQ25896>;
 public:
@@ -730,6 +730,17 @@ public:
     }
 
     // I2C Watchdog Timer Setting
+    bool isEnableWatchdog()
+    {
+        int regVal = readRegister(POWERS_PPM_REG_07H);
+        if (regVal == -1) {
+            log_e("Config watch dog failed!");
+            return false;
+        }
+        regVal >>= 4;
+        return regVal & 0x03;
+    }
+
     void disableWatchdog()
     {
         int regVal = readRegister(POWERS_PPM_REG_07H);
@@ -1327,10 +1338,14 @@ public:
     {
         ChargeStatus status = chargeStatus();
         if (status == CHARGE_STATE_NO_CHARGE) {
+            log_e("CHARGE_STATE_NO_CHARGE...");
             return 0;
         }
         int val = readRegister(POWERS_PPM_REG_12H);
-        if (val == 0 || val == -1)return 0;
+        if (val == 0 || val == -1) {
+            log_e("read reg failed !...");
+            return 0;
+        }
         val = (val & 0x7F);
         return (val * POWERS_BQ25896_CHG_STEP_VAL) ;
     }
