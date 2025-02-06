@@ -99,6 +99,12 @@
 #define FALLING             0x02
 #endif
 
+#if defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_ZEPHYR)
+#define log_e(...)
+#define log_i(...)
+#define log_d(...)
+#endif
+
 #ifndef ESP32
 #ifdef LOG_FILE_LINE_INFO
 #undef LOG_FILE_LINE_INFO
@@ -146,7 +152,9 @@ public:
 
 #if defined(NRF52840_XXAA) || defined(NRF52832_XXAA)
         if (__sda != 0xFF && __scl != 0xFF) {
+  #if !defined(ARDUINO_ARCH_MBED) && !defined(ARDUINO_ARCH_ZEPHYR)
             __wire->setPins(__sda, __scl);
+  #endif /* ARDUINO_ARCH_MBED || ZEPHYR */
         }
         __wire->begin();
 #elif defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_STM32)
@@ -445,7 +453,9 @@ protected:
             log_i("SDA:%d SCL:%d", __sda, __scl);
 #if defined(NRF52840_XXAA) || defined(NRF52832_XXAA)
             if (__sda != 0xFF && __scl != 0xFF) {
+  #if !defined(ARDUINO_ARCH_MBED) && !defined(ARDUINO_ARCH_ZEPHYR)
                 __wire->setPins(__sda, __scl);
+  #endif /* ARDUINO_ARCH_MBED || ZEPHYR */
             }
             __wire->begin();
 #elif defined(ARDUINO_ARCH_RP2040) || defined(ARDUINO_ARCH_STM32)
