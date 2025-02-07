@@ -894,7 +894,7 @@ public:
 
     void getReadOnlyRegisterValue()
     {
-#ifdef ARDUINO && !defined(ARDUINO_ARCH_MBED) && !defined(ARDUINO_ARCH_ZEPHYR) //debug ..
+#if defined(ARDUINO) && !defined(ARDUINO_ARCH_MBED) && !defined(ARDUINO_ARCH_ZEPHYR) //debug ..
         static uint8_t last_val[8] = {0};
         const uint8_t regis[] = {
             POWERS_PPM_REG_0BH,
