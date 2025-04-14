@@ -540,6 +540,7 @@ public:
             return false;
         }
         val &= (~_BV(7));
+        val &= (~_BV(6));
         return writeRegister(POWERS_PPM_REG_02H, val) != 1;
     }
 
