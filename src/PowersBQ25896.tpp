@@ -1030,7 +1030,7 @@ public:
 
     bool isChargeDone()
     {
-        return chargeStatus() != CHARGE_STATE_DONE;
+        return chargeStatus() == CHARGE_STATE_DONE;
     }
 
     bool isPowerGood()
