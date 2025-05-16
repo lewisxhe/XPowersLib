@@ -2264,13 +2264,26 @@ public:
 
     bool enableTSPinMeasure(void)
     {
+        // TS pin is the battery temperature sensor input and will affect the charger
+        uint8_t value =  readRegister(XPOWERS_AXP2101_TS_PIN_CTRL);
+        value &= 0xE0;
+        writeRegister(XPOWERS_AXP2101_TS_PIN_CTRL, value | 0x07);
+
+        value =  readRegister(XPOWERS_AXP2101_TS_PIN_CTRL);
+        Serial.printf("XPOWERS_AXP2101_TS_PIN_CTRL:0x%X\n", value);
+
         return setRegisterBit(XPOWERS_AXP2101_ADC_CHANNEL_CTRL, 1);
     }
 
     bool disableTSPinMeasure(void)
     {
+        // TS pin is the external fixed input and doesn't affect the charger
+        uint8_t value =  readRegister(XPOWERS_AXP2101_TS_PIN_CTRL);
+        value &= 0xF0;
+        writeRegister(XPOWERS_AXP2101_TS_PIN_CTRL, value | 0x10);
         return clrRegisterBit(XPOWERS_AXP2101_ADC_CHANNEL_CTRL, 1);
     }
+
 
     bool enableTSPinLowFreqSample(void)
     {
@@ -2282,7 +2295,14 @@ public:
         return clrRegisterBit(XPOWERS_AXP2101_ADC_DATA_RELUST2, 7);
     }
 
-    uint16_t getTsTemperature(void)
+    // millivolt
+    float getTsPinVoltage(void)
+    {
+        return getTsPinValue() * 0.5f;
+    }
+
+    // raw value
+    uint16_t getTsPinValue(void)
     {
         return readRegisterH6L8(XPOWERS_AXP2101_ADC_DATA_RELUST2, XPOWERS_AXP2101_ADC_DATA_RELUST3);
     }
