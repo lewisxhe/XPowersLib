@@ -99,6 +99,11 @@ typedef enum {
     XPOWERS_AXP202_BACKUP_BAT_CUR_400UA,
 } xpowers_axp202_backup_batt_curr_t;
 
+typedef enum {
+    XPOWERS_AXP202_LDO3_MODE_LDO,
+    XPOWERS_AXP202_LDO3_MODE_DCIN
+} xpowers_axp202_ldo3_mode_t;
+
 
 class XPowersAXP202 :
     public XPowersCommon<XPowersAXP202>, public XPowersLibInterface
@@ -642,6 +647,26 @@ public:
         return clrRegisterBit(XPOWERS_AXP202_LDO234_DC23_CTL, 6);
     }
 
+    //! Only AXP202 support
+    bool isLDO3LDOMode(void)
+    {
+        return getRegisterBit(XPOWERS_AXP202_LDO3OUT_VOL, 7);
+    }
+
+    //! Only AXP202 support
+    void setLDO3Mode(xpowers_axp202_ldo3_mode_t mode)
+    {
+        switch (mode) {
+        case XPOWERS_AXP202_LDO3_MODE_LDO:
+            clrRegisterBit(XPOWERS_AXP202_LDO3OUT_VOL, 7);
+            break;
+        case XPOWERS_AXP202_LDO3_MODE_DCIN:
+            setRegisterBit(XPOWERS_AXP202_LDO3OUT_VOL, 7);
+            break;
+        default:
+            break;
+        }
+    }
 
     bool setLDO3Voltage(uint16_t millivolt)
     {
