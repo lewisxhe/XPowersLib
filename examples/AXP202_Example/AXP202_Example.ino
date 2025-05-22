@@ -88,25 +88,26 @@ void setup()
     // Turn off USB input current limit
     power.setVbusCurrentLimit(XPOWERS_AXP202_VBUS_CUR_LIM_OFF);
 
-    // DC2 700~3500 mV, IMAX=1.6A;
+    // DC2 700~2275 mV, 25mV/step, IMAX=1.6A
     power.setDC2Voltage(700);
 
-    // DC3 700~3500 mV,IMAX=0.7A;
+    // DC3 700~3500 mV, 25mV/step, IMAX=1.2A
     power.setDC3Voltage(3300);
 
-    //LDO2 1800~3300 mV, 100mV/step, IMAX=200mA
+    // LDO2 1800~3300 mV, 100mV/step, IMAX=200mA
     power.setLDO2Voltage(1800);
 
-    //LDO3 700~2275 mV, 100mV/step, IMAX=200mA
+    // LDO3 700~3500 mV, 25mV/step, IMAX=200mA
     power.setLDO3Voltage(1800);
 
-    /*  LDO4 Range:
-        1250, 1300, 1400, 1500, 1600, 1700, 1800, 1900,
-        2000, 2500, 2700, 2800, 3000, 3100, 3200, 3300
+    // LDO4 1800~3300 mV, 100mV/step, IMAX=200mA
+    /* LDO4 Range:
+       1250, 1300, 1400, 1500, 1600, 1700, 1800, 1900,
+       2000, 2500, 2700, 2800, 3000, 3100, 3200, 3300
     */
     power.setLDO4Voltage(3300);
 
-    //LDOio 1800~3300 mV, 100mV/step, IMAX=50mA
+    // LDOio 1800~3300 mV, 100mV/step, IMAX=50mA
     power.setLDOioVoltage(3300);
 
 
