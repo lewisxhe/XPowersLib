@@ -171,7 +171,7 @@ public:
 
     const char *getChipName()
     {
-        return getChipID() == BQ25896_DEV_REV ? "SY6970" : "Unkown";
+        return getChipID() == BQ25896_DEV_REV ? "BQ25896" : "Unkown";
     }
 
     bool init()
