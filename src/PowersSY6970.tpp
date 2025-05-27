@@ -163,7 +163,7 @@ public:
 
     const char *getChipName()
     {
-        return getChipID() == SY6970_DEV_REV ? "SY6970" : "Unkown";
+        return getChipID() == SY6970_DEV_REV ? "SY6970" : "Unknown";
     }
 
     uint8_t getChipID()
