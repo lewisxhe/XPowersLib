@@ -33,9 +33,9 @@
 /** Major version number (X.x.x) */
 #define XPOWERSLIB_VERSION_MAJOR   0
 /** Minor version number (x.X.x) */
-#define XPOWERSLIB_VERSION_MINOR   2
+#define XPOWERSLIB_VERSION_MINOR   3
 /** Patch version number (x.x.X) */
-#define XPOWERSLIB_VERSION_PATCH   7
+#define XPOWERSLIB_VERSION_PATCH   0
 
 /**
  * Macro to convert XPowersLib version number into an integer
