@@ -30,6 +30,8 @@
 
 #if defined(ARDUINO)
 #include <Arduino.h>
+#else
+#include <math.h>
 #endif /*ARDUINO*/
 
 #include "XPowersCommon.tpp"
@@ -2294,7 +2296,7 @@ public:
 
     /**
      * Calculate temperature from TS pin ADC value using Steinhart-Hart equation.
-     * 
+     *
      * @param SteinhartA Steinhart-Hart coefficient A (default: 1.126e-3)
      * @param SteinhartB Steinhart-Hart coefficient B (default: 2.38e-4)
      * @param SteinhartC Steinhart-Hart coefficient C (default: 8.5e-8)
@@ -2307,7 +2309,7 @@ public:
      * 3. Temperature calculation: T = 1/(A+B*ln(R)+C*(ln(R))^3) - 273.15 (℃)
      *
      * @note
-     * The calculation parameters are from the AXP2101 Datasheet, using the TH11-3H103F NTC resistor 
+     * The calculation parameters are from the AXP2101 Datasheet, using the TH11-3H103F NTC resistor
      *     as the Steinhart-Hart equation calculation parameters
      * 1. Coefficients A, B, C should be calibrated for specific NTC thermistor.
      * 2. ADC value 0x2000 indicates sensor fault (e.g., open circuit).
@@ -3125,6 +3127,3 @@ private:
     uint8_t statusRegister[XPOWERS_AXP2101_INTSTS_CNT];
     uint8_t intRegister[XPOWERS_AXP2101_INTSTS_CNT];
 };
-
-
-
