@@ -118,6 +118,9 @@ while True:
         if PMU.isGaugeWdtTimeoutIrq():
             print("isWdtTimeout")
 
+        if PMU.isStateOfChargeLowIrq():
+            print("isStateOfChargeLow")
+
         if PMU.isBatChargerOverTemperatureIrq():
             print("isBatChargeOverTemperature")
 

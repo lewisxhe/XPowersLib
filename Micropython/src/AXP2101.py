@@ -455,7 +455,7 @@ class AXP2101(I2CInterface):
     XPOWERS_AXP2101_BAT_CHG_UNDER_TEMP_IRQ = const(1 << 2)
     # Battery Over Temperature in Charge mode IRQ(bcot_irq) enable
     XPOWERS_AXP2101_BAT_CHG_OVER_TEMP_IRQ = const(1 << 3)
-    # Gauge New SOC IRQ(lowsoc_irq) enable ???
+    # Gauge New SOC IRQ(lowsoc_irq) enable (low state of charge)
     XPOWERS_AXP2101_GAUGE_NEW_SOC_IRQ = const(1 << 4)
     # Gauge Watchdog Timeout IRQ(gwdt_irq) enable
     XPOWERS_AXP2101_WDT_TIMEOUT_IRQ = const(1 << 5)
@@ -486,7 +486,7 @@ class AXP2101(I2CInterface):
     # Battery Over Voltage Protection IRQ(bovp_irq) enable
     XPOWERS_AXP2101_BAT_OVER_VOL_IRQ = const(1 << 16)
     # Charger Safety Timer1/2 expire IRQ(chgte_irq) enable
-    XPOWERS_AXP2101_CHAGER_TIMER_IRQ = const(1 << 17)
+    XPOWERS_AXP2101_CHARGER_TIMER_IRQ = const(1 << 17)
     # DIE Over Temperature level1 IRQ(dotl1_irq) enable
     XPOWERS_AXP2101_DIE_OVER_TEMP_IRQ = const(1 << 18)
     XPOWERS_AXP2101_BAT_CHG_START_IRQ = const(
@@ -2002,6 +2002,13 @@ class AXP2101(I2CInterface):
         else:
             return False
 
+    def isStateOfChargeLowIrq(self) -> bool:
+        mask = self.XPOWERS_AXP2101_GAUGE_NEW_SOC_IRQ
+        if self.intRegister[0] & mask:
+            return super()._IS_BIT_SET(self.statusRegister[0], mask)
+        else:
+            return False
+
     def isBatChargerOverTemperatureIrq(self) -> bool:
         mask = self.XPOWERS_AXP2101_BAT_CHG_OVER_TEMP_IRQ
         if self.intRegister[0] & mask:
@@ -2131,7 +2138,7 @@ class AXP2101(I2CInterface):
             return False
 
     def isChargeOverTimeoutIrq(self) -> bool:
-        mask = self.XPOWERS_AXP2101_CHAGER_TIMER_IRQ >> 16
+        mask = self.XPOWERS_AXP2101_CHARGER_TIMER_IRQ >> 16
         if self.intRegister[2] & mask:
             return super()._IS_BIT_SET(self.statusRegister[2], mask)
         else:

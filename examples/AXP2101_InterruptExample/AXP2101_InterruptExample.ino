@@ -136,6 +136,9 @@ void loop()
         if (power.isGaugeWdtTimeoutIrq()) {
             Serial.println("isWdtTimeout");
         }
+        if (power.isStateOfChargeLowIrq()) {
+            Serial.println("isStateOfChargeLow");
+        }
         if (power.isBatChargerOverTemperatureIrq()) {
             Serial.println("isBatChargeOverTemperature");
         }
@@ -203,4 +206,3 @@ void loop()
     }
     delay(10);
 }
-

@@ -36,9 +36,9 @@
 #if defined(ARDUINO)
 #include <Wire.h>
 #elif defined(ESP_PLATFORM)
+#include <cstring>
 #include "esp_log.h"
 #include "esp_err.h"
-#include <cstring>
 #include "esp_idf_version.h"
 #if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
 #include "driver/i2c_master.h"
@@ -48,9 +48,7 @@
 #define XPOWERSLIB_I2C_MASTER_RX_BUF_DISABLE   0                          /*!< I2C master doesn't need buffer */
 #define XPOWERSLIB_I2C_MASTER_TIMEOUT_MS       1000
 #endif //ESP_IDF_VERSION
-
-
-#endif //ESP_PLATFORM
+#endif //defined(ARDUINO)
 
 #define XPOWERSLIB_I2C_MASTER_SPEED            400000
 
@@ -66,7 +64,6 @@
 #endif
 
 
-
 #define XPOWERS_ATTR_NOT_IMPLEMENTED    __attribute__((error("Not implemented")))
 #define IS_BIT_SET(val,mask)            (((val)&(mask)) == (mask))
 
@@ -75,14 +72,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
-#define log_e(__info,...)          printf("error :"  __info,##__VA_ARGS__)
-#define log_i(__info,...)          printf("info  :"  __info,##__VA_ARGS__)
-#define log_d(__info,...)          printf("debug :"  __info,##__VA_ARGS__)
+#define log_e(__info, ...)  printf("error :"  __info,##__VA_ARGS__)
+#define log_i(__info, ...)  printf("info  :"  __info,##__VA_ARGS__)
+#define log_d(__info, ...)  printf("debug :"  __info,##__VA_ARGS__)
+#elif defined(ESP_PLATFORM)
+#define log_e(__fmt, ...)  ESP_LOGE("XPowers", __fmt, ##__VA_ARGS__);
+#define log_i(__fmt, ...)  ESP_LOGI("XPowers", __fmt, ##__VA_ARGS__);
+#define log_d(__fmt, ...)  ESP_LOGD("XPowers", __fmt, ##__VA_ARGS__);
 #else
 #define log_e(...)
 #define log_i(...)
 #define log_d(...)
-#endif
+#endif //linux
 
 #define LOW                 0x0
 #define HIGH                0x1
@@ -97,7 +98,7 @@
 
 #define RISING              0x01
 #define FALLING             0x02
-#endif
+#endif //!defined(ARDUINO)
 
 #if defined(ARDUINO_ARCH_MBED) || defined(ARDUINO_ARCH_ZEPHYR)
 #define log_e(...)
@@ -119,7 +120,7 @@
 #ifndef log_d
 #define log_d(fmt, ...)     Serial.printf("[D][%s:%d] " fmt "\n", LOG_FILE_LINE_INFO, ##__VA_ARGS__)
 #endif
-#endif
+#endif //ESP32
 
 
 #if defined(NRF52840_XXAA) || defined(NRF52832_XXAA)
