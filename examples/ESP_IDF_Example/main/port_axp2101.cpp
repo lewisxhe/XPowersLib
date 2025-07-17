@@ -198,6 +198,9 @@ void pmu_isr_handler()
     if (power.isGaugeWdtTimeoutIrq()) {
         ESP_LOGI(TAG, "isWdtTimeout");
     }
+    if (power.isStateOfChargeLowIrq()) {
+        ESP_LOGI(TAG, "isStateOfChargeLow");
+    }
     if (power.isBatChargerOverTemperatureIrq()) {
         ESP_LOGI(TAG, "isBatChargeOverTemperature");
     }
@@ -260,4 +263,3 @@ void pmu_isr_handler()
 }
 
 #endif  /*CONFIG_XPOWERS_AXP2101_CHIP_AXP2102*/
-

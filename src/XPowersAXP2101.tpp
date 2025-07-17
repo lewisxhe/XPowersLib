@@ -2677,6 +2677,15 @@ public:
         return false;
     }
 
+    bool isStateOfChargeLowIrq(void)
+    {
+        uint8_t mask = XPOWERS_AXP2101_GAUGE_NEW_SOC_IRQ;
+        if (intRegister[0] & mask) {
+            return IS_BIT_SET(statusRegister[0], mask);
+        }
+        return false;
+    }
+
     bool isBatChargerOverTemperatureIrq(void)
     {
         uint8_t mask = XPOWERS_AXP2101_BAT_CHG_OVER_TEMP_IRQ;
@@ -2844,7 +2853,7 @@ public:
 
     bool isChargeOverTimeoutIrq(void)
     {
-        uint8_t mask = XPOWERS_AXP2101_CHAGER_TIMER_IRQ  >> 16;
+        uint8_t mask = XPOWERS_AXP2101_CHARGER_TIMER_IRQ  >> 16;
         if (intRegister[2] & mask) {
             return IS_BIT_SET(statusRegister[2], mask);
         }
@@ -3084,7 +3093,7 @@ protected:
     {
         int res = 0;
         uint8_t data = 0, value = 0;
-        log_d("%s - HEX:0x%x \n", enable ? "ENABLE" : "DISABLE", opts);
+        log_d("%s - HEX:0x %lx \n", enable ? "ENABLE" : "DISABLE", opts);
         if (opts & 0x0000FF) {
             value = opts & 0xFF;
             // log_d("Write INT0: %x\n", value);
