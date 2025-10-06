@@ -397,33 +397,15 @@ public:
         setRegisterBit(XPOWERS_AXP2101_COMMON_CONFIG, 0);
     }
 
-    /**
-     * @brief  BATFET control / REG 12H
-     * @note   DIE Over Temperature Protection Level1 Configuration
-     * @param  opt: 0:115 , 1:125 , 2:135
-     * @retval None
-     */
-    void setBatfetDieOverTempLevel1(uint8_t opt)
+    // datasheet v1.4 fixed
+    void enableBATFET(void)
     {
-        int val = readRegister(XPOWERS_AXP2101_BATFET_CTRL);
-        if (val == -1)return;
-        val &= 0xF9;
-        writeRegister(XPOWERS_AXP2101_BATFET_CTRL, val | (opt << 1));
+        setRegisterBit(XPOWERS_AXP2101_BATFET_CTRL, 3);
     }
 
-    uint8_t getBatfetDieOverTempLevel1(void)
+    void disableBATFET(void)
     {
-        return (readRegister(XPOWERS_AXP2101_BATFET_CTRL) & 0x06);
-    }
-
-    void enableBatfetDieOverTempDetect(void)
-    {
-        setRegisterBit(XPOWERS_AXP2101_BATFET_CTRL, 0);
-    }
-
-    void disableBatfetDieOverTempDetect(void)
-    {
-        clrRegisterBit(XPOWERS_AXP2101_BATFET_CTRL, 0);
+        clrRegisterBit(XPOWERS_AXP2101_BATFET_CTRL, 3);
     }
 
     /**

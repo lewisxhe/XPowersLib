@@ -217,10 +217,8 @@ enablePwronShutPMIC	KEYWORD2
 disablePwronShutPMIC	KEYWORD2
 resetPmuSocSystem	KEYWORD2
 softPowerOff	KEYWORD2
-setBatfetDieOverTempLevel1	KEYWORD2
-getBatfetDieOverTempLevel1	KEYWORD2
-enableBatfetDieOverTempDetect	KEYWORD2
-disableBatfetDieOverTempDetect	KEYWORD2
+enableBATFET	KEYWORD2
+disableBATFET	KEYWORD2
 setDieOverTempLevel1	KEYWORD2
 getDieOverTempLevel1	KEYWORD2
 enableDieOverTempDetect	KEYWORD2

@@ -595,24 +595,11 @@ class AXP2101(I2CInterface):
     def shutdown(self) -> None:
         super().setRegisterBit(_AXP2101_COMMON_CONFIG, 0)
 
-    # @brief  BATFET control / REG 12H
-    # @note   DIE Over Temperature Protection Level1 Configuration
-    # @param   opt: 0:115 , 1:125 , 2:135
-    def setBatfetDieOverTempLevel1(self, opt: int) -> None:
-        if not 0 <= opt <= 3:
-            raise ValueError("param must be a value within 0-3!")
-        val = super().readRegister(_AXP2101_BATFET_CTRL)[0]
-        val &= 0xF9
-        super().writeRegister(_AXP2101_BATFET_CTRL, val | (opt << 1))
+    def enableBATFET(self) -> None:
+        super().setRegisterBit(_AXP2101_BATFET_CTRL, 3)
 
-    def getBatfetDieOverTempLevel1(self) -> int:
-        return (super().readRegister(_AXP2101_BATFET_CTRL)[0] & 0x06)
-
-    def enableBatfetDieOverTempDetect(self) -> None:
-        super().setRegisterBit(_AXP2101_BATFET_CTRL, 0)
-
-    def disableBatfetDieOverTempDetect(self) -> None:
-        super().clrRegisterBit(_AXP2101_BATFET_CTRL, 0)
+    def disableBATFET(self) -> None:
+        super().clrRegisterBit(_AXP2101_BATFET_CTRL, 3)
 
     # @param   opt: 0:115 , 1:125 , 2:135
     def setDieOverTempLevel1(self, opt: int) -> None:
