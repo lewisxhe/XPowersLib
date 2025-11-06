@@ -500,33 +500,61 @@ public:
     }
 
     /**
-     * @brief  Reset the fuel gauge
+     * @brief  Compare Gauge Data
+     * @note   This function compares the provided gauge data with the data in the gauge.
+     * @param  *data: Pointer to the data buffer to compare.
+     * @param  len: Length of the data buffer (should be 128 bytes).
+     * @retval True if the data matches, false otherwise.
      */
-    void resetGauge(void)
+    bool writeGaugeData(uint8_t *data, uint8_t len)
     {
-        setRegisterBit(XPOWERS_AXP2101_RESET_FUEL_GAUGE, 3);
-    }
-
-    /**
-     * @brief   reset the gauge besides reset
-     */
-    void resetGaugeBesides(void)
-    {
+        if (len != 128 || data == NULL)return false;
+        // Reset gauge first
         setRegisterBit(XPOWERS_AXP2101_RESET_FUEL_GAUGE, 2);
+        clrRegisterBit(XPOWERS_AXP2101_RESET_FUEL_GAUGE, 2);
+        // Enabled ROM register
+        clrRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
+        setRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
+        // Write data to buffer
+        for (uint8_t i = 0; i < 128; i++) {
+            writeRegister(XPOWERS_AXP2101_BAT_PARAMS, data[i]);
+        }
+        // Reenable ROM register
+        clrRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
+        setRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
+
+        return compareGaugeData(data, len);
     }
 
     /**
-     * @brief Gauge Module
+     * @brief  Compare Gauge Data
+     * @note   This function compares the provided gauge data with the data in the gauge.
+     * @param  *data: Pointer to the data buffer to compare.
+     * @param  len: Length of the data buffer (should be 128 bytes).
+     * @retval True if the data matches, false otherwise.
      */
-    void enableGauge(void)
+    bool compareGaugeData(uint8_t *data, uint8_t len)
     {
-        setRegisterBit(XPOWERS_AXP2101_CHARGE_GAUGE_WDT_CTRL, 3);
+        if (len != 128 || data == NULL)return false;
+        // Reset gauge to load new data
+        uint8_t buffer[128];
+        memset(buffer, 0, sizeof(buffer));
+        // Reenable ROM register
+        clrRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
+        setRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
+        for (uint8_t i = 0; i < 128; i++) {
+            buffer[i] = readRegister(XPOWERS_AXP2101_BAT_PARAMS);
+        }
+        // Disable ROM register
+        clrRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
+        // Set data interface
+        setRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 4);
+        // Reset gauge
+        setRegisterBit(XPOWERS_AXP2101_RESET_FUEL_GAUGE, 2);
+        clrRegisterBit(XPOWERS_AXP2101_RESET_FUEL_GAUGE, 2);
+        return memcmp(data, buffer, 128) == 0;
     }
 
-    void disableGauge(void)
-    {
-        clrRegisterBit(XPOWERS_AXP2101_CHARGE_GAUGE_WDT_CTRL, 3);
-    }
 
     /**
      * @brief  Button Battery charge
@@ -2536,25 +2564,6 @@ public:
     xpowers_thermal_t getThermaThreshold(void)
     {
         return (xpowers_thermal_t)(readRegister(XPOWERS_AXP2101_THE_REGU_THRES_SET) & 0x03);
-    }
-
-    uint8_t getBatteryParameter()
-    {
-        return  readRegister(XPOWERS_AXP2101_BAT_PARAME);
-    }
-
-    void fuelGaugeControl(bool writeROM, bool enable)
-    {
-        if (writeROM) {
-            clrRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 4);
-        } else {
-            setRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 4);
-        }
-        if (enable) {
-            setRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
-        } else {
-            clrRegisterBit(XPOWERS_AXP2101_FUEL_GAUGE_CTRL, 0);
-        }
     }
 
     /*

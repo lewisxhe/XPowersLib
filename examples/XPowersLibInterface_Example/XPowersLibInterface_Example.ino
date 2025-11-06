@@ -437,7 +437,6 @@ void setup()
     break;
     case XPOWERS_AXP2101: {
         XPowersAXP2101 *axp2101 = static_cast<XPowersAXP2101 *>(power);
-        axp2101->fuelGaugeControl(true, true);
         axp2101->setPrechargeCurr(XPOWERS_AXP2101_PRECHARGE_50MA);
         axp2101->setChargerTerminationCurr(XPOWERS_AXP2101_CHG_ITERM_25MA);
     }
