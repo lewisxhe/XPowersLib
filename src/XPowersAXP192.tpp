@@ -535,12 +535,14 @@ public:
     }
 
     /*
-    * Temperature
+    * Temperature 12-bit ADC
     */
-    float getTemperature()
+    float getTemperature(uint16_t * raw_ptr = nullptr)
     {
-        return readRegisterH8L4(XPOWERS_AXP192_INTERNAL_TEMP_H8, XPOWERS_AXP192_INTERNAL_TEMP_L4)
-               * XPOWERS_AXP192_INTERNAL_TEMP_STEP - XPOWERS_AXP192_INERNAL_TEMP_OFFSET;
+        uint16_t raw = readRegisterH8L4(XPOWERS_AXP192_INTERNAL_TEMP_H8, XPOWERS_AXP192_INTERNAL_TEMP_L4);
+        if (raw == UINT16_MAX || raw > 4095) return NAN;
+        if (raw_ptr) *raw_ptr = raw;
+        return raw * XPOWERS_AXP192_INTERNAL_TEMP_STEP - XPOWERS_AXP192_INTERNAL_TEMP_OFFSET;
     }
 
     bool enableTemperatureMeasure()

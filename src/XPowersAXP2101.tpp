@@ -2235,9 +2235,14 @@ public:
         return clrRegisterBit(XPOWERS_AXP2101_ADC_CHANNEL_CTRL, 4);
     }
 
-    float getTemperature(void)
+    /*
+    * Temperature 14-bit ADC
+    */
+    float getTemperature(uint16_t * raw_ptr = nullptr)
     {
         uint16_t raw = readRegisterH6L8(XPOWERS_AXP2101_ADC_DATA_RELUST8, XPOWERS_AXP2101_ADC_DATA_RELUST9);
+        if (raw == UINT16_MAX || raw > 16383) return NAN;
+        if (raw_ptr) *raw_ptr = raw;
         return XPOWERS_AXP2101_CONVERSION(raw);
     }
 

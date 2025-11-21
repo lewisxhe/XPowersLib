@@ -412,7 +412,7 @@ public:
     {
         int h8 = readRegister(highReg);
         int l4 = readRegister(lowReg);
-        if (h8 == -1 || l4 == -1)return 0;
+        if (h8 == -1 || l4 == -1)return UINT16_MAX;
         return (h8 << 4) | (l4 & 0x0F);
     }
 
@@ -420,7 +420,7 @@ public:
     {
         int h8 = readRegister(highReg);
         int l5 = readRegister(lowReg);
-        if (h8 == -1 || l5 == -1)return 0;
+        if (h8 == -1 || l5 == -1)return UINT16_MAX;
         return (h8 << 5) | (l5 & 0x1F);
     }
 
@@ -428,7 +428,7 @@ public:
     {
         int h6 = readRegister(highReg);
         int l8 = readRegister(lowReg);
-        if (h6 == -1 || l8 == -1)return 0;
+        if (h6 == -1 || l8 == -1)return UINT16_MAX;
         return ((h6 & 0x3F) << 8) | l8;
     }
 

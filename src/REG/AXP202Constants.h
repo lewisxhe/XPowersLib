@@ -177,7 +177,7 @@
 #define XPOWERS_AXP202_CHG_EXT_CURR_MAX                 (1000)
 #define XPOWERS_AXP202_CHG_EXT_CURR_STEP                (100)
 
-#define XPOWERS_AXP202_INERNAL_TEMP_OFFSET              (144.7)
+#define XPOWERS_AXP202_INTERNAL_TEMP_OFFSET              (144.7)
 
 
 

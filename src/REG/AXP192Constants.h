@@ -179,4 +179,4 @@
 #define XPOWERS_AXP192_INTERNAL_TEMP_H8                 (0x5E)
 #define XPOWERS_AXP192_INTERNAL_TEMP_L4                 (0x5F)
 #define XPOWERS_AXP192_INTERNAL_TEMP_STEP               (0.1F)
-#define XPOWERS_AXP192_INERNAL_TEMP_OFFSET              (144.7)
+#define XPOWERS_AXP192_INTERNAL_TEMP_OFFSET              (144.7)
