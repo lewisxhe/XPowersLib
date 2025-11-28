@@ -508,11 +508,11 @@ public:
     }
 
     /**
-     * @brief  Compare Gauge Data
-     * @note   This function compares the provided gauge data with the data in the gauge.
+     * @brief  Write Gauge Data
+     * @note   This function writes the provided gauge data to battery parameter.
      * @param  *data: Pointer to the data buffer to compare.
      * @param  len: Length of the data buffer (should be 128 bytes).
-     * @retval True if the data matches, false otherwise.
+     * @retval True if the data successfully wrote to ROM by comparing with the written data, false otherwise.
      */
     bool writeGaugeData(uint8_t *data, uint8_t len)
     {
