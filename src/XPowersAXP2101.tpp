@@ -238,6 +238,14 @@ public:
     void deinit()
     {
         end();
+
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
+        if (this->__i2c_device) {
+            i2c_master_bus_rm_device(this->__i2c_device);
+            this->__i2c_device = NULL;
+        }
+
+#endif //ESP_IDF_VERSION
     }
 
     /*
