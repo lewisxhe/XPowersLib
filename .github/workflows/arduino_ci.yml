@@ -31,6 +31,7 @@ jobs:
           - examples/SY6970_Shutdown_Example/SY6970_Shutdown_Example.ino
           - examples/XPowersLibInterface_Example/XPowersLibInterface_Example.ino
           - examples/AXP2101_LowBatteryWarningExample/AXP2101_LowBatteryWarningExample.ino
+          - examples/AXP2101_BATFET_OFF_Example/AXP2101_BATFET_OFF_Example.ino
           - examples/BQ25896_Example/BQ25896_Example.ino
           - examples/BQ25896_Shutdown_Example/BQ25896_Shutdown_Example.ino
 

@@ -31,6 +31,7 @@ jobs:
           - examples/AXP2101_LowBatteryWarningExample/AXP2101_LowBatteryWarningExample.ino
           - examples/BQ25896_Example/BQ25896_Example.ino
           - examples/BQ25896_Shutdown_Example/BQ25896_Shutdown_Example.ino
+          - examples/AXP2101_BATFET_OFF_Example/AXP2101_BATFET_OFF_Example.ino
 
     steps:
       - uses: actions/checkout@v3
@@ -47,7 +48,7 @@ jobs:
         run: pip install --upgrade platformio
 
       - name: Run PlatformIO
-        run: pio ci --lib="." --board=esp32dev --board=esp32-c3-devkitm-1
+        run: pio ci --lib="." --board=esp32dev 
         env:
           PLATFORMIO_BUILD_FLAGS: -D XPOWERS_NO_ERROR
           PLATFORMIO_CI_SRC: ${{ matrix.example }}
