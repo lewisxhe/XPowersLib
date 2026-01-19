@@ -11,6 +11,8 @@ menu "XPowersLib Configuration"
             bool "Xpowers AXP2101"
         config XPOWERS_CHIP_AXP192
             bool "Xpowers AXP192"
+        config PPM_BQ25896
+            bool "Ti BQ25896 power path"
     endchoice
 
     choice XPowersLib_ESP_IDF_API
