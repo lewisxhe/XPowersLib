@@ -32,7 +32,7 @@
 #else
 #include <math.h>
 #endif /*ARDUINO*/
-#include "XPowersCommon.tpp"
+#include "XPowersCommon.hpp"
 #include "REG/HUSB238Constants.h"
 
 class PowerDeliveryHUSB238 :

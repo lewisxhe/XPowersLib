@@ -31,25 +31,25 @@
 #pragma once
 
 #if defined(XPOWERS_CHIP_AXP192)
-#include "XPowersAXP192.tpp"
+#include "XPowersAXP192.hpp"
 typedef XPowersAXP192 XPowersPMU;
 #elif defined(XPOWERS_CHIP_AXP202)
-#include "XPowersAXP202.tpp"
+#include "XPowersAXP202.hpp"
 typedef XPowersAXP202 XPowersPMU;
 #elif defined(XPOWERS_CHIP_AXP2101)
-#include "XPowersAXP2101.tpp"
+#include "XPowersAXP2101.hpp"
 typedef XPowersAXP2101 XPowersPMU;
 #elif defined(XPOWERS_CHIP_SY6970)
-#include "PowersSY6970.tpp"
+#include "PowersSY6970.hpp"
 typedef PowersSY6970 XPowersPPM;
 #elif defined(XPOWERS_CHIP_BQ25896)
-#include "PowersBQ25896.tpp"
+#include "PowersBQ25896.hpp"
 typedef PowersBQ25896 XPowersPPM;
 #else
-#include "XPowersAXP192.tpp"
-#include "XPowersAXP202.tpp"
-#include "XPowersAXP2101.tpp"
-#include "PowersSY6970.tpp"
+#include "XPowersAXP192.hpp"
+#include "XPowersAXP202.hpp"
+#include "XPowersAXP2101.hpp"
+#include "PowersSY6970.hpp"
 #endif
 
 #include "PowerDeliveryHUSB238.hpp"
