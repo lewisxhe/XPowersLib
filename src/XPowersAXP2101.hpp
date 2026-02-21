@@ -698,7 +698,7 @@ public:
         if (val == -1)return 0;
         val &= 0xF0;
         val >>= 4;
-        return val;
+        return val + 5;
     }
 
     /**
