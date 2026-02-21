@@ -2465,13 +2465,13 @@ public:
     {
         int val = readRegister(XPOWERS_AXP2101_IPRECHG_SET);
         if (val == -1)return;
-        val &= 0xFC;
+        val &= 0xF0;
         writeRegister(XPOWERS_AXP2101_IPRECHG_SET, val | opt);
     }
 
     xpowers_prechg_t getPrechargeCurr(void)
     {
-        return (xpowers_prechg_t)(readRegister(XPOWERS_AXP2101_IPRECHG_SET) & 0x03);
+        return (xpowers_prechg_t)(readRegister(XPOWERS_AXP2101_IPRECHG_SET) & 0x0F);
     }
 
 
