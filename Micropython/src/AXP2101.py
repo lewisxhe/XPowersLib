@@ -1842,11 +1842,11 @@ class AXP2101(I2CInterface):
     # # @retval None
     def setPrechargeCurr(self, opt: int) -> None:
         val = super().readRegister(_AXP2101_IPRECHG_SET)[0]
-        val &= 0xFC
+        val &= 0xF0
         super().writeRegister(_AXP2101_IPRECHG_SET, val | opt)
 
     def getPrechargeCurr(self) -> None:
-        return (super().readRegister(_AXP2101_IPRECHG_SET)[0] & 0x03)
+        return (super().readRegister(_AXP2101_IPRECHG_SET)[0] & 0x0F)
 
      # @brief Set charge current.
      # @param   opt: See _axp2101_chg_curr_t enum for details.
