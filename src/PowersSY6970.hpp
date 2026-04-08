@@ -282,8 +282,7 @@ public:
         int val = readRegister(POWERS_PPM_REG_03H);
         if (val == -1)return false;
         val &= 0xF1;
-        val |= (millivolt - POWERS_SY6970_SYS_VOFF_VOL_MIN) / POWERS_SY6970_SYS_VOL_STEPS;
-        val <<= 1;
+        val |= (((millivolt - POWERS_SY6970_SYS_VOFF_VOL_MIN) / POWERS_SY6970_SYS_VOL_STEPS) << 1);
         return 0 ==  writeRegister(POWERS_PPM_REG_03H, val);
 
     }
