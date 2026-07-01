@@ -2592,7 +2592,7 @@ public:
         statusRegister[0] = readRegister(XPOWERS_AXP2101_INTSTS1);
         statusRegister[1] = readRegister(XPOWERS_AXP2101_INTSTS2);
         statusRegister[2] = readRegister(XPOWERS_AXP2101_INTSTS3);
-        return (uint32_t)(statusRegister[0] << 16) | (uint32_t)(statusRegister[1] << 8) | (uint32_t)(statusRegister[2]);
+        return (uint32_t)(statusRegister[2] << 16) | (uint32_t)(statusRegister[1] << 8) | (uint32_t)(statusRegister[0]);
     }
 
 
