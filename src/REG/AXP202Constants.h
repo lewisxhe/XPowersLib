@@ -1,6 +1,7 @@
 #pragma once
 
-#define AXP202_SLAVE_ADDRESS                            (0x34)
+#define AXP202_SLAVE_ADDRESS                            (0x35)
+#define AXP202_SLAVE_ADDRESS_ALT                        (0x34)
 
 #define XPOWERS_AXP202_CHIP_ID                          (0x41)
 
