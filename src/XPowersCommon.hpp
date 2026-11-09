@@ -227,6 +227,7 @@ public:
         if (!__has_init) {
             // Initialization failed, delete device
             i2c_master_bus_rm_device(__i2c_device);
+            __i2c_device = NULL;
         }
         return __has_init;
     }
@@ -486,7 +487,18 @@ protected:
 #endif  /*ESP_IDF_VERSION*/
 #endif  /*ESP_IDF_VERSION*/
         }
-#endif /*ARDUINO*/
+#elif defined(ESP_PLATFORM)
+#if defined(ESP_IDF_VERSION)
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
+        if (__i2c_device) {
+            i2c_master_bus_rm_device(__i2c_device);
+            __i2c_device = NULL;
+        }
+        bus_handle = NULL;
+        __has_init = false;
+#endif  /*ESP_IDF_VERSION >= 5.0*/
+#endif  /*ESP_IDF_VERSION*/
+#endif  /*ARDUINO & ESP_PLATFORM*/
     }
 
 
@@ -501,20 +513,20 @@ protected:
     }
 
 protected:
-    bool        __has_init              = false;
+    bool        __has_init                  = false;
 #if defined(ARDUINO)
-    TwoWire     *__wire                 = NULL;
+    TwoWire     *__wire                     = NULL;
 #elif defined(ESP_PLATFORM)
     i2c_port_t  __i2c_num;
 #if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,0,0)) && defined(CONFIG_XPOWERS_ESP_IDF_NEW_API)
-    i2c_master_bus_handle_t  bus_handle;
-    i2c_master_dev_handle_t  __i2c_device;
+    i2c_master_bus_handle_t  bus_handle     = NULL;
+    i2c_master_dev_handle_t  __i2c_device   = NULL;
 #endif //ESP_IDF_VERSION
 
 #endif //ESP_PLATFORM
-    int         __sda                   = -1;
-    int         __scl                   = -1;
-    uint8_t     __addr                  = 0xFF;
-    iic_fptr_t  thisReadRegCallback     = NULL;
-    iic_fptr_t  thisWriteRegCallback    = NULL;
+    int         __sda                       = -1;
+    int         __scl                       = -1;
+    uint8_t     __addr                      = 0xFF;
+    iic_fptr_t  thisReadRegCallback         = NULL;
+    iic_fptr_t  thisWriteRegCallback        = NULL;
 };

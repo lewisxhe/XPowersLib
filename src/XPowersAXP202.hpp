@@ -893,17 +893,17 @@ public:
      */
     bool enableExternalPin(void)
     {
-        return setRegisterBit(XPOWERS_AXP202_LDO234_DC23_CTL, 6);
+        return setRegisterBit(XPOWERS_AXP202_LDO234_DC23_CTL, 0);
     }
 
     bool disableExternalPin(void)
     {
-        return clrRegisterBit(XPOWERS_AXP202_LDO234_DC23_CTL, 6);
+        return clrRegisterBit(XPOWERS_AXP202_LDO234_DC23_CTL, 0);
     }
 
     bool isEnableExternalPin(void)
     {
-        return getRegisterBit(XPOWERS_AXP202_LDO234_DC23_CTL, 6);
+        return getRegisterBit(XPOWERS_AXP202_LDO234_DC23_CTL, 0);
     }
 
     /*
